@@ -63,6 +63,7 @@
   background-color: hsl(0,0%,95%);
   border: 1px solid silver;
   color: black;
+  margin-bottom: 15px;
 }
 .CodeRay pre {
   margin: 0px;
