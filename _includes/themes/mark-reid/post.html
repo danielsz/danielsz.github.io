@@ -4,16 +4,19 @@
 
   {{ content }}
 
+  <p>P.S. <a href="https://twitter.com/intent/user?screen_name=danielszmu" title="Follow @danielszmu">Follow</a> me on Twitter.</p>
+
+  <ul class="tag_box inline">
+  {% assign tags_list = page.tags %}
+  {% include JB/tags_list %}
+  </ul>
+
   <address class="signature">
     <a class="author" href="{{ HOME_PATH }}">{{ site.author.name }}</a> 
     <span class="date">{{ page.date | date_to_long_string }}</span>
     <span class="location">{{ page.location }}</span>
   </address>
 
-  <ul class="tag_box inline">
-  {% assign tags_list = page.tags %}
-  {% include JB/tags_list %}
-  </ul>
   
   <div class="prev-next">
   {% if page.next %}
