@@ -40,6 +40,7 @@ a.pdf:before {
 	margin-right: 1em;
 	content: url(/files/css/icon_pdf.gif); }
 
+
 h1,h2,h3,h4 { 
 	line-height:1em; 
 	font-size:1.5em; 
@@ -53,6 +54,15 @@ h2 {
 	line-height: 1.5em;
 	margin:1.5em 0 1.5em 0;
 	font-weight:bold;
+}
+
+div.outline-3 > h3 {
+	line-height:1em; 
+	font-size:1em; 
+	font-weight: normal; 
+	clear: left; 	
+	font-family: 'lucida grande', sans-serif; 
+	margin:1.5em 0 1.5em 1em;
 }
 
 hr { 
