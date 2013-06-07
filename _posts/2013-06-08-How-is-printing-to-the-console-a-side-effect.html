@@ -1,0 +1,112 @@
+---
+title: How is printing to the console a side effect
+layout: post
+tags: functional_programming referential_transparency first_principles
+---
+
+
+
+
+<p>
+Functional programming favors functions that have no side effects. For
+a beginner, this statement represents a double problem.
+</p>
+<ul>
+<li>What is a side effect? 
+</li>
+<li>What's the matter with them, anyway?
+</li>
+</ul>
+
+
+<p>
+So let's try again, but in reverse. Functional programming favors
+functions whose only concern is their output. For any given input,
+those functions will consistently return the same output. This might
+bring back memories of algebra. In mathematics, a function is a
+notation that allows to describe relations. Not any type of relation,
+but the special case where every element that goes in (input) results
+in a single element getting out (output). This type of relation can be
+contrasted with equations, graphs, coordinates or ordered pairs, where
+such a constraint doesn't apply.
+</p>
+<p>
+Functional programming aim to work with so-called pure functions
+because they allow clarity of thought. It is easy to reason about
+pure functions, because once defined, they are like black boxes whoses
+intricacies can be cast aside, and you can then use them as building
+blocks to compute operations of ascending complexity.
+</p>
+<p>
+The same cannot be said about functions that have side effects. Those
+can produce different outputs given the same input. We don't need to
+use a functional language to do the demonstration. Let's take <i>print formatted</i>, or <code>printf</code>, a function in C, an imperative language, used
+to print a string to standard output. In order to make our point, we
+need to show that calling the function twice with the same parameter
+can result in different outputs.
+</p>
+<p>
+<code>printf</code> takes a string and returns the number of characters
+printed, or -1 when the printing was unsuccesful.
+</p>
+
+
+
+<pre class="src src-c"><span style="color: #A020F0;">#include</span> <span style="color: #4E9A06;">&lt;stdio.h&gt;</span>
+
+<span style="color: #2F8B58; font-weight: bold;">int</span> <span style="color: #00578E; font-weight: bold;">main</span>()
+{
+  <span style="color: #2F8B58; font-weight: bold;">int</span> <span style="color: #0084C8; font-weight: bold;">rc</span>;
+  rc = printf(<span style="color: #4E9A06;">"test\n"</span>);             <span style="color: #204A87;">/* </span><span style="color: #204A87;">printing test string </span><span style="color: #204A87;">*/</span>
+  fprintf(stderr, <span style="color: #4E9A06;">"rc: %d\n"</span>, rc);   <span style="color: #204A87;">/* </span><span style="color: #204A87;">return code of succesful printf call </span>
+<span style="color: #204A87;">                                        5 in this case </span><span style="color: #204A87;">*/</span>
+  fclose(stdout);                    <span style="color: #204A87;">/* </span><span style="color: #204A87;">closing standard output </span><span style="color: #204A87;">*/</span>
+  rc = printf(<span style="color: #4E9A06;">"test\n"</span>);             <span style="color: #204A87;">/* </span><span style="color: #204A87;">printing test string (don't hold your breath) </span><span style="color: #204A87;">*/</span>
+  fprintf(stderr, <span style="color: #4E9A06;">"rc: %d\n"</span>, rc);   <span style="color: #204A87;">/* </span><span style="color: #204A87;">return code of unsuccesful prinf call </span>
+<span style="color: #204A87;">                                        returns -1  </span><span style="color: #204A87;">*/</span>
+}
+
+</pre>
+
+
+<p>
+So here is our proof: the input to <code>printf</code> was the string "test\n",
+the output was 5 when STDOUT was available, -1 after it was
+closed. <code>printf</code> is clearly not a pure function. It is dependent on
+the state of the console, an abstract I/O device that may or may not
+be ready.
+</p>
+<p>
+Side effects, while coveted, ought to be contained, reducing thereby
+the area where "bad things" can happen. When you write in the
+functional style, you strive to separate pure functions from functions
+with side effects, so as not to worry about state in the same place
+where you write rules and logic. This will yield great benefit when
+reasoning about your program.
+</p>
+
+<div id="outline-container-1" class="outline-3">
+<h3 id="sec-1">In conclusion</h3>
+<div class="outline-text-3" id="text-1">
+
+
+<p>
+A function that consistently produces the same output given a same
+input has tremendous benefit, because now we can substitute it with
+its return value without affecting the outer code. In professional
+literature, this property is referred to as <b>referential transparency</b>. The ability to carry such substitutions reminiscent of
+lambda calculus allow for all kinds of optimizations in our programs:
+memoization, proofs, parallelization. And it's not hard to guess that
+referentially transparent functions will be easier to test, too. Some
+functional languages enforce referential transparency at the language
+level. Haskell, for example, wraps all I/O operations in a monad. Lisp
+languages don't (including Clojure). It is the programmer's
+responsiblity to ascertain that property in the functions being
+composed. On the other hand, when a function is used merely for its
+side effects, special forms may be provided for convenience purposes,
+like <code>mapc</code>, the companion to <code>mapcar</code> in Emacs Lisp.
+</p>
+
+
+</div>
+</div>
