@@ -1,0 +1,25 @@
+---
+title: Clojurescript brew formula :clojure:clojurescript:homebrew:Mac_OS_X
+layout: post
+tags: 
+---
+
+
+
+<p>
+The <a href="https://github.com/clojure/clojurescript/wiki/Quick-Start">Clojurescript quick start</a> guide has been converted into a Homebrew formula, but since that move has proven to be <a href="https://github.com/mxcl/homebrew/pull/21744">contentious</a>, and since I have no idea how long it will take before it gets approved, if ever, I made the formula available directly from a github repository.
+</p>
+<p>
+All you need to do is:
+</p>
+
+
+
+<pre class="src src-bash">brew tap danielsz/clojurescript
+brew install clojurescript
+</pre>
+
+
+<p>
+This will put the `clojurescript` compiler as an independent executable on your path, but please note that for most intents and purposes, you will want to work with `leiningen` and add `clojurescript` as a project dependency.
+</p>
