@@ -21,20 +21,18 @@ a beginner, this statement represents a double conundrum.
 
 <p>
 So let's try again, but in reverse. Functional programming favors
-functions whose only concern is their output. For any given input,
-those functions will consistently return the same output. This might
-bring back memories of algebra. In mathematics, a function is a
-notation that allows to describe relations. Not any type of relation,
-but the special case where every element that goes in (input) results
-in a single element getting out (output). This type of relation can be
-contrasted with equations, graphs, coordinates or ordered pairs, where
-such a constraint doesn't apply.
+functions that, for a given input, will consistently return the same
+output. In algebra, a function is a notation to describe a
+relation. Not any type of relation, but the special case where every
+element that goes in (input) results in a single element getting out
+(output). Contrast this with equations, graphs, coordinates or ordered
+pairs, where such a constraint doesn't apply.
 </p>
 <p>
 Functional programming strives to work with so-called pure functions
 because they allow clarity of thought. It is easy to reason about pure
 functions, because once defined, they are like black boxes whoses
-intricacies can be cast aside, and you can then use them as building
+intricacies can be put aside, and you can then use them as building
 blocks to compute operations of ascending complexity.
 </p>
 <p>
@@ -94,11 +92,11 @@ reasoning about your program.
 A function that consistently produces the same output given a same
 input has tremendous benefit, because now we can substitute it with
 its return value without affecting the outer code. In professional
-literature, this property is referred to as <b>referential transparency</b>. The ability to carry such substitutions reminiscent of
-lambda calculus allow for all kinds of optimizations in our programs:
-memoization, proofs, parallelization. And it's not hard to guess that
-referentially transparent functions will be easier to test, too. Some
-functional languages enforce referential transparency at the language
+literature, this property is referred to as <b>referential transparency</b>. The ability to carry such substitutions allows for all
+kinds of optimizations in our programs: memoization, proofs,
+parallelization. And it's not hard to guess that referentially
+transparent functions will be easier to test, too. Some functional
+languages enforce referential transparency at the language
 level. Haskell, for example, wraps all I/O operations in a monad. Lisp
 languages don't (including Clojure). It is the programmer's
 responsiblity to ascertain that property in the functions being
