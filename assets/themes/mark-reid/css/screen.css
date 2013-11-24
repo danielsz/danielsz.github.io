@@ -557,3 +557,13 @@ img.maruku-png { }
 	color:#FFF;
 }
 
+.anote {
+    background: #7AC5CD;
+    border:1px solid #4C964D;
+    color:#FFF;
+}
+.bnote {
+    background: #57A957;
+    border:1px solid #4C964D;
+    color:#FFF;
+}
