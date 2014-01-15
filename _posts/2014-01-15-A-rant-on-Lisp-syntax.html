@@ -1,0 +1,175 @@
+---
+title: A rant on Lisp syntax
+layout: post
+tags: Lisp Clojure Syntax
+---
+
+
+
+<blockquote>
+<p>
+Syntactic sugar causes cancer of the semicolon. — Alan Perlis
+</p>
+</blockquote>
+
+<p>
+The continued growth of Clojure has proven that parenthitis is not as widespread an ailment as some would have made us believe. Should we then conclude that we are past the decade-long flamewars around Lisp's syntax? What would become of the legacy built by lovers and haters alike? &#x2013; a full body of literature <a href="http://c2.com/cgi/wiki?WhyWeLoveLisp">praising</a> the power and elegance of sexp notation, or conversely <a href="http://c2.com/cgi/wiki?WhyWeHateLisp">decrying</a> the horror of a syntax as bare as a parse tree representation. Fear not. Palavering around syntax may be an idle pursuit, but it is one that we as members of the <b>homo loquax</b> species are not quite ready to let go. 
+</p>
+
+<p>
+Jean-Philippe Paradis <a href="https://twitter.com/HexstreamSoft/status/346513428376084480">tweeted</a> that <b>all objections to s-expressions syntax are speculative problems</b>. They disappear once one gets its hands dirty. And indeed, lispy syntax is something one embraces in the name of the grand vision it stands for: homoiconicity, code is data, macros&#x2026; Over time, familiarity and <b>paredit</b> will turn this into a painless transaction. And yet, memories of a bygone time may assail the young convert. In particular, the allure of <a href="http://en.wikipedia.org/wiki/Method_chaining">method chaining</a>, a technique that originated in Smalltalk and that is now found in many imperative languages, might come back and haunt him. Stuart Sierra <a href="http://stuartsierra.com/2007/01/06/chaining-function-calls">made the observation</a> in 2007. Xah Lee, a polyglot never shy to stir controversy, has turned this into a favorite <a href="http://xahlee.info/UnixResource_dir/writ/lisp_problems_by_ruby.html">pet peeve</a> of his. 
+</p>
+
+<p>
+Here is a simple problem: 
+</p>
+
+<blockquote>
+<p>
+OK, I want to create a nested list in Lisp (always of only integers) from a text file, such that each line in the text file would be represented as a sublist in the 'imported' list.
+</p>
+
+<p>
+Example of input:
+</p>
+
+<p>
+3 10 2
+4 1
+11 18
+example of output:
+</p>
+
+<p>
+((3 10 2) (4 1) (11 18))
+</p>
+</blockquote>
+
+<p>
+This Ruby one-liner is used to demonstrate an elegant solution (something I'm not disputing) involving method chaining.
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-ruby"><span style="color: #228b22;">IO</span>.readlines(<span style="color: #8b2252;">"blob.txt"</span>).map{|line| line.split.map{|s| s.to_i }}
+</pre>
+</div>
+
+<p>
+While Lisp languages, according to Xah Lee, offer an unwieldy solution, as shown in this Emacs lisp example. 
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(<span style="color: #a020f0;">defun</span> <span style="color: #0000ff;">read-lines</span> (file)
+  <span style="color: #8b2252;">"Return a list of lines in FILE."</span>
+  (<span style="color: #a020f0;">with-temp-buffer</span>
+    (insert-file-contents file)
+    (split-string
+     (buffer-string) <span style="color: #8b2252;">"\n"</span> t)))
+
+(mapcar
+ (<span style="color: #a020f0;">lambda</span> (x)
+   (mapcar
+    (<span style="color: #a020f0;">lambda</span> (y) (string-to-number y))
+    (split-string x <span style="color: #8b2252;">" "</span>)))
+ (read-lines <span style="color: #8b2252;">"blob.txt"</span>))
+</pre>
+</div>
+
+<p>
+The general idea being that nested syntax stands in the way of function chaining constructs available elsewhere. 
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-sh">x | f | g | h      unix pipe
+x // f // g // h   Mathematica 
+h @ g @ f @ x      Mathematica 
+x.f.g.h            various OOP langs, especially Ruby, JavaScript
+h g f x            some functional langs, Haskell, Ocaml
+</pre>
+</div>
+
+<blockquote>
+<p>
+Lisp is the result of taking syntax away, Perl is the result of taking syntax all the way. — Doug Hoyte
+</p>
+</blockquote>
+
+<p>
+With this quote, Doug Hoyte was stressing the fact that Lisp languages are built on sexps. But it would be a mistake to equate the two. Lisp expressions take many shapes and forms before they are reduced to internal data structures. Rainer Joswig <a href="http://stackoverflow.com/questions/643892/fixing-lisp-syntax">pointed out</a> that every macro, every special form implements syntax. Additionally, every user-defined macro introduces new syntax. And when available, <a href="http://letoverlambda.com/index.cl/guest/chap4.html">read macros</a>  further coaxes non-lispy syntax into something that the reader can process. 
+</p>
+
+<p>
+In Lisp languages, syntax is set by initial design but remains extensible by the user. Nested expressions is a byproduct of sexp syntax, but when it becomes an issue, it is being addressed by&#x2026; (Lisp) syntax. I would like to finish this rant with a demonstration of different ways to solve the previous problem in Clojure, and how nested syntax can being kept at a minimum. 
+</p>
+
+<p>
+First, let's require some functionality.
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-clojure">(<span style="color: #483d8b;">require</span> '[clojure.java.io <span style="color: #008b8b;">:refer</span> [reader]]
+         '[clojure.string <span style="color: #008b8b;">:refer</span> [split]])
+</pre>
+</div>
+
+<p>
+List comprehensions in Clojure is heavy with syntax for the benefit of writing concise expressions.
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-clojure">(<span style="color: #a020f0;">for</span> [line (<span style="color: #483d8b;">line-seq</span> (reader blob))
+      <span style="color: #008b8b;">:let</span> [line (split line #<span style="color: #8b2252;">"\s+"</span>)]]
+  (<span style="color: #483d8b;">map</span> read-string line))
+</pre>
+</div>
+
+<pre class="example">
+((3 10 2) (4 1) (11 18))
+</pre>
+
+<p>
+Nested syntax is mitigated with the use of higher-order functions such as <b>comp</b>. 
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-clojure">(<span style="color: #483d8b;">map</span> (<span style="color: #483d8b;">comp</span> (<span style="color: #483d8b;">partial</span> map read-string) #(split % #<span style="color: #8b2252;">"\s+"</span>)) (<span style="color: #483d8b;">line-seq</span> (reader blob)))
+</pre>
+</div>
+
+<pre class="example">
+((3 10 2) (4 1) (11 18))
+</pre>
+
+<p>
+The threading operator, a Clojure innovation that further reduces nested syntax. 
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-clojure">(<span style="color: #a020f0;">-&gt;&gt;</span> (<span style="color: #483d8b;">line-seq</span> (reader blob))
+     (<span style="color: #483d8b;">map</span> #(split % #<span style="color: #8b2252;">"\s+"</span>))
+     (<span style="color: #483d8b;">map</span> (<span style="color: #483d8b;">partial</span> map read-string)))
+</pre>
+</div>
+
+<pre class="example">
+((3 10 2) (4 1) (11 18))
+</pre>
+
+<p>
+Further reading:
+</p>
+
+<p>
+<a href="http://www.americanscientist.org/issues/id.3489,y.0,no.,content.true,page.1,css.print/issue.aspx">The Semicolon Wars</a> / 
+<a href="http://ncannasse.fr/blog/pl_syntax">PL Syntax</a> /
+<a href="http://www.johndcook.com/blog/2013/05/16/extreme-syntax/">Extreme syntax</a> /
+<a href="http://rigaux.org/language-study/syntax-across-languages/">Syntax across languages</a> / 
+<a href="http://www.ietf.org/rfc/ien/ien137.txt">On holy wars and a plea for peace</a>
+</p>
