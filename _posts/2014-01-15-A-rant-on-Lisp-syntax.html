@@ -17,7 +17,7 @@ The continued growth of Clojure has proven that parenthitis is not as widespread
 </p>
 
 <p>
-Jean-Philippe Paradis <a href="https://twitter.com/HexstreamSoft/status/346513428376084480">tweeted</a> that <b>all objections to s-expressions syntax are speculative problems</b>. They disappear once one gets its hands dirty. And indeed, lispy syntax is something one embraces in the name of the grand vision it stands for: homoiconicity, code is data, macros&#x2026; Over time, familiarity and <b>paredit</b> will turn this into a painless transaction. And yet, memories of a bygone time may assail the young convert. In particular, the allure of <a href="http://en.wikipedia.org/wiki/Method_chaining">method chaining</a>, a technique that originated in Smalltalk and that is now found in many imperative languages, might come back and haunt him. Stuart Sierra <a href="http://stuartsierra.com/2007/01/06/chaining-function-calls">made the observation</a> in 2007. Xah Lee, a polyglot never shy to stir controversy, has turned this into a favorite <a href="http://xahlee.info/UnixResource_dir/writ/lisp_problems_by_ruby.html">pet peeve</a> of his. 
+Jean-Philippe Paradis <a href="https://twitter.com/HexstreamSoft/status/346513428376084480">tweeted</a> that <b>all objections to s-expressions syntax are speculative problems</b>. They disappear once one gets its hands dirty. And indeed, lispy syntax is something one embraces in the name of the grand vision it stands for: homoiconicity, code is data, macros&#x2026; Over time, familiarity and <b>paredit</b> will turn this into a painless transaction. And yet, memories of old may assail the recent convert. In particular, the allure of <a href="http://en.wikipedia.org/wiki/Method_chaining">method chaining</a>, a technique that originated in Smalltalk and that is now found in many imperative languages, might come back and taunt him. Stuart Sierra <a href="http://stuartsierra.com/2007/01/06/chaining-function-calls">made the observation</a> in 2007. Xah Lee, a polyglot never shy to stir controversy, has turned this into a favorite <a href="http://xahlee.info/UnixResource_dir/writ/lisp_problems_by_ruby.html">pet peeve</a> of his. 
 </p>
 
 <p>
@@ -46,7 +46,7 @@ example of output:
 </blockquote>
 
 <p>
-This Ruby one-liner is used to demonstrate an elegant solution (something I'm not disputing) involving method chaining.
+This Ruby one-liner is used to demonstrate an elegant solution involving method chaining.
 </p>
 
 <div class="org-src-container">
@@ -98,7 +98,7 @@ Lisp is the result of taking syntax away, Perl is the result of taking syntax al
 </blockquote>
 
 <p>
-With this quote, Doug Hoyte was stressing the fact that Lisp languages are built on sexps. But it would be a mistake to equate the two. Lisp expressions take many shapes and forms before they are reduced to internal data structures. Rainer Joswig <a href="http://stackoverflow.com/questions/643892/fixing-lisp-syntax">pointed out</a> that every macro, every special form implements syntax. Additionally, every user-defined macro introduces new syntax. And when available, <a href="http://letoverlambda.com/index.cl/guest/chap4.html">read macros</a>  further coaxes non-lispy syntax into something that the reader can process. 
+With this quote, Doug Hoyte was stressing the fact that Lisp languages are built on minimalistic sexps. But it would be a mistake to equate the two. Lisp expressions take many shapes and forms before they are reduced to internal data structures. Rainer Joswig <a href="http://stackoverflow.com/questions/643892/fixing-lisp-syntax">pointed out</a> that every macro, every special form implements syntax. Additionally, every user-defined macro introduces new syntax. And when available, <a href="http://letoverlambda.com/index.cl/guest/chap4.html">read macros</a>  further coaxes non-lispy syntax into something that the reader can process. 
 </p>
 
 <p>
