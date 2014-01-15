@@ -1,5 +1,5 @@
 ---
-title: A rant on Lisp syntax
+title: Lisp's nested syntax
 layout: post
 tags: Lisp Clojure Syntax
 ---
@@ -113,6 +113,8 @@ First, let's require some functionality.
 
 <pre class="src src-clojure">(<span style="color: #483d8b;">require</span> '[clojure.java.io <span style="color: #008b8b;">:refer</span> [reader]]
          '[clojure.string <span style="color: #008b8b;">:refer</span> [split]])
+
+(<span style="color: #a020f0;">def</span> <span style="color: #0000ff;">blob</span> <span style="color: #8b2252;">"/path/to/blox.txt"</span>)
 </pre>
 </div>
 
@@ -147,7 +149,7 @@ Nested syntax is mitigated with the use of higher-order functions such as <b>com
 </pre>
 
 <p>
-The threading operator, a Clojure innovation that further reduces nested syntax. 
+The threading operator, a Clojure innovation, further reduces nested syntax. 
 </p>
 
 <div class="org-src-container">
