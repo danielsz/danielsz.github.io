@@ -106,7 +106,7 @@ With this quote, Doug Hoyte was stressing the fact that Lisp languages are built
 </p>
 
 <p>
-Nested expressions are a byproduct of sexp syntax, but when they become too deeply entangled, the can be disentangled by&#x2026; (Lisp) syntax. Here are different ways to solve the previous problem in Clojure, demonstrating syntactic variety and how nested expressions can be kept at a minimum. 
+Nested expressions are a byproduct of sexp syntax, but when they become too deeply entangled, they can be disentangled by&#x2026; (Lisp) syntax. Here are different ways to solve the previous problem in Clojure, demonstrating syntactic variety and how nested expressions can be kept at a minimum. 
 </p>
 
 <p>
@@ -153,7 +153,7 @@ Nested syntax is mitigated with the use of higher-order functions such as <b>com
 </pre>
 
 <p>
-The threading operator, aka <a href="http://debasishg.blogspot.co.il/2010/04/thrush-in-clojure.html">thrush combinator</a>, is a Clojure macro that interweaves forms in a certain, preset way, eliminating the need for writing nested syntax. This makes way for expression chaining, much like the Unix pipeline or à la jQuery. It was somewhat of a syntactical innovation, by now the idea has <a href="http://www.emacswiki.org/emacs/ThreadMacroFromClojure">spread</a> <a href="http://www.greghendershott.com/2013/05/the-threading-macro.html">across</a> the Lisp horizon. 
+The threading operator, aka <a href="http://debasishg.blogspot.co.il/2010/04/thrush-in-clojure.html">thrush combinator</a>, is a Clojure macro that interweaves forms in a preset way, eliminating  nested syntax. This makes way for expression chaining, much like the Unix pipeline or à la jQuery. Somewhat of a syntactical innovation, the idea has <a href="http://www.emacswiki.org/emacs/ThreadMacroFromClojure">spread</a> by now <a href="http://www.greghendershott.com/2013/05/the-threading-macro.html">across</a> the Lisp horizon. 
 </p>
 
 <div class="org-src-container">
@@ -161,6 +161,38 @@ The threading operator, aka <a href="http://debasishg.blogspot.co.il/2010/04/thr
 <pre class="src src-clojure">(<span style="color: #a020f0;">-&gt;&gt;</span> (<span style="color: #483d8b;">line-seq</span> (reader blob))
      (<span style="color: #483d8b;">map</span> #(split % #<span style="color: #8b2252;">"\s+"</span>))
      (<span style="color: #483d8b;">map</span> (<span style="color: #483d8b;">partial</span> map read-string)))
+</pre>
+</div>
+
+<pre class="example">
+((3 10 2) (4 1) (11 18))
+</pre>
+
+<p>
+Let's not forget the ubiquitous <b>let</b>, which executes a series of forms with bindings. 
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-clojure">(<span style="color: #a020f0;">let</span> [lines (<span style="color: #483d8b;">line-seq</span> (reader blob))
+      lines (<span style="color: #483d8b;">map</span> #(split % #<span style="color: #8b2252;">"\s+"</span>) lines)]
+  (<span style="color: #483d8b;">map</span> (<span style="color: #483d8b;">partial</span> map read-string) lines)))
+</pre>
+</div>
+
+<pre class="example">
+((3 10 2) (4 1) (11 18))
+</pre>
+
+<p>
+Finally, Lisp old-timers will telll you there's nothing wrong with properly formatted, nested, tree-like expressions.
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-clojure">(<span style="color: #483d8b;">map</span> #(<span style="color: #483d8b;">map</span> read-string %) 
+     (<span style="color: #483d8b;">map</span> #(split % #<span style="color: #8b2252;">"\s+"</span>) 
+          (<span style="color: #483d8b;">line-seq</span> (reader blob))))
 </pre>
 </div>
 
