@@ -98,7 +98,7 @@ Lisp is the result of taking syntax away, Perl is the result of taking syntax al
 </blockquote>
 
 <p>
-With this quote, Doug Hoyte was stressing the fact that Lisp languages are built on minimalistic sexps. But it would be a mistake to equate the two. Lisp expressions take many shapes and forms before they are reduced to internal data structures. Rainer Joswig <a href="http://stackoverflow.com/questions/643892/fixing-lisp-syntax">pointed out</a> that every macro, every special form implements syntax. Additionally, every user-defined macro introduces new syntax. And when available, <a href="http://letoverlambda.com/index.cl/guest/chap4.html">read macros</a>  further coaxes non-lispy syntax into something that the reader can process. 
+With this quote, Doug Hoyte was stressing the fact that Lisp languages are built on minimalistic sexps. But it would be a mistake to equate the two. Lisp expressions take many shapes and forms before they are reduced to internal data structures. Rainer Joswig <a href="http://stackoverflow.com/questions/643892/fixing-lisp-syntax">pointed out</a> that every macro, every special form implements syntax. Additionally, every user-defined macro introduces new syntax. And when available, <a href="http://letoverlambda.com/index.cl/guest/chap4.html">read macros</a> further coaxe non-lispy syntax into something that the reader can process. 
 </p>
 
 <p>
@@ -119,7 +119,7 @@ First, let's require some functionality.
 </div>
 
 <p>
-List comprehensions in Clojure is heavy with syntax for the benefit of writing concise expressions.
+List comprehension in Clojure is a macro heavy with syntax for the benefit of building specific sets out of general sets.
 </p>
 
 <div class="org-src-container">
@@ -135,7 +135,7 @@ List comprehensions in Clojure is heavy with syntax for the benefit of writing c
 </pre>
 
 <p>
-Nested syntax is mitigated with the use of higher-order functions such as <b>comp</b>. 
+Nested syntax is mitigated with the use of higher-order functions such as <b>comp</b>, the classical function composition mechanism. 
 </p>
 
 <div class="org-src-container">
@@ -149,7 +149,7 @@ Nested syntax is mitigated with the use of higher-order functions such as <b>com
 </pre>
 
 <p>
-The threading operator, a Clojure innovation, further reduces nested syntax. 
+The threading operator, aka <a href="http://debasishg.blogspot.co.il/2010/04/thrush-in-clojure.html">thrush combinator</a>, is a Clojure macro (and somewhat of a syntactical innovation) that interweaves forms in a certain way, eliminating the need for nesting. This allows for expression chaining much like  the Unix pipeline or à la jQuery. 
 </p>
 
 <div class="org-src-container">
