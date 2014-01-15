@@ -13,11 +13,11 @@ Syntactic sugar causes cancer of the semicolon. — Alan Perlis
 </blockquote>
 
 <p>
-The continued growth of Clojure has proven that parenthitis is not as widespread an ailment as some would have made us believe. Should we then conclude that we are past the decade-long flamewars around Lisp's syntax? What would become of the legacy built by lovers and haters alike? &#x2013; a full body of literature <a href="http://c2.com/cgi/wiki?WhyWeLoveLisp">praising</a> the power and elegance of sexp notation, or conversely <a href="http://c2.com/cgi/wiki?WhyWeHateLisp">decrying</a> the horror of a syntax as bare as a parse tree representation. Fear not. Palavering around syntax may be an idle pursuit, but it is one that we as members of the <b>homo loquax</b> species are not quite ready to let go. 
+The continued growth of Clojure has proven that parenthitis is not as widespread an ailment as some would have made us believe. Should we then conclude that we are past the decade-long flamewars around Lisp's syntax? What would become of the legacy built by lovers and haters alike? &#x2013; a full body of literature <a href="http://c2.com/cgi/wiki?WhyWeLoveLisp">praising</a> the power and elegance of sexp notation or, conversely, <a href="http://c2.com/cgi/wiki?WhyWeHateLisp">decrying</a> the horror of a syntax as bare as a parse tree representation. Fear not. Palavering around syntax may be an idle pursuit, but it is one that we as members of the <b>homo loquax</b> species are not quite ready to let go. 
 </p>
 
 <p>
-Jean-Philippe Paradis <a href="https://twitter.com/HexstreamSoft/status/346513428376084480">tweeted</a> that <b>all objections to s-expressions syntax are speculative problems</b>. They disappear once one gets its hands dirty. And indeed, lispy syntax is something one embraces in the name of the grand vision it stands for: homoiconicity, code is data, macros&#x2026; Over time, familiarity and <b>paredit</b> will turn this into a painless transaction. And yet, memories of old may assail the recent convert. In particular, the allure of <a href="http://en.wikipedia.org/wiki/Method_chaining">method chaining</a>, a technique that originated in Smalltalk and that is now found in many imperative languages, might come back and taunt him. Stuart Sierra <a href="http://stuartsierra.com/2007/01/06/chaining-function-calls">made the observation</a> in 2007. Xah Lee, a polyglot never shy to stir controversy, has turned this into a favorite <a href="http://xahlee.info/UnixResource_dir/writ/lisp_problems_by_ruby.html">pet peeve</a> of his. 
+Jean-Philippe Paradis <a href="https://twitter.com/HexstreamSoft/status/346513428376084480">tweeted</a> that <b>all objections to s-expressions syntax are speculative problems</b>. They disappear once one gets its hands dirty. And indeed, lispy syntax is something one embraces in the name of the grand vision it stands for: homoiconicity, code is data, macros&#x2026; Give it some time, and <b>paredit</b> will do the rest. And yet, memories of old may assail the recent convert. In particular, the allure of <a href="http://en.wikipedia.org/wiki/Method_chaining">method chaining</a>, a technique that originated in Smalltalk and that is now found in many imperative languages, might come back and taunt him. Stuart Sierra <a href="http://stuartsierra.com/2007/01/06/chaining-function-calls">made the observation</a> after he moved from Perl to Lisp, back in 2007. Xah Lee, a polyglot never shy to stir controversy, has turned the subject into a favorite <a href="http://xahlee.info/UnixResource_dir/writ/lisp_problems_by_ruby.html">pet peeve</a> of his. 
 </p>
 
 <p>
@@ -78,7 +78,7 @@ While Lisp languages, according to Xah Lee, offer an unwieldy solution, as shown
 </div>
 
 <p>
-The general idea being that nested syntax stands in the way of function chaining constructs available elsewhere. 
+The argument being that nested syntax would somehow stand in the way of function chaining constructs available elsewhere. 
 </p>
 
 <div class="org-src-container">
@@ -91,6 +91,10 @@ h g f x            some functional langs, Haskell, Ocaml
 </pre>
 </div>
 
+<p>
+What stands in the way is probably just a psychological barrier. Think of <b>x | f | g | h</b> as <b>(| x f g h)</b>, just like  <b>a + b + c + d</b> is equivalent to <b>(+ a b c d)</b>. And indeed, that's precisely how pipes look in <a href="http://carlstrom.com/publications/scsh-manual.pdf">scsh</a> or <a href="http://wiki.call-cc.org/eggref/4/scsh-process#basic-forking-and-pipeline-primitives">Chicken</a> scheme. (Thank you, Rainer Joswig, the veteran Lisper who shared this insight with me.)
+</p>
+
 <blockquote>
 <p>
 Lisp is the result of taking syntax away, Perl is the result of taking syntax all the way. — Doug Hoyte
@@ -102,7 +106,7 @@ With this quote, Doug Hoyte was stressing the fact that Lisp languages are built
 </p>
 
 <p>
-Nested expressions are a byproduct of sexp syntax, but when they become too deeply entangled, the issue can be addressed by&#x2026; (Lisp) syntax. Here are different ways to solve the previous problem in Clojure, demonstrating how nested syntax is being kept at a minimum. 
+Nested expressions are a byproduct of sexp syntax, but when they become too deeply entangled, the can be disentangled by&#x2026; (Lisp) syntax. Here are different ways to solve the previous problem in Clojure, demonstrating syntactic variety and how nested expressions can be kept at a minimum. 
 </p>
 
 <p>
@@ -119,7 +123,7 @@ First, let's require some functionality.
 </div>
 
 <p>
-List comprehension in Clojure is a macro heavy with syntax for the benefit of building specific sets out of general sets.
+List comprehension in Clojure is a syntax-laden macro for the benefit of building specific sets out of general sets.
 </p>
 
 <div class="org-src-container">
@@ -149,7 +153,7 @@ Nested syntax is mitigated with the use of higher-order functions such as <b>com
 </pre>
 
 <p>
-The threading operator, aka <a href="http://debasishg.blogspot.co.il/2010/04/thrush-in-clojure.html">thrush combinator</a>, is a Clojure macro that interweaves forms in a certain way, eliminating the need for writing nested syntax. This makes way for expression chaining, much like the Unix pipeline or à la jQuery. It was somewhat of a syntactical innovation, by now the idea has <a href="http://www.emacswiki.org/emacs/ThreadMacroFromClojure">spread</a> <a href="http://www.greghendershott.com/2013/05/the-threading-macro.html">across</a> the Lisp horizon. 
+The threading operator, aka <a href="http://debasishg.blogspot.co.il/2010/04/thrush-in-clojure.html">thrush combinator</a>, is a Clojure macro that interweaves forms in a certain, preset way, eliminating the need for writing nested syntax. This makes way for expression chaining, much like the Unix pipeline or à la jQuery. It was somewhat of a syntactical innovation, by now the idea has <a href="http://www.emacswiki.org/emacs/ThreadMacroFromClojure">spread</a> <a href="http://www.greghendershott.com/2013/05/the-threading-macro.html">across</a> the Lisp horizon. 
 </p>
 
 <div class="org-src-container">
