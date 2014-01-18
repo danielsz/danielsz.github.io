@@ -57,7 +57,7 @@ This Ruby one-liner is used to demonstrate an elegant solution involving method 
 
 <div class="org-src-container">
 
-<pre class="src src-ruby"><span style="color: #7CB8BB;">IO</span>.readlines(<span style="color: #CC9393;">"blob.txt"</span>).map{|line| line.split.map{|s| s.to_i }}
+<pre class="src src-ruby"><span style="color: #228b22;">IO</span>.readlines(<span style="color: #8b2252;">"blob.txt"</span>).map{|line| line.split.map{|s| s.to_i }}
 </pre>
 </div>
 
@@ -67,19 +67,19 @@ While Lisp languages, according to Xah Lee, offer an unwieldy solution, as shown
 
 <div class="org-src-container">
 
-<pre class="src src-emacs-lisp">(<span style="color: #F0DFAF; font-weight: bold;">defun</span> <span style="color: #93E0E3;">read-lines</span> (file)
-  <span style="color: #9FC59F;">"Return a list of lines in FILE."</span>
-  (<span style="color: #F0DFAF; font-weight: bold;">with-temp-buffer</span>
+<pre class="src src-emacs-lisp">(<span style="color: #a020f0;">defun</span> <span style="color: #0000ff;">read-lines</span> (file)
+  <span style="color: #8b2252;">"Return a list of lines in FILE."</span>
+  (<span style="color: #a020f0;">with-temp-buffer</span>
     (insert-file-contents file)
     (split-string
-     (buffer-string) <span style="color: #CC9393;">"\n"</span> t)))
+     (buffer-string) <span style="color: #8b2252;">"\n"</span> t)))
 
 (mapcar
- (<span style="color: #F0DFAF; font-weight: bold;">lambda</span> (x)
+ (<span style="color: #a020f0;">lambda</span> (x)
    (mapcar
-    (<span style="color: #F0DFAF; font-weight: bold;">lambda</span> (y) (string-to-number y))
-    (split-string x <span style="color: #CC9393;">" "</span>)))
- (read-lines <span style="color: #CC9393;">"blob.txt"</span>))
+    (<span style="color: #a020f0;">lambda</span> (y) (string-to-number y))
+    (split-string x <span style="color: #8b2252;">" "</span>)))
+ (read-lines <span style="color: #8b2252;">"blob.txt"</span>))
 </pre>
 </div>
 
@@ -121,10 +121,10 @@ First, let's require some functionality.
 
 <div class="org-src-container">
 
-<pre class="src src-clojure">(<span style="color: #DCDCCC; font-weight: bold;">require</span> '[clojure.java.io <span style="color: #BFEBBF;">:refer</span> [reader]]
-         '[clojure.string <span style="color: #BFEBBF;">:refer</span> [split]])
+<pre class="src src-clojure">(<span style="color: #483d8b;">require</span> '[clojure.java.io <span style="color: #008b8b;">:refer</span> [reader]]
+         '[clojure.string <span style="color: #008b8b;">:refer</span> [split]])
 
-(<span style="color: #F0DFAF; font-weight: bold;">def</span> <span style="color: #93E0E3;">blob</span> <span style="color: #CC9393;">"/path/to/blox.txt"</span>)
+(<span style="color: #a020f0;">def</span> <span style="color: #0000ff;">blob</span> <span style="color: #8b2252;">"/path/to/blox.txt"</span>)
 </pre>
 </div>
 
@@ -134,9 +134,9 @@ List comprehension in Clojure is a syntax-laden macro for the benefit of buildin
 
 <div class="org-src-container">
 
-<pre class="src src-clojure">(<span style="color: #F0DFAF; font-weight: bold;">for</span> [line (<span style="color: #DCDCCC; font-weight: bold;">line-seq</span> (reader blob))
-      <span style="color: #BFEBBF;">:let</span> [line (<span style="color: #DCDCCC; font-weight: bold;">split</span> line #<span style="color: #CC9393;">"\s+"</span>)]]
-  (<span style="color: #DCDCCC; font-weight: bold;">map</span> read-string line))
+<pre class="src src-clojure">(<span style="color: #a020f0;">for</span> [line (<span style="color: #483d8b;">line-seq</span> (reader blob))
+      <span style="color: #008b8b;">:let</span> [line (<span style="color: #483d8b;">split</span> line #<span style="color: #8b2252;">"\s+"</span>)]]
+  (<span style="color: #483d8b;">map</span> read-string line))
 </pre>
 </div>
 
@@ -150,7 +150,7 @@ Nested syntax is mitigated with the use of higher-order functions such as <b>com
 
 <div class="org-src-container">
 
-<pre class="src src-clojure">(<span style="color: #DCDCCC; font-weight: bold;">map</span> (<span style="color: #DCDCCC; font-weight: bold;">comp</span> (<span style="color: #DCDCCC; font-weight: bold;">partial</span> map read-string) #(<span style="color: #DCDCCC; font-weight: bold;">split</span> % #<span style="color: #CC9393;">"\s+"</span>)) (<span style="color: #DCDCCC; font-weight: bold;">line-seq</span> (reader blob)))
+<pre class="src src-clojure">(<span style="color: #483d8b;">map</span> (<span style="color: #483d8b;">comp</span> (<span style="color: #483d8b;">partial</span> map read-string) #(<span style="color: #483d8b;">split</span> % #<span style="color: #8b2252;">"\s+"</span>)) (<span style="color: #483d8b;">line-seq</span> (reader blob)))
 </pre>
 </div>
 
@@ -164,9 +164,9 @@ The threading operator, aka <a href="http://debasishg.blogspot.co.il/2010/04/thr
 
 <div class="org-src-container">
 
-<pre class="src src-clojure">(<span style="color: #F0DFAF; font-weight: bold;">-&gt;&gt;</span> (<span style="color: #DCDCCC; font-weight: bold;">line-seq</span> (reader blob))
-     (<span style="color: #DCDCCC; font-weight: bold;">map</span> #(<span style="color: #DCDCCC; font-weight: bold;">split</span> % #<span style="color: #CC9393;">"\s+"</span>))
-     (<span style="color: #DCDCCC; font-weight: bold;">map</span>  (<span style="color: #DCDCCC; font-weight: bold;">partial</span> map read-string)))
+<pre class="src src-clojure">(<span style="color: #a020f0;">-&gt;&gt;</span> (<span style="color: #483d8b;">line-seq</span> (reader blob))
+     (<span style="color: #483d8b;">map</span> #(<span style="color: #483d8b;">split</span> % #<span style="color: #8b2252;">"\s+"</span>))
+     (<span style="color: #483d8b;">map</span>  (<span style="color: #483d8b;">partial</span> map read-string)))
 </pre>
 </div>
 
@@ -180,9 +180,9 @@ Let's not forget the ubiquitous <b>let</b>, which executes a series of forms wit
 
 <div class="org-src-container">
 
-<pre class="src src-clojure">(<span style="color: #F0DFAF; font-weight: bold;">let</span> [lines (<span style="color: #DCDCCC; font-weight: bold;">line-seq</span> (reader blob))
-      lines (<span style="color: #DCDCCC; font-weight: bold;">map</span> #(<span style="color: #DCDCCC; font-weight: bold;">split</span> % #<span style="color: #CC9393;">"\s+"</span>) lines)]
-  (<span style="color: #DCDCCC; font-weight: bold;">map</span> (<span style="color: #DCDCCC; font-weight: bold;">partial</span> map read-string) lines)))
+<pre class="src src-clojure">(<span style="color: #a020f0;">let</span> [lines (<span style="color: #483d8b;">line-seq</span> (reader blob))
+      lines (<span style="color: #483d8b;">map</span> #(<span style="color: #483d8b;">split</span> % #<span style="color: #8b2252;">"\s+"</span>) lines)]
+  (<span style="color: #483d8b;">map</span> (<span style="color: #483d8b;">partial</span> map read-string) lines)))
 </pre>
 </div>
 
@@ -196,9 +196,9 @@ Finally, Lisp old-timers will telll you there's nothing wrong with properly form
 
 <div class="org-src-container">
 
-<pre class="src src-clojure">(<span style="color: #DCDCCC; font-weight: bold;">map</span> #(<span style="color: #DCDCCC; font-weight: bold;">map</span> read-string %) 
-     (<span style="color: #DCDCCC; font-weight: bold;">map</span> #(<span style="color: #DCDCCC; font-weight: bold;">split</span> % #<span style="color: #CC9393;">"\s+"</span>) 
-          (<span style="color: #DCDCCC; font-weight: bold;">line-seq</span> (reader blob))))
+<pre class="src src-clojure">(<span style="color: #483d8b;">map</span> #(<span style="color: #483d8b;">map</span> read-string %) 
+     (<span style="color: #483d8b;">map</span> #(<span style="color: #483d8b;">split</span> % #<span style="color: #8b2252;">"\s+"</span>) 
+          (<span style="color: #483d8b;">line-seq</span> (reader blob))))
 </pre>
 </div>
 
@@ -212,8 +212,8 @@ As Mike pointed out in the comments, the above can be made shorter like so:
 
 <div class="org-src-container">
 
-<pre class="src src-clojure">(<span style="color: #DCDCCC; font-weight: bold;">map</span> #(<span style="color: #DCDCCC; font-weight: bold;">map</span> read-string (<span style="color: #DCDCCC; font-weight: bold;">split</span> % #<span style="color: #CC9393;">"\s+"</span>))       
-     (<span style="color: #DCDCCC; font-weight: bold;">line-seq</span> (reader blob)))
+<pre class="src src-clojure">(<span style="color: #483d8b;">map</span> #(<span style="color: #483d8b;">map</span> read-string (<span style="color: #483d8b;">split</span> % #<span style="color: #8b2252;">"\s+"</span>))       
+     (<span style="color: #483d8b;">line-seq</span> (reader blob)))
 </pre>
 </div>
 
