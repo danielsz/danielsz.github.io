@@ -1,0 +1,174 @@
+---
+title: The pleasantness of Om
+layout: post
+tags: 
+categories: 
+---
+
+
+
+<p>
+With the aim of learning and practicing the art of <a href="https://github.com/swannodette/om">Om</a>, I’ve refactored a display component used on <a href="http://www.etsy-fu.com">Etsy-fu</a>’s website, namely the testimonials ticker. 
+</p>
+
+    <div style="border:1px solid black;" id="content"></div>
+    <script src="http://fb.me/react-0.9.0-rc1.js"></script>
+    <script src="/assets/scripts/testimonials/out/goog/base.js"></script>
+    <script src="/assets/scripts/testimonials/main.js"></script>
+    <script>goog.require("testimonials.core");</script>
+<p></p>
+
+<p>
+The testimonials are stored in a vector of maps, where a single map might look like this:
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-clojure">{<span style="color: #4c83ff;">:shop_name</span> <span style="color: #61CE3C;">"MomentsOfArt"</span>
+ <span style="color: #4c83ff;">:shop_owner</span> <span style="color: #61CE3C;">"Loribeth"</span>
+ <span style="color: #4c83ff;">:avatar</span> <span style="color: #61CE3C;">"http://img0.etsystatic.com/011/0/30011619/iusa_75x75.22273684_cjcb.jpg"</span>
+ <span style="color: #4c83ff;">:quote</span> <span style="color: #61CE3C;">"I think you are providing a wonderful app to Etsy shop owners."</span>}
+</pre>
+</div>
+
+<p>
+The ticker doesn’t just pick a random item out of the collection. Instead, all items in the collection get shuffled and are displayed in rotation. After each and every one of them has been shown, the collection is reshuffled. That logic is embodied in the <code>transaction</code> function. It is a one-liner.
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-clojure">(<span style="color: #FBDE2D;">def</span> <span style="color: #ff1493;">app-state</span> (<span style="color: #FF6400;">atom</span> {<span style="color: #4c83ff;">:testimonials</span> (shuffle testimonials)}))
+
+(<span style="color: #FBDE2D;">defn</span> <span style="color: #ff1493;">transition</span> [state]
+  (om/transact! state <span style="color: #4c83ff;">:testimonials</span> #(<span style="color: #FBDE2D;">if</span> (<span style="color: #FF6400;">seq</span> (<span style="color: #FF6400;">pop</span> %)) (<span style="color: #FF6400;">pop</span> %) (shuffle testimonials))))
+
+(<span style="color: #FBDE2D;">defn</span> <span style="color: #ff1493;">testimonial</span> [state]
+  (<span style="color: #FF6400;">peek</span> (<span style="color: #4c83ff;">:testimonials</span> state)))
+
+(<span style="color: #FBDE2D;">defn</span> <span style="color: #ff1493;">widget</span> [data owner]
+  (<span style="color: #FF6400;">reify</span>
+    om/<span style="color: #919191;">IRender</span>
+    (render [this]
+      (html [<span style="color: #4c83ff;">:div</span> {<span style="color: #4c83ff;">:class</span> <span style="color: #61CE3C;">"media"</span>}
+             [<span style="color: #4c83ff;">:a</span> {<span style="color: #4c83ff;">:class</span> <span style="color: #61CE3C;">"pull-left"</span> <span style="color: #4c83ff;">:href</span> <span style="color: #61CE3C;">"#"</span>}
+              [<span style="color: #4c83ff;">:img</span> {<span style="color: #4c83ff;">:class</span> <span style="color: #61CE3C;">"media-object avatar"</span> 
+                     <span style="color: #4c83ff;">:alt</span> <span style="color: #61CE3C;">"Avatar"</span> 
+                     <span style="color: #4c83ff;">:style</span> #js {<span style="color: #4c83ff;">:width</span> <span style="color: #61CE3C;">"75px"</span> <span style="color: #4c83ff;">:height</span> <span style="color: #61CE3C;">"75px"</span>}
+                     <span style="color: #4c83ff;">:src</span> (<span style="color: #4c83ff;">:avatar</span> (testimonial data))}]]
+             [<span style="color: #4c83ff;">:div</span> {<span style="color: #4c83ff;">:class</span> <span style="color: #61CE3C;">"media-body"</span>}
+              [<span style="color: #4c83ff;">:h4</span> {<span style="color: #4c83ff;">:class</span> <span style="color: #61CE3C;">"media-heading"</span>}
+               [<span style="color: #4c83ff;">:a</span> {<span style="color: #4c83ff;">:href</span> (<span style="color: #FF6400;">str</span> <span style="color: #61CE3C;">"http://www.etsy.com/shop/"</span> (<span style="color: #4c83ff;">:shop_name</span> (testimonial data))) 
+                    <span style="color: #4c83ff;">:class</span> <span style="color: #61CE3C;">"shop"</span> 
+                    <span style="color: #4c83ff;">:target</span> <span style="color: #61CE3C;">"_blank"</span>} 
+                (<span style="color: #4c83ff;">:shop_name</span> (testimonial data))]]
+              [<span style="color: #4c83ff;">:blockquote</span> 
+               [<span style="color: #4c83ff;">:p</span> {<span style="color: #4c83ff;">:class</span> <span style="color: #61CE3C;">"text-info quote"</span>} 
+                (<span style="color: #4c83ff;">:quote</span> (testimonial data))]
+               [<span style="color: #4c83ff;">:small</span> 
+                [<span style="color: #4c83ff;">:cite</span> {<span style="color: #4c83ff;">:title</span> <span style="color: #61CE3C;">"Source title"</span> 
+                        <span style="color: #4c83ff;">:class</span> <span style="color: #61CE3C;">"shop_owner"</span>} 
+                 (<span style="color: #4c83ff;">:shop_owner</span> (testimonial data))]]]]]))
+    om/<span style="color: #919191;">IDidMount</span>
+    (did-mount [this node]
+      (js/<span style="color: #919191;">setInterval</span> transition 5000 data))))
+
+(om/<span style="color: #FF6400;">root</span> 
+ widget
+ app-state
+ {<span style="color: #4c83ff;">:target</span> (sel1 <span style="color: #4c83ff;">:#content</span>)})
+</pre>
+</div>
+
+<p>
+Compare this to the imperative code in the original JavaScript version. Now testimonials is a an array of JavaScript objects (JSON), where a single object might look like this:
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-js">{shop_name: <span style="color: #61CE3C;">"MomentsOfArt"</span>,
+ shop_owner: <span style="color: #61CE3C;">"Loribeth"</span>,
+ avatar: <span style="color: #61CE3C;">"http://img0.etsystatic.com/011/0/30011619/iusa_75x75.22273684_cjcb.jpg"</span>,
+ quote: <span style="color: #61CE3C;">"I think you are providing a wonderful app to Etsy shop owners."</span>}
+</pre>
+</div>
+
+<p>
+We’re starting by defining some global helper functions, followed by the logic to rotate and update the ticker. 
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-js">(<span style="color: #FBDE2D;">function</span>() {
+  (<span style="color: #FBDE2D;">function</span>() {
+    <span style="color: #FBDE2D;">var</span> <span style="color: #D8FA3C;">_base</span>;
+    <span style="color: #FBDE2D;">return</span> (_base = Array.<span style="color: #4c83ff;">prototype</span>).shuffle != <span style="color: #4c83ff;">null</span> ? (_base = Array.<span style="color: #4c83ff;">prototype</span>).shuffle : _base.shuffle = <span style="color: #FBDE2D;">function</span>() {
+      <span style="color: #FBDE2D;">var</span> <span style="color: #D8FA3C;">i</span>, <span style="color: #D8FA3C;">j</span>, <span style="color: #D8FA3C;">_i</span>, <span style="color: #D8FA3C;">_ref</span>, <span style="color: #D8FA3C;">_ref1</span>;
+      <span style="color: #FBDE2D;">for</span> (i = _i = _ref = <span style="color: #4c83ff;">this</span>.length - 1; _ref &lt;= 1 ? _i &lt;= 1 : _i &gt;= 1; i = _ref &lt;= 1 ? ++_i : --_i) {
+        j = Math.floor(Math.random() * (i + 1));
+        _ref1 = [<span style="color: #4c83ff;">this</span>[j], <span style="color: #4c83ff;">this</span>[i]], <span style="color: #4c83ff;">this</span>[i] = _ref1[0], <span style="color: #4c83ff;">this</span>[j] = _ref1[1];
+      }
+      <span style="color: #FBDE2D;">return</span> <span style="color: #4c83ff;">this</span>;
+    };
+  })();
+
+  window.delay = <span style="color: #FBDE2D;">function</span>(<span style="color: #D8FA3C;">s</span>, <span style="color: #D8FA3C;">func</span>) {
+    <span style="color: #FBDE2D;">return</span> setInterval(func, s * 1000);
+  };
+
+  window.randomInt = <span style="color: #FBDE2D;">function</span>(<span style="color: #D8FA3C;">lower</span>, <span style="color: #D8FA3C;">upper</span>) {
+    <span style="color: #FBDE2D;">var</span> <span style="color: #D8FA3C;">start</span>, <span style="color: #D8FA3C;">_ref</span>, <span style="color: #D8FA3C;">_ref1</span>;
+    <span style="color: #FBDE2D;">if</span> (upper == <span style="color: #4c83ff;">null</span>) {
+      upper = 0;
+    }
+    start = Math.random();
+    <span style="color: #FBDE2D;">if</span> (lower == <span style="color: #4c83ff;">null</span>) {
+      _ref = [0, lower], lower = _ref[0], upper = _ref[1];
+    }
+    <span style="color: #FBDE2D;">if</span> (lower &gt; upper) {
+      _ref1 = [upper, lower], lower = _ref1[0], upper = _ref1[1];
+    }
+    <span style="color: #FBDE2D;">return</span> Math.floor(start * (upper - lower + 1) + lower);
+  };
+
+  $(document).ready(<span style="color: #FBDE2D;">function</span>() {
+    <span style="color: #FBDE2D;">var</span> <span style="color: #D8FA3C;">rotate</span>, <span style="color: #D8FA3C;">testimonials</span>, <span style="color: #D8FA3C;">update</span>;    
+    rotate = (<span style="color: #FBDE2D;">function</span>() {
+      <span style="color: #FBDE2D;">var</span> <span style="color: #D8FA3C;">counter</span>, <span style="color: #D8FA3C;">increment</span>;
+      counter = 0;
+      increment = <span style="color: #FBDE2D;">function</span>() {
+        ++counter;
+        <span style="color: #FBDE2D;">if</span> (counter === testimonials.length) {
+          testimonials.shuffle();
+          <span style="color: #FBDE2D;">return</span> counter = 0;
+        }
+      };
+      <span style="color: #FBDE2D;">return</span> {
+        <span style="color: #ff1493;">value</span>: <span style="color: #FBDE2D;">function</span>() {
+          increment();
+          <span style="color: #FBDE2D;">return</span> update(testimonials[counter]);
+        }
+      };
+    })();
+    update = <span style="color: #FBDE2D;">function</span>(<span style="color: #D8FA3C;">testimonial</span>) {
+      <span style="color: #FBDE2D;">return</span> $(<span style="color: #61CE3C;">"#testimonials .media"</span>).fadeOut(<span style="color: #FBDE2D;">function</span>() {
+        $(<span style="color: #61CE3C;">".shop"</span>, $(<span style="color: #4c83ff;">this</span>)).text(testimonial.shop_name);
+        $(<span style="color: #61CE3C;">".shop"</span>, $(<span style="color: #4c83ff;">this</span>)).attr(<span style="color: #61CE3C;">"href"</span>, <span style="color: #61CE3C;">"http://www.etsy.com/shop/"</span> + testimonial.shop_name);
+        $(<span style="color: #61CE3C;">".quote"</span>, $(<span style="color: #4c83ff;">this</span>)).text(testimonial.quote);
+        $(<span style="color: #61CE3C;">".shop_owner"</span>, $(<span style="color: #4c83ff;">this</span>)).text(testimonial.shop_owner);
+        <span style="color: #FBDE2D;">return</span> $(<span style="color: #61CE3C;">".avatar"</span>, $(<span style="color: #4c83ff;">this</span>)).attr(<span style="color: #61CE3C;">"src"</span>, testimonial.avatar);
+      }).fadeIn();
+    };
+    testimonials.shuffle();
+    rotate.value();
+    <span style="color: #FBDE2D;">return</span> delay(5, rotate.value);
+  });
+</pre>
+</div>
+
+<p>
+You might have recognized the <code>module pattern</code> in the <code>rotate</code> function, a technique allowing us to emulate private methods using <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Closures">closure</a>s. (The public function <code>value</code> shares an environment with the private function <code>increment</code> and the private variable <code>counter</code>.) 
+</p>
+
+<p>
+Is it a rhetorical question were I to ask which of the two versions, Om + Clojurescsipt vs vanilla JavaScript, looks more pleasant?
+</p>
