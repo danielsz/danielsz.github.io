@@ -1,0 +1,60 @@
+---
+title: Om mode
+layout: post
+tags: clojure clojurescript emacs_lisp emacs live_coding
+categories: clojure clojurescript emacs_lisp emacs live_coding
+---
+
+
+
+<p>
+Om-mode is a minor mode for Emacs that helps inserting Om components. A short demo is available on <a href="https://www.youtube.com/watch?v=MiTpxQ-rAmc">youtube</a>.
+</p>
+
+<p><iframe width="560" height="315" src="//www.youtube.com/watch?v=MiTpxQ-rAmc" frameborder="0" allowfullscreen></iframe></p>
+
+<p>
+You will probably want to install it via Marmalade or MELPA. A README with usage instructions and source is on <a href="https://github.com/danielsz/om-mode">github</a>.
+</p>
+
+<p>
+Here is the template <b>om-mode</b> expands into. 
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-clojure"><span style="color: #2aa198;">(</span><span style="color: #859900; font-weight: bold;">defn</span> <span style="color: #268bd2;">example</span>
+  <span style="color: #2aa198;">"Om component for new example"</span>
+  <span style="color: #b58900;">[</span>data owner<span style="color: #b58900;">]</span>
+  <span style="color: #b58900;">(</span>reify
+    <span style="color: #b58900;">om</span>/<span style="color: #b58900;">IInitState</span>
+    <span style="color: #268bd2;">(</span>init-state <span style="color: #6c71c4;">[</span>_<span style="color: #6c71c4;">]</span> <span style="color: #6c71c4;">{</span> <span style="color: #6c71c4;">}</span>
+      <span style="color: #268bd2;">)</span>
+    <span style="color: #b58900;">om</span>/<span style="color: #b58900;">IWillMount</span>
+    <span style="color: #268bd2;">(</span>will-mount <span style="color: #6c71c4;">[</span>_<span style="color: #6c71c4;">]</span>
+      <span style="color: #268bd2;">)</span>
+    <span style="color: #b58900;">om</span>/<span style="color: #b58900;">IDidMount</span>
+    <span style="color: #268bd2;">(</span>did-mount <span style="color: #6c71c4;">[</span>_<span style="color: #6c71c4;">]</span>
+      <span style="color: #268bd2;">)</span>
+    <span style="color: #b58900;">om</span>/<span style="color: #b58900;">IWillUnmount</span>
+    <span style="color: #268bd2;">(</span>will-unmount <span style="color: #6c71c4;">[</span>_<span style="color: #6c71c4;">]</span>
+      <span style="color: #268bd2;">)</span>
+    <span style="color: #b58900;">om</span>/<span style="color: #b58900;">IShouldUpdate</span>
+    <span style="color: #268bd2;">(</span>should-update <span style="color: #6c71c4;">[</span>_ next-props next-state<span style="color: #6c71c4;">]</span>
+      <span style="color: #268bd2;">)</span>
+    <span style="color: #b58900;">om</span>/<span style="color: #b58900;">IWillReceiveProps</span>
+    <span style="color: #268bd2;">(</span>will-receive-props <span style="color: #6c71c4;">[</span>_ next-props<span style="color: #6c71c4;">]</span>
+      <span style="color: #268bd2;">)</span>
+    <span style="color: #b58900;">om</span>/<span style="color: #b58900;">IWillUpdate</span>
+    <span style="color: #268bd2;">(</span>will-update <span style="color: #6c71c4;">[</span>_ next-props next-state<span style="color: #6c71c4;">]</span>
+      <span style="color: #268bd2;">)</span>
+    <span style="color: #b58900;">om</span>/<span style="color: #b58900;">IDidUpdate</span>
+    <span style="color: #268bd2;">(</span>did-update <span style="color: #6c71c4;">[</span>_ prev-props prev-state<span style="color: #6c71c4;">]</span>
+      <span style="color: #268bd2;">)</span>
+    <span style="color: #b58900;">om</span>/<span style="color: #b58900;">IDisplayName</span>
+    <span style="color: #268bd2;">(</span>display-name <span style="color: #6c71c4;">[</span>this<span style="color: #6c71c4;">]</span>
+      <span style="color: #2aa198;">"example"</span><span style="color: #268bd2;">)</span>
+    <span style="color: #b58900;">om</span>/<span style="color: #b58900;">IRenderState</span>
+    <span style="color: #268bd2;">(</span>render-state <span style="color: #6c71c4;">[</span>_ state<span style="color: #6c71c4;">]</span><span style="color: #268bd2;">)</span><span style="color: #b58900;">)</span><span style="color: #2aa198;">)</span>
+</pre>
+</div>
