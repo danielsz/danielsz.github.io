@@ -8,7 +8,7 @@ categories: clojurescript om clojure javascript react
 
 
 <p>
-While researching UX strategies for a hybrid mobile app, I stumbled upon <a href="http://coenraets.org/blog/2014/12/animated-page-transitions-with-react-js/">a post</a> by Christophe Coenraets, whom I remembered from the days when he was an Adobe technology evangelist. Today, still evangelizing, albeit for another employer, Christophe has moved on, like the rest of the world, to open standard, browser technologies. Said post dealt with the implementation of page transitions in a mobile client without mutating the DOM. I thought to myself, how sweet. But how sweet indeed to see this written in Clojurescript, for here is a language with a functional mindset that naturally embraces everything which does not mutate.
+While researching UX strategies for a hybrid mobile app, I stumbled upon <a href="http://coenraets.org/blog/2014/12/animated-page-transitions-with-react-js/">a post</a> by Christophe Coenraets, whom I remembered from the days when he was an Adobe technology evangelist. Today, still evangelizing, albeit for another employer, Christophe has moved on, like the rest of the world, to open standards, browser technologies. Said post dealt with the implementation of page transitions in a mobile client without mutating the DOM. I thought to myself, how sweet. But how sweet indeed to see this written in Clojurescript, for here is a language with a functional mindset that naturally embraces that which does not mutate.
 </p>
 
 <p>
@@ -16,7 +16,7 @@ While researching UX strategies for a hybrid mobile app, I stumbled upon <a href
 </p>
 
 <p>
-The goal I wanted to achieve with my port was deceptively simple:  replicate the exact same user experience, styling and performance of those achieved by Christophe, but in idiomatic Clojurescript. It was a fun little experiment, and I’ll let you, dear reader, be the judge. To the left is Christophe’s <a href="http://coenraets.org/samples/pageslider-react/index.html">demo</a>, to the right is <a href="http://pageslider.tuppu.net/">mine</a>. Can you spot the difference? I certainly can’t, and that’s the whole point. What is instructive to compare, on the other hand, is the source code driving the implementations. So go ahead, dive in the code. To the left is Christophe’s <a href="https://github.com/ccoenraets/pageslider-react">repo</a>, to the right is <a href="https://github.com/danielsz/om-pageslider">mine</a>.
+The goal I wanted to achieve with my port was deceptively simple:  replicate the exact same user experience, styling and performance, but in idiomatic Clojurescript. It was a fun little experiment, and I’ll let you, dear reader, be the judge. To the left is Christophe’s <a href="http://coenraets.org/samples/pageslider-react/index.html">demo</a>, to the right is <a href="http://pageslider.tuppu.net/">mine</a>. Can you spot the difference? I certainly can’t, and that’s the whole point. What is instructive to compare, on the other hand, is the source code driving the implementations. So go ahead, dive in the code. To the left is Christophe’s <a href="https://github.com/ccoenraets/pageslider-react">repo</a>, to the right is <a href="https://github.com/danielsz/om-pageslider">mine</a>.
 </p>
 
 <p>
@@ -27,7 +27,7 @@ The only thing left for me to do in the context of this post is to jot down a co
 <li>Why Clojurescript over Javascript? Plenty of <a href="http://www.quora.com/Why-ClojureScript">answers</a> elsewhere, but here’s what does it for me: clean syntax, namespaces, a macro system, multimethods, asynchronicity via <a href="http://en.wikipedia.org/wiki/Communicating_sequential_processes">CSP</a>, an innovative <a href="http://boot-clj.com/">build tool</a>.
 </li>
 
-<li>Christophe uses a custom-made mechanism for the CSS transitions, sidestepping the <a href="http://facebook.github.io/react/docs/animation.html">facility</a> that React.js provides.  I didn’t encouter the reported <a href="https://github.com/facebook/react/issues/1707">issue</a>, so I’m using React’s high-level interface, ReactCSSTransitionGroup. 
+<li>Christophe uses a custom-made mechanism for the CSS transitions, sidestepping the <a href="http://facebook.github.io/react/docs/animation.html">facility</a> that React.js provides.  I didn’t encounter the reported <a href="https://github.com/facebook/react/issues/1707">issue</a>, so I’m using React’s high-level interface, ReactCSSTransitionGroup. 
 </li>
 
 <li>Om is low in syntactic sugar and may therefore strike a little baroque to newcomers. There’s protocols, js interop and advanced idioms. Om was the first React wrapper in the Clojure world, spearheaded by David Nolen, who paved the way for <a href="http://blog.peeja.com/blog/2014/10/01/react-four-ways-how-to-use-react-in-clojurescript/">several</a> other wrappers which may be easier to use. I wouldn’t know, because Om serves me well.
