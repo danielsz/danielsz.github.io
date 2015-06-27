@@ -1,0 +1,76 @@
+---
+title: mu4e account :mu4e:mail:emacs:lisp:elisp:emacs-lisp:
+layout: post
+tags: 
+categories: 
+---
+
+
+
+<p>
+The following code snippet, meant to demonstrate <code>mu4e-compose-pre-hook</code>,  found in ~mu4e~’s manual: 
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp"><span style="color: #8D8D84;">;; </span><span style="color: #8D8D84; font-style: italic;">1) messages to me@foo.com should be replied with From:me@foo.com</span>
+<span style="color: #8D8D84;">;; </span><span style="color: #8D8D84; font-style: italic;">2) messages to me@bar.com should be replied with From:me@bar.com</span>
+<span style="color: #8D8D84;">;; </span><span style="color: #8D8D84; font-style: italic;">3) all other mail should use From:me@cuux.com</span>
+(add-hook 'mu4e-compose-pre-hook
+  (<span style="color: #0000FF;">defun</span> <span style="color: #006699;">my-set-from-address</span> ()
+    <span style="color: #036A07;">"Set the From address based on the To address of the original."</span>
+    (<span style="color: #0000FF;">let</span> ((msg mu4e-compose-parent-message)) <span style="color: #8D8D84;">;; </span><span style="color: #8D8D84; font-style: italic;">msg is shorter...</span>
+      (<span style="color: #0000FF;">when</span> msg
+        (setq user-mail-address
+          (<span style="color: #0000FF;">cond</span>
+            ((mu4e-message-contact-field-matches msg <span style="color: #006FE0;">:to</span> <span style="color: #008000;">"me@foo.com"</span>)
+              <span style="color: #008000;">"me@foo.com"</span>)
+            ((mu4e-message-contact-field-matches msg <span style="color: #006FE0;">:to</span> <span style="color: #008000;">"me@bar.com"</span>)
+              <span style="color: #008000;">"me@bar.com"</span>)
+            (t <span style="color: #008000;">"me@cuux.com"</span>)))))))
+</pre>
+</div>
+
+<p>
+As an illustration, it serves its purpose perfectly, but it goes further than that, answering a need to those of us with multiple email accounts. As a matter of fact, I have seen this code snippet used in the wild, slightly adapted, to accomodate configurations with a work and a personal email address, for example. It is only a beginning of a solution, though, because in the real world, in addition to the <code>From</code> email, you would probably want to switch the full name and signature as well.
+</p>
+
+<p>
+I have come up with a solution that works well for me and that I am offering below. 
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp">(<span style="color: #0000FF;">cl-defstruct</span> <span style="color: #6434A3;">account</span> full-name address signature)
+(setq my-accounts (list
+                   (make-account <span style="color: #006FE0;">:full-name</span> <span style="color: #008000;">"Stannis Baratheon"</span>
+                                 <span style="color: #006FE0;">:address</span> <span style="color: #008000;">"stannis.baratheon@seven-kingdoms.com"</span>
+                                 <span style="color: #006FE0;">:signature</span> <span style="color: #008000;">"Best dad ever\nAlso Protector of the Realm"</span>)
+                   (make-account <span style="color: #006FE0;">:full-name</span> <span style="color: #008000;">"Daenerys Targaryen"</span>
+                                 <span style="color: #006FE0;">:address</span> <span style="color: #008000;">"daenerys.targaryen@meereen.com"</span>
+                                 <span style="color: #006FE0;">:signature</span> <span style="color: #008000;">"Dragon pup for sale"</span>)
+                   (make-account <span style="color: #006FE0;">:full-name</span> <span style="color: #008000;">"Melisandre"</span>
+                                 <span style="color: #006FE0;">:address</span> <span style="color: #008000;">"melisandre@lordoflight.com"</span>
+                                 <span style="color: #006FE0;">:signature</span> <span style="color: #008000;">"I love science"</span>)))
+
+(add-hook 'mu4e-compose-pre-hook
+          (<span style="color: #0000FF;">lambda</span> ()
+            <span style="color: #036A07;">"Set the From address based on the To address of the original."</span>
+            (<span style="color: #0000FF;">let</span> ((msg mu4e-compose-parent-message)
+                  (default-account (car my-accounts)))
+              (cl-multiple-value-setq (user-mail-address user-full-name mu4e-compose-signature)
+                (<span style="color: #0000FF;">if</span> msg
+                    (loop for account in my-accounts
+                          when (mu4e-message-contact-field-matches msg <span style="color: #006FE0;">:to</span> (account-address account))
+                          return (cl-values (account-address account)
+                                            (account-full-name account)
+                                            (account-signature account)))
+                  (cl-values (account-address default-account)
+                             (account-full-name default-account)
+                             (account-signature default-account)))))))
+</pre>
+</div>
+
+<p>
+The nice thing about this solution is that it is easily extensible. You can add as many accounts as you want in the list. It will just work. Also, you can easily add or remove properties to the account object/struct.
+</p>
