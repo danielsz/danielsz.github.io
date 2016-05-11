@@ -126,7 +126,7 @@ Note: We are restricting the present discussion to static Vars. Dynamic Vars hav
 </div>
 
 <pre class="example">
-nil#'matrix/Neo#agent[{:status :ready, :val [#'choice/pill "red"]} 0x609a8c94]
+nil#'matrix/Neo#agent[{:status :ready, :val [#'choice/pill "red"]} 0x2ef0e172]
 </pre>
 
 <p>
@@ -145,7 +145,7 @@ If we redefine our Var, our agent will pick up the new value.
 </div>
 
 <pre class="example">
-#'choice/pill#agent[{:status :ready, :val [#'choice/pill "red" "blue"]} 0x609a8c94]
+#'choice/pill#agent[{:status :ready, :val [#'choice/pill "red" "blue"]} 0x2ef0e172]
 </pre>
 
 <div class="org-src-container">
@@ -216,7 +216,7 @@ Of course. But what if we ask Neo?
 </div>
 
 <pre class="example">
-#agent[{:status :ready, :val [#'choice/pill "red" "blue" "blue"]} 0x609a8c94]
+#agent[{:status :ready, :val [#'choice/pill "red" "blue" "blue"]} 0x2ef0e172]
 </pre>
 
 <p>
@@ -252,7 +252,7 @@ If this seems like a contrived exercise, please note that this is exactly what h
 </pre>
 </div>
 <pre class="example">
-#agent[{:status :ready, :val [#'choice/pill "red" "blue" "blue" "blue"]} 0x609a8c94]
+#agent[{:status :ready, :val [#'choice/pill "red" "blue" "blue" "blue"]} 0x2ef0e172]
 </pre>
 
 <p>
@@ -326,15 +326,11 @@ A foreigner visiting Oxford or Cambridge for the first time is shown a number of
 </blockquote>
 
 <p>
-Vars don’t exist as such in bytecode. Vars are an abstraction in the same way as a University. 
+Vars don’t exist as such in bytecode. Vars are an abstraction in the same way as a University. Taken in isolation, an abstraction is like a Platonic ideal: principled, self-contained, true in all instances. This is not our kind of world. Every single process involved in engineering a piece of software is real, not an abstraction. 
 </p>
 
 <p>
-Taken in isolation, an abstraction is like a Platonic ideal: principled, self-contained, true in all instances. This is not our kind of world. Every single process involved in engineering a piece of software is real, not an abstraction. 
-</p>
-
-<p>
-The equivalent of the body and mind dualism in computer engineering is the duality of the runtime and the specification. The runtime implements an execution model that may or may not coincide with the specification of a client programming language. We often think of programming semantics as anterior or prevalent to the runtime, but they belong to different categories altogether. 
+The equivalent of the body and mind dualism in computer engineering is the duality of the runtime and the specification. The runtime implements an execution model that may or may not coincide with the specification of a client programming language. We often think of programming semantics as anterior or prevalent to the runtime, but they belong to different categories altogether.
 </p>
 
 <p>
