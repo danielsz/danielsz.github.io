@@ -126,7 +126,7 @@ Note: We are restricting the present discussion to static Vars. Dynamic Vars hav
 </div>
 
 <pre class="example">
-nil#'matrix/Neo#agent[{:status :ready, :val [#'choice/pill "red"]} 0xea8c78f]
+nil#'matrix/Neo#agent[{:status :ready, :val [#'choice/pill "red"]} 0x170506fe]
 </pre>
 
 <p>
@@ -145,7 +145,7 @@ If we redefine our Var, our agent will pick up the new value.
 </div>
 
 <pre class="example">
-#'choice/pill#agent[{:status :ready, :val [#'choice/pill "red" "blue"]} 0xea8c78f]
+#'choice/pill#agent[{:status :ready, :val [#'choice/pill "red" "blue"]} 0x170506fe]
 </pre>
 
 <div class="org-src-container">
@@ -216,7 +216,7 @@ Of course. But what if we ask Neo?
 </div>
 
 <pre class="example">
-#agent[{:status :ready, :val [#'choice/pill "red" "blue" "blue"]} 0xea8c78f]
+#agent[{:status :ready, :val [#'choice/pill "red" "blue" "blue"]} 0x170506fe]
 </pre>
 
 <p>
@@ -252,7 +252,7 @@ If this seems like a contrived exercise, please note that this is exactly what h
 </pre>
 </div>
 <pre class="example">
-#agent[{:status :ready, :val [#'choice/pill "red" "blue" "blue" "blue"]} 0xea8c78f]
+#agent[{:status :ready, :val [#'choice/pill "red" "blue" "blue" "blue"]} 0x170506fe]
 </pre>
 
 <p>
@@ -327,6 +327,10 @@ A foreigner visiting Oxford or Cambridge for the first time is shown a number of
 
 <p>
 Vars are an abstraction in the same way that the University is. Vars don’t exist as such in bytecode. 
+</p>
+
+<p>
+Taken in isolation, an abstraction is like a Platonic ideal: principled, self-contained, true in all instances. This is not our kind of world. Every single process involved in engineering a piece of software is real, not an abstraction. 
 </p>
 
 <p>
