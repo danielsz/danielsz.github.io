@@ -1,0 +1,405 @@
+---
+title: Ghosts in the machine
+layout: post
+tags: clojure workflow reloaded stuart_sierra  system repl live_coding
+categories: clojure workflow reloaded stuart_sierra  system repl live_coding
+---
+
+
+
+<blockquote>
+<p>
+There is a crack in everything. That's how the light gets in. – Leonard Cohen
+</p>
+</blockquote>
+
+
+<div class="figure">
+<p><img src="images/lain-animated2.gif" alt="lain-animated2.gif" />
+</p>
+</div>
+
+<p>
+Some stories start with a side note. This is one of them. Then again, the side note might be the end of the story. I’m not sure anymore. But the journey we are going to embark on will quickly transcend it, leading us to explore programming semantics and revisit some timeless philosophical allegories. 
+</p>
+
+<p>
+<b>tl;dr</b> In which we submit reproducible research about the Clojure runtime, particularly concerning code reloading. 
+</p>
+
+<p>
+Back to the beginning (or the end). <i>Use with caution</i>. The side note, remember?
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-shell">clojure.core/remove-ns
+ [sym]
+Added<span style="color: #0000FF;"> in</span> 1.0
+  Removes the namespace named by the symbol. Use with caution.
+  Cannot be used to remove the clojure namespace.
+</pre>
+</div>
+
+<p>
+OK, fine. But wait a second, why? What are we guarding ourselves against? What dangers are lurking when invoking above function? A caution works insofar as it is understood. How can one be cautious if one doesn’t know the first thing about the danger or the risk incurred? 
+</p>
+
+<p>
+<code>remove-ns</code> is not typically found in application codebases, but it is found at the heart of a widely used foundation library: <code>org.clojure/tools.namespace</code>. It is the primary mechanism–along with <code>ns-unmap</code> – to unload active definitions. 
+</p>
+
+
+<div class="figure">
+<p><img src="images/delete.gif" alt="delete.gif" />
+</p>
+</div>
+
+<p>
+So what is there to be so cautious about? 
+</p>
+
+<p>
+There is no way to go around this, we will have to go down the rabbit hole to establish that. The main method is formal and involves a demonstration at the REPL through code. But we will also discuss an idiomatic use of a Clojure pattern familiar to web application developers. Finally, we will look at the output of a Java memory profiler with an application under scrutiny.
+</p>
+
+<p>
+First, let’s create a namespace and intern an entry. (Type the code in a REPL to follow along).  
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-clojure"><span style="color: #707183;">(</span>create-ns 'choice<span style="color: #707183;">)</span>
+<span style="color: #707183;">(</span>intern 'choice 'pill <span style="color: #008000;">"red"</span><span style="color: #707183;">)</span>
+</pre>
+</div>
+<pre class="example">
+#namespace[choice]#'choice/pill
+</pre>
+
+<p>
+This is the equivalent of <code>(def pill "red")</code> where <code>*ns*</code> (the current namespace) is known as “choice”. The explicit form allows us to appreciate some lesser used operations that stand behind the machinery of creating Vars. 
+</p>
+
+<p>
+Clojure has a host of features—java interop, runtime polymorphism, concurrency primitives, a unified sequence abstraction and what not— but underlying it all is a scoping and binding mechanism embodied by namespaces and Vars. These are the foundation. 
+</p>
+
+<p>
+When we define a named function, we are interning a symbol in a namespace bound to a value (a function in this case). In above snippet, we have defined a Var named “pill” bound to the value “red”. 
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-clojure"><span style="color: #707183;">(</span>ns-publics 'choice<span style="color: #707183;">)</span>
+</pre>
+</div>
+
+<pre class="example">
+{pill #'choice/pill}
+</pre>
+
+<p>
+So namespaces are mappings from symbols to Vars, and Vars are for naming and looking up values. 
+</p>
+
+<blockquote>
+<p>
+Identities are mental tools we use to superimpose continuity on a world which is constantly, functionally, creating new values of itself.
+</p>
+</blockquote>
+
+<p>
+The key thing here is that a Var is a <b>stable</b> logical entity. Vars have a root binding that is observable from all threads. Let’s prove this:
+</p>
+
+<p>
+Note: We are restricting the present discussion to static Vars. Dynamic Vars have per-thread bindings, but this is orthogonal to our concerns. 
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-clojure"><span style="color: #707183;">(</span><span style="color: #0000FF;">ns</span> <span style="color: #6434A3;">matrix</span><span style="color: #707183;">)</span>
+<span style="color: #707183;">(</span><span style="color: #0000FF;">def</span> <span style="color: #BA36A5;">Neo</span> <span style="color: #7388D6;">(</span>agent <span style="color: #909183;">[</span>#'<span style="color: #6434A3;">choice</span><span style="color: #333333; background-color: #FFFFFF;">/</span>pill<span style="color: #909183;">]</span><span style="color: #7388D6;">)</span><span style="color: #707183;">)</span>
+<span style="color: #707183;">(</span>send <span style="color: #6434A3;">Neo</span> #<span style="color: #7388D6;">(</span>conj <span style="color: #BA36A5;">%</span> <span style="color: #909183;">(</span>var-get <span style="color: #709870;">(</span>first <span style="color: #BA36A5;">%</span><span style="color: #709870;">)</span><span style="color: #909183;">)</span><span style="color: #7388D6;">)</span><span style="color: #707183;">)</span>
+</pre>
+</div>
+
+<pre class="example">
+nil#'matrix/Neo#agent[{:status :ready, :val [#'choice/pill "red"]} 0xea8c78f]
+</pre>
+
+<p>
+Actions dispatched to an agent occur in a thread, so when we send <code>var-get</code> to the agent, we are getting the root binding of <code>#'pill</code> as seen from a different thread.
+</p>
+
+<p>
+If we redefine our Var, our agent will pick up the new value. 
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-clojure"><span style="color: #707183;">(</span>intern 'choice 'pill <span style="color: #008000;">"blue"</span><span style="color: #707183;">)</span>
+<span style="color: #707183;">(</span>send <span style="color: #6434A3;">Neo</span> #<span style="color: #7388D6;">(</span>conj <span style="color: #BA36A5;">%</span> <span style="color: #909183;">(</span>var-get <span style="color: #709870;">(</span>first <span style="color: #BA36A5;">%</span><span style="color: #709870;">)</span><span style="color: #909183;">)</span><span style="color: #7388D6;">)</span><span style="color: #707183;">)</span>
+</pre>
+</div>
+
+<pre class="example">
+#'choice/pill#agent[{:status :ready, :val [#'choice/pill "red" "blue"]} 0xea8c78f]
+</pre>
+
+<div class="org-src-container">
+
+<pre class="src src-clojure"><span style="color: #707183;">(</span>= <span style="color: #7388D6;">(</span>first @Neo<span style="color: #7388D6;">)</span> #'<span style="color: #6434A3;">choice</span><span style="color: #333333; background-color: #FFFFFF;">/</span>pill<span style="color: #707183;">)</span>
+</pre>
+</div>
+
+<pre class="example">
+true
+</pre>
+
+<p>
+The official documentation <a href="http://clojure.org/reference/vars#Interning">mentions</a> this: 
+</p>
+<blockquote>
+<p>
+This means that, unless they have been unmap-ed, Var objects are stable references&#x2026;
+</p>
+</blockquote>
+
+<p>
+Note the caveat. <i>Unless unmap-ed</i>. 
+</p>
+
+<p>
+Incidentally, we now have set up the stage to discuss the caution found in <code>remove-ns</code> docstring .
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-clojure"><span style="color: #707183;">(</span>remove-ns 'choice<span style="color: #707183;">)</span>
+</pre>
+</div>
+
+<pre class="example">
+#namespace[choice]
+</pre>
+
+<p>
+When successfull, a  <code>remove-ns</code> call returns the removed namespace. 
+</p>
+
+<p>
+Now let’s try to retrieve the color of the pill.
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-clojure"><span style="color: #707183;">(</span>var-get #'<span style="color: #6434A3;">choice</span><span style="color: #333333; background-color: #FFFFFF;">/</span>pill<span style="color: #707183;">)</span>
+</pre>
+</div>
+
+<div class="org-src-container">
+
+<pre class="src src-shell">Unable to resolve var: choice/pill<span style="color: #0000FF;"> in</span> this context...
+</pre>
+</div>
+
+<p>
+Of course. But what if we ask Neo?
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-clojure"><span style="color: #707183;">(</span>send <span style="color: #6434A3;">Neo</span> #<span style="color: #7388D6;">(</span>conj <span style="color: #BA36A5;">%</span> <span style="color: #909183;">(</span>var-get <span style="color: #709870;">(</span>first <span style="color: #BA36A5;">%</span><span style="color: #709870;">)</span><span style="color: #909183;">)</span><span style="color: #7388D6;">)</span><span style="color: #707183;">)</span>
+</pre>
+</div>
+
+<pre class="example">
+#agent[{:status :ready, :val [#'choice/pill "red" "blue" "blue"]} 0xea8c78f]
+</pre>
+
+<p>
+Oh, in the agent thread, Neo still holds on to the blue pill. Isn’t the Var gone with the namesapce? This is a perfectly reasonable expectation, but false in the current state of affairs. 
+</p>
+
+<p>
+Let’s go further down the rabbit hole, and recreate a red pill. 
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-clojure"><span style="color: #707183;">(</span>create-ns 'choice<span style="color: #707183;">)</span>
+<span style="color: #707183;">(</span>intern 'choice 'pill <span style="color: #008000;">"red"</span><span style="color: #707183;">)</span>
+</pre>
+</div>
+
+<pre class="example">
+#namespace[choice]#'choice/pill
+</pre>
+
+<p>
+Now let’s ask Neo again what pill he has chosen.
+</p>
+
+<p>
+If this seems like a contrived exercise, please note that this is exactly what happens when reloading code in the runtime via a library like <code>tools.namespace</code>: it calls <code>remove-ns</code> before reloading definitions with <code>(require ns-sym :reload)</code>. 
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-clojure"><span style="color: #707183;">(</span>send <span style="color: #6434A3;">Neo</span> #<span style="color: #7388D6;">(</span>conj <span style="color: #BA36A5;">%</span> <span style="color: #909183;">(</span>var-get <span style="color: #709870;">(</span>first <span style="color: #BA36A5;">%</span><span style="color: #709870;">)</span><span style="color: #909183;">)</span><span style="color: #7388D6;">)</span><span style="color: #707183;">)</span>
+</pre>
+</div>
+<pre class="example">
+#agent[{:status :ready, :val [#'choice/pill "red" "blue" "blue" "blue"]} 0xea8c78f]
+</pre>
+
+<p>
+Blue? Really? Isn’t our pill red?
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-clojure"><span style="color: #707183;">(</span>var-get #'<span style="color: #6434A3;">choice</span><span style="color: #333333; background-color: #FFFFFF;">/</span>pill<span style="color: #707183;">)</span>
+</pre>
+</div>
+
+<pre class="example">
+red
+</pre>
+
+<p>
+Yes it is, but it seems that we are looking through the Looking-Glass, and things aren’t what they seem. Lewis Carol would have enjoyed the sight. 
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-clojure"><span style="color: #707183;">(</span>= <span style="color: #7388D6;">(</span>first @Neo<span style="color: #7388D6;">)</span> #'<span style="color: #6434A3;">choice</span><span style="color: #333333; background-color: #FFFFFF;">/</span>pill<span style="color: #707183;">)</span>
+</pre>
+</div>
+
+<pre class="example">
+false
+</pre>
+
+<p>
+At this point, we are not looking at the same Var objects anymore. What does it mean for something to not be equal with itself? Having lost its reflexive property, what good is a Var now? 
+</p>
+
+<p>
+Let’s savour this moment, because this is when the sirens start blasting, all lights go red in the control room, and agents are dispatched in swarm formation to repair the breach in the matrix, removing evidence and making sure no witness remains alive. 
+</p>
+
+
+<div class="figure">
+<p><img src="images/sirens.gif" alt="sirens.gif" />
+</p>
+</div>
+
+<p>
+Except that we’ve been warned. 
+</p>
+
+<p>
+Remember the cryptic message from the man himself: <i>Use with caution</i>.
+</p>
+
+<blockquote>
+<p>
+So, only namespaces that are not referenced by anything else can be safely removed - it's a very special-purpose operation. — Rich Hickey
+</p>
+</blockquote>
+
+<p>
+The danger that lurks behind <code>remove-ns</code> is abstraction leakage (or breakage). From stable references, Vars become unstable references–merely ghosts of themselves. 
+</p>
+
+<p>
+The <i>ghost in the machine</i> came up in the context of a philosophical discussion around the body and mind. It tries to demolish the notion that body and mind are separate entities working in parallel, which was the classical, cartesian view. Gilbert Ryle argued that treating the mind as a substance, like the body, no matter how different, was a logical fallacy. It was, to be accurate, a category mistake.
+</p>
+
+<blockquote>
+<p>
+A foreigner visiting Oxford or Cambridge for the first time is shown a number of colleges, libraries, playing fields, museums, scientific departments and administrative offices. He then asks 'But' where is the University? &#x2026; It has then to be explained to him that the University is not another collateral institution, some ulterior counterpart to the colleges, laboratories and offices which he has seen. The University is just the way in which all that he has already seen is organized. 
+</p>
+</blockquote>
+
+<p>
+Vars are an abstraction in the same way that the University is. Vars don’t exist as such in bytecode. 
+</p>
+
+<p>
+The equivalent of the body and mind dualism in computer engineering is the runtime and specification dualism. The runtime implements an execution model that may or may not coincide with the specification of a client programming language. We often think of programming semantics as anterior or prevalent to the runtime, but they belong to different categories altogether. 
+</p>
+
+<p>
+If you have ever developed a Ring application, you might now that there is a trick to make your handler pick up changes on the fly. Instead of passing it directly to the HTTP adapter, you pass it a Var. 
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-clojure"><span style="color: #707183;">(</span>run-jetty <span style="color: #7388D6;">(</span><span style="color: #0000FF;">var</span> handler<span style="color: #7388D6;">)</span> <span style="color: #7388D6;">{</span><span style="color: #D0372D;">:port</span> 8080 <span style="color: #D0372D;">:join?</span> <span style="color: #D0372D;">false</span><span style="color: #7388D6;">}</span><span style="color: #707183;">)</span>
+</pre>
+</div>
+
+<p>
+Because Vars implement the <code>IFn</code> interface, we can invoke them as if they were functions— <code>(#'+ 1 1 )</code> is equivalent to <code>(+ 1 1)</code>. 
+</p>
+
+<p>
+Instead of directly passing whatever <code>handler</code> evaluates to, we pass the Var, <code>#'handler</code>. This way, any change in your handler will be reflected immediately, without the need to restart the web server. Merely reloading the namespace via <code>require</code> does the trick.  You can do this manually, or via a Leiningen plugin. This is how <code>lein-ring</code> works: it re-requires your namespace when it detects a file change. However, if you use <code>refresh</code> from <code>tools.namespace</code>, this stops working. But now we know why. After <code>remove-ns</code>, the Var object passed to the server thread is orphaned. 
+</p>
+
+<p>
+We can see that this is true when profiling the memory with a Java introspection tool. 
+</p>
+
+<p>
+This is what happens when reloading a namespace with <code>require ns-sym :reload</code>.
+</p>
+
+
+<div class="figure">
+<p><img src="images/liveness-foo2.png" alt="liveness-foo2.png" />
+</p>
+</div>
+
+<p>
+Only one live object is present because it is the same Var object that gets overwritten. (You can force garbage collection in VisualVM if you don’t see the results immediately.)
+</p>
+
+<p>
+And this is what happens to a Var named foo when reloading a namespace with <code>remove-ns ns-sym</code> + <code>require ns-sym :reload</code>.
+</p>
+
+
+<div class="figure">
+<p><img src="images/liveness-foo1.png" alt="liveness-foo1.png" />
+</p>
+</div>
+
+<p>
+Here every <code>refresh</code> results in the duplication of Var objects. Those objects are inaccessible from the Clojure program but are still considered live by the Java runtime, and so they won’t be garbage collected. 
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-clojure"><span style="color: #707183;">(</span>= <span style="color: #7388D6;">(</span><span style="color: #D0372D;">:handler</span> <span style="color: #909183;">(</span><span style="color: #D0372D;">:web</span> <span style="color: #6434A3;">system.repl</span><span style="color: #333333; background-color: #FFFFFF;">/</span>system<span style="color: #909183;">)</span><span style="color: #7388D6;">)</span> #'app<span style="color: #707183;">)</span>
+</pre>
+</div>
+<p>
+Will return true before the first call to <code>remove-ns</code>, false afterwards.
+</p>
+
+<p>
+<code>remove-ns</code> breaks the Var machinery. It jeopardizes Var’s standing as a stable reference type. 
+</p>
+
+<p>
+If you use the reloaded workflow and you restart all parts of your system, the Jetty component (insert your HTTP server component of choice) gets passed the current Var upon restarting, so everything works like expected and you don’t notice that the runtime is tainted with <b>unstable</b> Vars, objects that won’t be deallocated. 
+</p>
+
+<p>
+How big is this a problem? Well, an accumulation of live objects that won’t be deallocated fall in the class of memory leaks. The heap will grow at a rate proportional to the number of times <code>refresh</code> is called. This only happens during development time, so this is a rather benign condition. Especially considering the <a href="https://github.com/clojure/tools.namespace#reloading-code-motivation">benefits</a> of using <code>tools.namespace</code>. 
+</p>
