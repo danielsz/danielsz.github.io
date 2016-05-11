@@ -126,7 +126,7 @@ Note: We are restricting the present discussion to static Vars. Dynamic Vars hav
 </div>
 
 <pre class="example">
-nil#'matrix/Neo#agent[{:status :ready, :val [#'choice/pill "red"]} 0xd5d25c5]
+nil#'matrix/Neo#agent[{:status :ready, :val [#'choice/pill "red"]} 0x609a8c94]
 </pre>
 
 <p>
@@ -145,7 +145,7 @@ If we redefine our Var, our agent will pick up the new value.
 </div>
 
 <pre class="example">
-#'choice/pill#agent[{:status :ready, :val [#'choice/pill "red"]} 0xd5d25c5]
+#'choice/pill#agent[{:status :ready, :val [#'choice/pill "red" "blue"]} 0x609a8c94]
 </pre>
 
 <div class="org-src-container">
@@ -216,7 +216,7 @@ Of course. But what if we ask Neo?
 </div>
 
 <pre class="example">
-#agent[{:status :ready, :val [#'choice/pill "red" "blue" "blue"]} 0xd5d25c5]
+#agent[{:status :ready, :val [#'choice/pill "red" "blue" "blue"]} 0x609a8c94]
 </pre>
 
 <p>
@@ -252,7 +252,7 @@ If this seems like a contrived exercise, please note that this is exactly what h
 </pre>
 </div>
 <pre class="example">
-#agent[{:status :ready, :val [#'choice/pill "red" "blue" "blue" "blue"]} 0xd5d25c5]
+#agent[{:status :ready, :val [#'choice/pill "red" "blue" "blue" "blue"]} 0x609a8c94]
 </pre>
 
 <p>
@@ -338,7 +338,7 @@ The equivalent of the body and mind dualism in computer engineering is the duali
 </p>
 
 <p>
-If you have ever developed a Ring application, you might now that there is a trick to make your handler pick up changes on the fly. Instead of passing it directly to the HTTP adapter, you pass it a Var. 
+If you have ever developed a Ring application, you might know that there is a trick to make your handler pick up changes on the fly. Instead of passing it directly to the HTTP adapter, you pass it a Var. 
 </p>
 
 <div class="org-src-container">
@@ -370,7 +370,7 @@ This is what happens to <code>foo</code> when reloading a namespace with <code>r
 </div>
 
 <p>
-Only one live object is present because it is the same Var object that gets overwritten. (You can force garbage collection in VisualVM if you don’t see the results immediately.)
+Only one live object is present at any time because the same Var object gets overwritten over and over. (You can force garbage collection in VisualVM if you don’t see the results immediately.)
 </p>
 
 <p>
@@ -405,5 +405,33 @@ If you use the reloaded workflow and you restart all parts of your system, the J
 </p>
 
 <p>
-How big is this a problem? Well, proliferation of objects that won’t be deallocated fall in the class of memory leaks. The heap will grow at a rate proportional to the number of times <code>refresh</code> is called. This only happens during development time, so this is a rather benign condition. Especially considering the <a href="https://github.com/clojure/tools.namespace#reloading-code-motivation">benefits</a> of using <code>tools.namespace</code>.
+How big is this a problem? Well, proliferation of objects that won’t be deallocated fall in the class of memory leaks. The heap will grow at a rate proportional to the number of times <code>refresh</code> is called. This only happens during development time, so I personally wouldn’t worry about it. Especially considering the <a href="https://github.com/clojure/tools.namespace#reloading-code-motivation">benefits</a> of using <code>tools.namespace</code>. Additionally, starting with <code>system 0.3.0</code>, you are given the option to skip the <code>remove-ns</code> on a per namespace basis, giving you finegrained control over what <code>refresh</code> should do. 
+</p>
+
+<p>
+Further study: 
+</p>
+
+<p>
+Code reload vs system restart 
+</p>
+
+<p>
+<a href="https://github.com/danielsz/system#code-reload-vs-system-restart">https://github.com/danielsz/system#code-reload-vs-system-restart</a>
+</p>
+
+<p>
+Transparent transactional loading of Clojure namespaces. 
+</p>
+
+<p>
+<a href="https://github.com/guv/txload">https://github.com/guv/txload</a>
+</p>
+
+<p>
+Atomic hot code reloading with fallback (Erlang-style). 
+</p>
+
+<p>
+<a href="https://github.com/jstepien/bubble">https://github.com/jstepien/bubble</a>
 </p>
