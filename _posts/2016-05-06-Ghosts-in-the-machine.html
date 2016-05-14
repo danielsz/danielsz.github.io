@@ -35,7 +35,7 @@ Back to the beginning (or the end). <i>Use with caution</i>. The side note, reme
 
 <pre class="src src-shell">clojure.core/remove-ns
  [sym]
-Added<span style="color: #346604;"> in</span> 1.0
+Added<span style="color: #0000FF;"> in</span> 1.0
   Removes the namespace named by the symbol. Use with caution.
   Cannot be used to remove the clojure namespace.
 </pre>
@@ -70,11 +70,16 @@ First, let’s create a namespace and intern an entry. (Type the code in a REPL 
 <div class="org-src-container">
 
 <pre class="src src-clojure"><span style="color: #707183;">(</span>create-ns 'choice<span style="color: #707183;">)</span>
-<span style="color: #707183;">(</span>intern 'choice 'pill <span style="color: #5c3566;">"red"</span><span style="color: #707183;">)</span>
+</pre>
+</div>
+
+<div class="org-src-container">
+
+<pre class="src src-clojure"><span style="color: #707183;">(</span>intern 'choice 'pill <span style="color: #008000;">"red"</span><span style="color: #707183;">)</span>
 </pre>
 </div>
 <pre class="example">
-#namespace[choice]#'choice/pill
+#'choice/pill
 </pre>
 
 <p>
@@ -119,14 +124,19 @@ Note: We are restricting the present discussion to static Vars. Dynamic Vars hav
 
 <div class="org-src-container">
 
-<pre class="src src-clojure"><span style="color: #707183;">(</span><span style="color: #346604;">ns</span> <span style="color: #204a87;">matrix</span><span style="color: #707183;">)</span>
-<span style="color: #707183;">(</span><span style="color: #346604;">def</span> <span style="color: #b35000;">Neo</span> <span style="color: #7388d6;">(</span>agent <span style="color: #909183;">[</span>#'<span style="color: #204a87;">choice</span><span style="color: #2e3436; background-color: #eeeeec;">/</span>pill<span style="color: #909183;">]</span><span style="color: #7388d6;">)</span><span style="color: #707183;">)</span>
-<span style="color: #707183;">(</span>send <span style="color: #204a87;">Neo</span> #<span style="color: #7388d6;">(</span>conj <span style="color: #b35000;">%</span> <span style="color: #909183;">(</span>var-get <span style="color: #709870;">(</span>first <span style="color: #b35000;">%</span><span style="color: #709870;">)</span><span style="color: #909183;">)</span><span style="color: #7388d6;">)</span><span style="color: #707183;">)</span>
+<pre class="src src-clojure"><span style="color: #707183;">(</span><span style="color: #0000FF;">ns</span> <span style="color: #6434A3;">matrix</span><span style="color: #707183;">)</span>
+<span style="color: #707183;">(</span><span style="color: #0000FF;">def</span> <span style="color: #BA36A5;">Neo</span> <span style="color: #7388D6;">(</span>agent <span style="color: #909183;">[</span>#'<span style="color: #6434A3;">choice</span><span style="color: #333333; background-color: #FFFFFF;">/</span>pill<span style="color: #909183;">]</span><span style="color: #7388D6;">)</span><span style="color: #707183;">)</span>
+</pre>
+</div>
+
+<div class="org-src-container">
+
+<pre class="src src-clojure"><span style="color: #707183;">(</span>send <span style="color: #6434A3;">Neo</span> #<span style="color: #7388D6;">(</span>conj <span style="color: #BA36A5;">%</span> <span style="color: #909183;">(</span>var-get <span style="color: #709870;">(</span>first <span style="color: #BA36A5;">%</span><span style="color: #709870;">)</span><span style="color: #909183;">)</span><span style="color: #7388D6;">)</span><span style="color: #707183;">)</span>
 </pre>
 </div>
 
 <pre class="example">
-nil#'matrix/Neo#agent[{:status :ready, :val [#'choice/pill "red"]} 0x2ef0e172]
+#agent[{:status :ready, :val [#'choice/pill "red"]} 0x690d7bc8]
 </pre>
 
 <p>
@@ -139,18 +149,22 @@ If we redefine our Var, our agent will pick up the new value.
 
 <div class="org-src-container">
 
-<pre class="src src-clojure"><span style="color: #707183;">(</span>intern 'choice 'pill <span style="color: #5c3566;">"blue"</span><span style="color: #707183;">)</span>
-<span style="color: #707183;">(</span>send <span style="color: #204a87;">Neo</span> #<span style="color: #7388d6;">(</span>conj <span style="color: #b35000;">%</span> <span style="color: #909183;">(</span>var-get <span style="color: #709870;">(</span>first <span style="color: #b35000;">%</span><span style="color: #709870;">)</span><span style="color: #909183;">)</span><span style="color: #7388d6;">)</span><span style="color: #707183;">)</span>
+<pre class="src src-clojure"><span style="color: #707183;">(</span>intern 'choice 'pill <span style="color: #008000;">"blue"</span><span style="color: #707183;">)</span>
 </pre>
 </div>
 
+<div class="org-src-container">
+
+<pre class="src src-clojure"><span style="color: #707183;">(</span>send <span style="color: #6434A3;">Neo</span> #<span style="color: #7388D6;">(</span>conj <span style="color: #BA36A5;">%</span> <span style="color: #909183;">(</span>var-get <span style="color: #709870;">(</span>first <span style="color: #BA36A5;">%</span><span style="color: #709870;">)</span><span style="color: #909183;">)</span><span style="color: #7388D6;">)</span><span style="color: #707183;">)</span>
+</pre>
+</div>
 <pre class="example">
-#'choice/pill#agent[{:status :ready, :val [#'choice/pill "red" "blue"]} 0x2ef0e172]
+#agent[{:status :ready, :val [#'choice/pill "red" "blue"]} 0x690d7bc8]
 </pre>
 
 <div class="org-src-container">
 
-<pre class="src src-clojure"><span style="color: #707183;">(</span>= <span style="color: #7388d6;">(</span>first @Neo<span style="color: #7388d6;">)</span> #'<span style="color: #204a87;">choice</span><span style="color: #2e3436; background-color: #eeeeec;">/</span>pill<span style="color: #707183;">)</span>
+<pre class="src src-clojure"><span style="color: #707183;">(</span>= <span style="color: #7388D6;">(</span>first @Neo<span style="color: #7388D6;">)</span> #'<span style="color: #6434A3;">choice</span><span style="color: #333333; background-color: #FFFFFF;">/</span>pill<span style="color: #707183;">)</span>
 </pre>
 </div>
 
@@ -181,27 +195,19 @@ Incidentally, we now have set up the stage to discuss the caution found in <code
 </pre>
 </div>
 
-<pre class="example">
-#namespace[choice]
-</pre>
-
-<p>
-When successfull, a  <code>remove-ns</code> call returns the removed namespace. 
-</p>
-
 <p>
 Now let’s try to retrieve the color of the pill.
 </p>
 
 <div class="org-src-container">
 
-<pre class="src src-clojure"><span style="color: #707183;">(</span>var-get #'<span style="color: #204a87;">choice</span><span style="color: #2e3436; background-color: #eeeeec;">/</span>pill<span style="color: #707183;">)</span>
+<pre class="src src-clojure"><span style="color: #707183;">(</span>var-get #'<span style="color: #6434A3;">choice</span><span style="color: #333333; background-color: #FFFFFF;">/</span>pill<span style="color: #707183;">)</span>
 </pre>
 </div>
 
 <div class="org-src-container">
 
-<pre class="src src-shell">Unable to resolve var: choice/pill<span style="color: #346604;"> in</span> this context...
+<pre class="src src-shell">Unable to resolve var: choice/pill<span style="color: #0000FF;"> in</span> this context...
 </pre>
 </div>
 
@@ -211,16 +217,16 @@ Of course. But what if we ask Neo?
 
 <div class="org-src-container">
 
-<pre class="src src-clojure"><span style="color: #707183;">(</span>send <span style="color: #204a87;">Neo</span> #<span style="color: #7388d6;">(</span>conj <span style="color: #b35000;">%</span> <span style="color: #909183;">(</span>var-get <span style="color: #709870;">(</span>first <span style="color: #b35000;">%</span><span style="color: #709870;">)</span><span style="color: #909183;">)</span><span style="color: #7388d6;">)</span><span style="color: #707183;">)</span>
+<pre class="src src-clojure"><span style="color: #707183;">(</span>send <span style="color: #6434A3;">Neo</span> #<span style="color: #7388D6;">(</span>conj <span style="color: #BA36A5;">%</span> <span style="color: #909183;">(</span>var-get <span style="color: #709870;">(</span>first <span style="color: #BA36A5;">%</span><span style="color: #709870;">)</span><span style="color: #909183;">)</span><span style="color: #7388D6;">)</span><span style="color: #707183;">)</span>
 </pre>
 </div>
 
 <pre class="example">
-#agent[{:status :ready, :val [#'choice/pill "red" "blue" "blue"]} 0x2ef0e172]
+#agent[{:status :ready, :val [#'choice/pill "red" "blue" "blue"]} 0x690d7bc8]
 </pre>
 
 <p>
-Oh, in the agent thread, Neo still holds on to the blue pill. Isn’t the Var gone with the namesapce? This is a perfectly reasonable expectation, but false in the current state of affairs. 
+Oh, in the agent thread, Neo still holds on to the blue pill. Isn’t the Var gone with the namespace? This is a perfectly reasonable expectation, but false in the current state of affairs. 
 </p>
 
 <p>
@@ -230,13 +236,9 @@ Let’s go further down the rabbit hole, and recreate a red pill.
 <div class="org-src-container">
 
 <pre class="src src-clojure"><span style="color: #707183;">(</span>create-ns 'choice<span style="color: #707183;">)</span>
-<span style="color: #707183;">(</span>intern 'choice 'pill <span style="color: #5c3566;">"red"</span><span style="color: #707183;">)</span>
+<span style="color: #707183;">(</span>intern 'choice 'pill <span style="color: #008000;">"red"</span><span style="color: #707183;">)</span>
 </pre>
 </div>
-
-<pre class="example">
-#namespace[choice]#'choice/pill
-</pre>
 
 <p>
 Now let’s ask Neo again what pill he has chosen.
@@ -248,11 +250,11 @@ If this seems like a contrived exercise, please note that this is exactly what h
 
 <div class="org-src-container">
 
-<pre class="src src-clojure"><span style="color: #707183;">(</span>send <span style="color: #204a87;">Neo</span> #<span style="color: #7388d6;">(</span>conj <span style="color: #b35000;">%</span> <span style="color: #909183;">(</span>var-get <span style="color: #709870;">(</span>first <span style="color: #b35000;">%</span><span style="color: #709870;">)</span><span style="color: #909183;">)</span><span style="color: #7388d6;">)</span><span style="color: #707183;">)</span>
+<pre class="src src-clojure"><span style="color: #707183;">(</span>send <span style="color: #6434A3;">Neo</span> #<span style="color: #7388D6;">(</span>conj <span style="color: #BA36A5;">%</span> <span style="color: #909183;">(</span>var-get <span style="color: #709870;">(</span>first <span style="color: #BA36A5;">%</span><span style="color: #709870;">)</span><span style="color: #909183;">)</span><span style="color: #7388D6;">)</span><span style="color: #707183;">)</span>
 </pre>
 </div>
 <pre class="example">
-#agent[{:status :ready, :val [#'choice/pill "red" "blue" "blue" "blue"]} 0x2ef0e172]
+#agent[{:status :ready, :val [#'choice/pill "red" "blue" "blue" "blue"]} 0x690d7bc8]
 </pre>
 
 <p>
@@ -261,7 +263,7 @@ Blue? Really? Isn’t our pill red?
 
 <div class="org-src-container">
 
-<pre class="src src-clojure"><span style="color: #707183;">(</span>var-get #'<span style="color: #204a87;">choice</span><span style="color: #2e3436; background-color: #eeeeec;">/</span>pill<span style="color: #707183;">)</span>
+<pre class="src src-clojure"><span style="color: #707183;">(</span>var-get #'<span style="color: #6434A3;">choice</span><span style="color: #333333; background-color: #FFFFFF;">/</span>pill<span style="color: #707183;">)</span>
 </pre>
 </div>
 
@@ -275,7 +277,7 @@ Yes it is, but it seems that we are looking through the Looking-Glass, and thing
 
 <div class="org-src-container">
 
-<pre class="src src-clojure"><span style="color: #707183;">(</span>= <span style="color: #7388d6;">(</span>first @Neo<span style="color: #7388d6;">)</span> #'<span style="color: #204a87;">choice</span><span style="color: #2e3436; background-color: #eeeeec;">/</span>pill<span style="color: #707183;">)</span>
+<pre class="src src-clojure"><span style="color: #707183;">(</span>= <span style="color: #7388D6;">(</span>first @Neo<span style="color: #7388D6;">)</span> #'<span style="color: #6434A3;">choice</span><span style="color: #333333; background-color: #FFFFFF;">/</span>pill<span style="color: #707183;">)</span>
 </pre>
 </div>
 
@@ -339,7 +341,7 @@ If you have ever developed a Ring application, you might know that there is a tr
 
 <div class="org-src-container">
 
-<pre class="src src-clojure"><span style="color: #707183;">(</span>run-jetty <span style="color: #7388d6;">(</span><span style="color: #346604;">var</span> handler<span style="color: #7388d6;">)</span> <span style="color: #7388d6;">{</span><span style="color: #204a87; font-weight: bold;">:port</span> 8080 <span style="color: #204a87; font-weight: bold;">:join?</span> <span style="color: #204a87; font-weight: bold;">false</span><span style="color: #7388d6;">}</span><span style="color: #707183;">)</span>
+<pre class="src src-clojure"><span style="color: #707183;">(</span>run-jetty <span style="color: #7388D6;">(</span><span style="color: #0000FF;">var</span> handler<span style="color: #7388D6;">)</span> <span style="color: #7388D6;">{</span><span style="color: #D0372D;">:port</span> 8080 <span style="color: #D0372D;">:join?</span> <span style="color: #D0372D;">false</span><span style="color: #7388D6;">}</span><span style="color: #707183;">)</span>
 </pre>
 </div>
 
@@ -385,7 +387,7 @@ Here every <code>refresh</code> results in the duplication of <code>foo</code>. 
 
 <div class="org-src-container">
 
-<pre class="src src-clojure"><span style="color: #707183;">(</span>= <span style="color: #7388d6;">(</span><span style="color: #204a87; font-weight: bold;">:handler</span> <span style="color: #909183;">(</span><span style="color: #204a87; font-weight: bold;">:web</span> <span style="color: #204a87;">system.repl</span><span style="color: #2e3436; background-color: #eeeeec;">/</span>system<span style="color: #909183;">)</span><span style="color: #7388d6;">)</span> #'app<span style="color: #707183;">)</span>
+<pre class="src src-clojure"><span style="color: #707183;">(</span>= <span style="color: #7388D6;">(</span><span style="color: #D0372D;">:handler</span> <span style="color: #909183;">(</span><span style="color: #D0372D;">:web</span> <span style="color: #6434A3;">system.repl</span><span style="color: #333333; background-color: #FFFFFF;">/</span>system<span style="color: #909183;">)</span><span style="color: #7388D6;">)</span> #'app<span style="color: #707183;">)</span>
 </pre>
 </div>
 <p>
@@ -430,4 +432,12 @@ Atomic hot code reloading with fallback (Erlang-style).
 
 <p>
 <a href="https://github.com/jstepien/bubble">https://github.com/jstepien/bubble</a>
+</p>
+
+<p>
+Immutable namespaces are being considered for <a href="http://dev.clojure.org/display/design/Release.zFuture">future releases</a>.
+</p>
+
+<p>
+<a href="https://github.com/mikera/kiss/wiki/Rationale#why-we-want-immutable-namespaces--environments">https://github.com/mikera/kiss/wiki/Rationale#why-we-want-immutable-namespaces--environments</a>
 </p>
