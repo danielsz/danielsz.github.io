@@ -64,8 +64,10 @@ There is no way to go around this, we will have to go down the rabbit hole to es
 </p>
 
 <p>
-First, let’s create a namespace and intern an entry. (Type the code in a REPL to follow along).  
+First, let’s create a namespace and intern an entry. (Type the code in a REPL to follow along or watch the live demo).
 </p>
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/PTThVNRbaHk" frameborder="0" allowfullscreen></iframe>
 
 <div class="org-src-container">
 
@@ -136,7 +138,7 @@ Note: We are restricting the present discussion to static Vars. Dynamic Vars hav
 </div>
 
 <pre class="example">
-#agent[{:status :ready, :val [#'choice/pill "red"]} 0x690d7bc8]
+#agent[{:status :ready, :val [#'choice/pill]} 0x3e5335b4]
 </pre>
 
 <p>
@@ -159,12 +161,12 @@ If we redefine our Var, our agent will pick up the new value.
 </pre>
 </div>
 <pre class="example">
-#agent[{:status :ready, :val [#'choice/pill "red" "blue"]} 0x690d7bc8]
+#agent[{:status :ready, :val [#'choice/pill "red"]} 0x3e5335b4]
 </pre>
 
 <div class="org-src-container">
 
-<pre class="src src-clojure"><span style="color: #707183;">(</span>= <span style="color: #7388D6;">(</span>first @Neo<span style="color: #7388D6;">)</span> #'<span style="color: #6434A3;">choice</span><span style="color: #333333; background-color: #FFFFFF;">/</span>pill<span style="color: #707183;">)</span>
+<pre class="src src-clojure"><span style="color: #707183;">(</span>= <span style="color: #7388D6;">(</span>first @<span style="color: #6434A3;">Neo</span><span style="color: #7388D6;">)</span> #'<span style="color: #6434A3;">choice</span><span style="color: #333333; background-color: #FFFFFF;">/</span>pill<span style="color: #707183;">)</span>
 </pre>
 </div>
 
@@ -222,7 +224,7 @@ Of course. But what if we ask Neo?
 </div>
 
 <pre class="example">
-#agent[{:status :ready, :val [#'choice/pill "red" "blue" "blue"]} 0x690d7bc8]
+#agent[{:status :ready, :val [#'choice/pill "red" "blue"]} 0x3e5335b4]
 </pre>
 
 <p>
@@ -254,7 +256,7 @@ If this seems like a contrived exercise, please note that this is exactly what h
 </pre>
 </div>
 <pre class="example">
-#agent[{:status :ready, :val [#'choice/pill "red" "blue" "blue" "blue"]} 0x690d7bc8]
+#agent[{:status :ready, :val [#'choice/pill "red" "blue" "blue"]} 0x3e5335b4]
 </pre>
 
 <p>
@@ -277,7 +279,7 @@ Yes it is, but it seems that we are looking through the Looking-Glass, and thing
 
 <div class="org-src-container">
 
-<pre class="src src-clojure"><span style="color: #707183;">(</span>= <span style="color: #7388D6;">(</span>first @Neo<span style="color: #7388D6;">)</span> #'<span style="color: #6434A3;">choice</span><span style="color: #333333; background-color: #FFFFFF;">/</span>pill<span style="color: #707183;">)</span>
+<pre class="src src-clojure"><span style="color: #707183;">(</span>= <span style="color: #7388D6;">(</span>first @<span style="color: #6434A3;">Neo</span><span style="color: #7388D6;">)</span> #'<span style="color: #6434A3;">choice</span><span style="color: #333333; background-color: #FFFFFF;">/</span>pill<span style="color: #707183;">)</span>
 </pre>
 </div>
 
@@ -410,34 +412,10 @@ How big is this a problem? Well, proliferation of objects that won’t be deallo
 Further study: 
 </p>
 
-<p>
-Code reload vs system restart 
-</p>
-
-<p>
-<a href="https://github.com/danielsz/system#code-reload-vs-system-restart">https://github.com/danielsz/system#code-reload-vs-system-restart</a>
-</p>
-
-<p>
-Transparent transactional loading of Clojure namespaces. 
-</p>
-
-<p>
-<a href="https://github.com/guv/txload">https://github.com/guv/txload</a>
-</p>
-
-<p>
-Atomic hot code reloading with fallback (Erlang-style). 
-</p>
-
-<p>
-<a href="https://github.com/jstepien/bubble">https://github.com/jstepien/bubble</a>
-</p>
-
-<p>
-Immutable namespaces are being considered for <a href="http://dev.clojure.org/display/design/Release.zFuture">future releases</a>.
-</p>
-
-<p>
-<a href="https://github.com/mikera/kiss/wiki/Rationale#why-we-want-immutable-namespaces--environments">https://github.com/mikera/kiss/wiki/Rationale#why-we-want-immutable-namespaces--environments</a>
-</p>
+<ul class="org-ul">
+<li><a href="https://www.youtube.com/watch?v=LaNrqaT4Hq0">Video of presentation</a> at Scheme workshop, ICFP 2106.</li>
+<li><a href="https://github.com/danielsz/system#code-reload-vs-system-restart">Code reload vs system restart</a></li>
+<li><a href="https://github.com/guv/txload">Transparent transactional loading of Clojure namespaces.</a></li>
+<li><a href="https://github.com/jstepien/bubble">Atomic hot code reloading with fallback (Erlang-style).</a></li>
+<li><a href="https://github.com/mikera/kiss/wiki/Rationale#why-we-want-immutable-namespaces--environments">Immutable namespaces</a> are being considered for <a href="http://dev.clojure.org/display/design/Release.zFuture">future releases</a>.</li>
+</ul>
