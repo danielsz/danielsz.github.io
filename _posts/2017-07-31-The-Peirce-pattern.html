@@ -90,21 +90,25 @@ This is all the information we need to ensure idempotency when sending email to 
 
 <blockquote>
 <p>
-In computing, an idempotent operation is one that has no additional effect if it is called more than once with the same input parameters. 
+In computing, an idempotent operation is one that has no additional effect if it is called more than once on the same input. 
+</p>
+</blockquote>
+
+<blockquote>
+<p>
 In mathematics, an idempotent operation is one where <i>f</i> (<i>f</i> (x)) = <i>f</i> (x).
 </p>
 </blockquote>
 
 <div class="org-src-container">
 <pre class="src src-clojure"><span style="color: #8c8c8c;">(</span><span style="color: #b48ead;">doseq</span> <span style="color: #93a8c6;">[</span>user users
-        <span style="color: #d08770;">:when</span> <span style="color: #b0b1a3;">(</span>some <span style="color: #97b098;">(</span><span style="color: #b48ead;">fn</span> <span style="color: #aebed8;">[</span>entry<span style="color: #aebed8;">]</span> <span style="color: #aebed8;">(</span>is-timestamp-within-range <span style="color: #bf616a;">%</span><span style="color: #aebed8;">)</span><span style="color: #97b098;">)</span> <span style="color: #97b098;">(</span>filter <span style="color: #d08770;">:newsletter</span> <span style="color: #aebed8;">(</span><span style="color: #d08770;">:logbook</span> user<span style="color: #aebed8;">)</span><span style="color: #97b098;">)</span><span style="color: #b0b1a3;">)</span><span style="color: #93a8c6;">]</span>
+        <span style="color: #d08770;">:when</span> <span style="color: #b0b1a3;">(</span>some #<span style="color: #97b098;">(</span>is-timestamp-outside-range? <span style="color: #bf616a;">%</span><span style="color: #97b098;">)</span> <span style="color: #97b098;">(</span>filter <span style="color: #d08770;">:newsletter</span> <span style="color: #aebed8;">(</span><span style="color: #d08770;">:logbook</span> user<span style="color: #aebed8;">)</span><span style="color: #97b098;">)</span><span style="color: #b0b1a3;">)</span><span style="color: #93a8c6;">]</span>
   <span style="color: #93a8c6;">(</span>send-newsletter user<span style="color: #93a8c6;">)</span><span style="color: #8c8c8c;">)</span>
 </pre>
 </div>
 
 <p>
-We send our newsletters once a month, so the <code>is-timestamp-within-range</code> predicate checks if the recorded timestamp falls in that interval.
-On the other hand, our welcome email gets sent only once, so an idempotent <code>send-welcome-email</code> would look a little bit different:
+Our newsletter is monthly, so the <code>is-timestamp-outside-range</code> predicate tells us if it is time to send a new edition. On the other hand, our welcome email gets sent only once, so an idempotent <code>send-welcome-email</code> would look a little bit different:
 </p>
 
 <div class="org-src-container">
@@ -115,7 +119,7 @@ On the other hand, our welcome email gets sent only once, so an idempotent <code
 </div>
 
 <p>
-We architecture our operations around events and predicates. In our example, the events are <code>:welcome-email</code>, <code>:subscription-reminder</code> and <code>:newsletter</code>. We can standardize our predicates and decide that they will operate on a logbook entry (if found):
+We architecture our operations around events and predicates. In our example, the events are <code>:welcome-email</code>, <code>:subscription-reminder</code> and <code>:newsletter</code>. Let’s standardize our predicates and make them operate uniformly on one logbook entry at the time:
 </p>
 
 <div class="org-src-container">
@@ -150,7 +154,7 @@ Now let’s look back at our newsletter sending operation.
 </div>
 
 <p>
-Something is missing, right?
+Something is missing, isn’t it?
 If the newsletter is sent successfully, we need to write an entry in the logbook. 
 </p>
 
@@ -176,8 +180,8 @@ Idempotent operations are often used in the design of network protocols, where a
 </blockquote>
 
 <p>
-I call it the “Peirce pattern”, after the American mathematician who
-coined the term “idempotency”. 
+I call this the “Peirce pattern”, after the American mathematician who
+coined the term.
 </p>
 
 <p>
@@ -218,13 +222,18 @@ With proper design and the magic of macros, we can actually write the following:
 </div>
 
 <p>
-The entity (<code>user</code>), the operation (<code>send-newsletter</code>) and the event
-(the choice of predicate) have been abstracted. 
+We are left with the entity (<code>user</code>), the operation
+(<code>send-newsletter</code>) and the event (from which we can derive the
+predicate). All the rest has been made implicit: how we retrieve the
+logbook for an entity, how we determine if the operation was
+successful, how we append events to the logbook. 
 </p>
 
 <p>
-All the rest has been made implicit: how we retrieve the logbook for an entity, how we determine if the operation was successful, how we
-append events to the logbook. Instead of cluttering the calling site, the user makes those assumptions explicit via a configuration mechanism. From then on, the <code>with-logbook</code> macro will do the reshuffle and the wiring behind the scenes. 
+Instead of cluttering the calling site, the user makes those
+assumptions explicit via a configuration mechanism. From then on, the
+<code>with-logbook</code> macro will do the reshuffle and the wiring behind the
+scenes.
 </p>
 
 <p>
