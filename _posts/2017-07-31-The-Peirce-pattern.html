@@ -216,7 +216,7 @@ The entity (<code>user</code>), the operation (<code>send-newsletter</code>) and
 
 <p>
 All the rest has been made implicit: how we retrieve the logbook for an entity, how we determine if the operation was successful, how we
-append events to the logbook. Those assumptions are to be determined by the user, who writes the configuration.
+append events to the logbook. Instead of cluttering the calling site, the user makes those assumptions explicit via a configuration mechanism.
 </p>
 
 <p>
@@ -228,5 +228,5 @@ Check it out on github.
 </p>
 
 <p>
-Benjamin: an open-source library that formalizes one way to solve the idempotency with side-effects problem.  
+Benjamin: an open-source library that formalizes a Lispy way to solve the idempotency with side-effects problem.  
 </p>
