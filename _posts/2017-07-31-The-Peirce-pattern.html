@@ -19,7 +19,7 @@ So let’s say we want to send a newsletter to our users. Easy enough.
 
 <p>
 Oh bugger! The command failed midway, and now you need to resend the
-newsletter to only a portion of the users. But who got our newsletter,
+newsletter to only a portion of the users. But who has gotten our newsletter,
 and who hasn’t?
 </p>
 
@@ -29,8 +29,7 @@ Back to the whiteboard.
 
 <p>
 We need to track the success of the sending operation, and log it
-along with our user entity. In other words, we need a logbook for our
-entity.
+along with our user entity. In other words, we need a logbook.
 </p>
 
 <p>
@@ -73,7 +72,10 @@ A logbook is flexible because you can record all kinds of events that occured wi
 
 <p>
 We can tell at first glance that we have sent our user a welcome email, two subscription reminders and three newsletters.
-This gives us the ability to fake idempotency for our communication operations. In other words, we can run the <code>send-newsletter</code> as much as we want, and still make sure that the newsletter gets sent only if it needs to be. 
+</p>
+
+<p>
+How shall we achieve idempotency for our communication operations? In other words, we want to run the <code>send-newsletter</code> multiple times, and still be sure that the newsletter gets sent only if it needs to be. 
 </p>
 
 <div class="org-src-container">
@@ -171,7 +173,7 @@ Idempotent operations are often used in the design of network protocols, where a
 </blockquote>
 
 <p>
-If you have read SICP, you may remember how we muster means of abstraction to generalize a problem. This allows us in turn to to devise a solution for a whole class of related problems. What our solution lacks is generality. 
+If you have read SICP, you may remember how we muster means of abstraction to generalize a problem. This allows us in turn to devise a solution for a whole class of related problems. What our solution lacks is generality. 
 </p>
 
 <div class="org-src-container">
