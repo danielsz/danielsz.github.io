@@ -8,12 +8,22 @@ categories: clojure idempotency side_effects patterns
 
 
 <p>
+TL:DR; Benjamin: an open-source library that formalizes a Lispy way to implement idempotency with side-effects.  
+</p>
+
+
+<div class="figure">
+<p><img src="images/benjamin.jpg" alt="benjamin.jpg" />
+</p>
+</div>
+
+<p>
 So let’s say we want to send a newsletter to our users. Easy enough.
 </p>
 
 <div class="org-src-container">
-<pre class="src src-clojure"><span style="color: #707183;">(</span><span style="color: #a020f0;">doseq</span> <span style="color: #7388d6;">[</span>user users<span style="color: #7388d6;">]</span>
-  <span style="color: #7388d6;">(</span>send-newsletter user<span style="color: #7388d6;">)</span><span style="color: #707183;">)</span>
+<pre class="src src-clojure"><span style="color: #8c8c8c;">(</span><span style="color: #b48ead;">doseq</span> <span style="color: #93a8c6;">[</span>user users<span style="color: #93a8c6;">]</span>
+  <span style="color: #93a8c6;">(</span>send-newsletter user<span style="color: #93a8c6;">)</span><span style="color: #8c8c8c;">)</span>
 </pre>
 </div>
 
@@ -37,7 +47,7 @@ Our logbook may look like this:
 </p>
 
 <div class="org-src-container">
-<pre class="src src-clojure"><span style="color: #707183;">{</span><span style="color: #008b8b;">:logbook</span> <span style="color: #7388d6;">[</span><span style="color: #909183;">{</span><span style="color: #008b8b;">:newsletter</span> timestamp<span style="color: #909183;">}</span><span style="color: #7388d6;">]</span><span style="color: #707183;">}</span>
+<pre class="src src-clojure"><span style="color: #8c8c8c;">{</span><span style="color: #d08770;">:logbook</span> <span style="color: #93a8c6;">[</span><span style="color: #b0b1a3;">{</span><span style="color: #d08770;">:newsletter</span> timestamp<span style="color: #b0b1a3;">}</span><span style="color: #93a8c6;">]</span><span style="color: #8c8c8c;">}</span>
 </pre>
 </div>
 
@@ -46,9 +56,9 @@ Over time, we will send many newsletters, and our logbook will look like this:
 </p>
 
 <div class="org-src-container">
-<pre class="src src-clojure"><span style="color: #707183;">{</span><span style="color: #008b8b;">:logbook</span> <span style="color: #7388d6;">[</span><span style="color: #909183;">{</span><span style="color: #008b8b;">:newsletter</span> timestamp<span style="color: #909183;">}</span>
-           <span style="color: #909183;">{</span><span style="color: #008b8b;">:newsletter</span> timestamp<span style="color: #909183;">}</span>
-           <span style="color: #909183;">{</span><span style="color: #008b8b;">:newsletter</span> timestamp<span style="color: #909183;">}</span><span style="color: #7388d6;">]</span><span style="color: #707183;">}</span>
+<pre class="src src-clojure"><span style="color: #8c8c8c;">{</span><span style="color: #d08770;">:logbook</span> <span style="color: #93a8c6;">[</span><span style="color: #b0b1a3;">{</span><span style="color: #d08770;">:newsletter</span> timestamp<span style="color: #b0b1a3;">}</span>
+           <span style="color: #b0b1a3;">{</span><span style="color: #d08770;">:newsletter</span> timestamp<span style="color: #b0b1a3;">}</span>
+           <span style="color: #b0b1a3;">{</span><span style="color: #d08770;">:newsletter</span> timestamp<span style="color: #b0b1a3;">}</span><span style="color: #93a8c6;">]</span><span style="color: #8c8c8c;">}</span>
 </pre>
 </div>
 
@@ -57,16 +67,16 @@ A logbook is flexible because you can record all kinds of events that occured wi
 </p>
 
 <div class="org-src-container">
-<pre class="src src-clojure"><span style="color: #707183;">{</span><span style="color: #008b8b;">:first-name</span> <span style="color: #8b2252;">"Benjamin"</span>
- <span style="color: #008b8b;">:last-name</span> <span style="color: #8b2252;">"Peirce"</span>
- <span style="color: #008b8b;">:occupation</span> <span style="color: #8b2252;">"Mathematician"</span>
- <span style="color: #008b8b;">:email</span> <span style="color: #8b2252;">"benjamin.peirce@harvard.edu"</span>
- <span style="color: #008b8b;">:logbook</span> <span style="color: #7388d6;">[</span><span style="color: #909183;">{</span><span style="color: #008b8b;">:welcome-email</span> timestamp<span style="color: #909183;">}</span>
-           <span style="color: #909183;">{</span><span style="color: #008b8b;">:subscription-reminder</span> timestamp<span style="color: #909183;">}</span>
-           <span style="color: #909183;">{</span><span style="color: #008b8b;">:subscription-reminder</span> timestamp<span style="color: #909183;">}</span>
-           <span style="color: #909183;">{</span><span style="color: #008b8b;">:newsletter</span> timestamp<span style="color: #909183;">}</span>
-           <span style="color: #909183;">{</span><span style="color: #008b8b;">:newsletter</span> timestamp<span style="color: #909183;">}</span>
-           <span style="color: #909183;">{</span><span style="color: #008b8b;">:newsletter</span> timestamp<span style="color: #909183;">}</span><span style="color: #7388d6;">]</span><span style="color: #707183;">}</span>
+<pre class="src src-clojure"><span style="color: #8c8c8c;">{</span><span style="color: #d08770;">:first-name</span> <span style="color: #a3be8c;">"Benjamin"</span>
+ <span style="color: #d08770;">:last-name</span> <span style="color: #a3be8c;">"Peirce"</span>
+ <span style="color: #d08770;">:occupation</span> <span style="color: #a3be8c;">"Mathematician"</span>
+ <span style="color: #d08770;">:email</span> <span style="color: #a3be8c;">"benjamin.peirce@harvard.edu"</span>
+ <span style="color: #d08770;">:logbook</span> <span style="color: #93a8c6;">[</span><span style="color: #b0b1a3;">{</span><span style="color: #d08770;">:welcome-email</span> timestamp<span style="color: #b0b1a3;">}</span>
+           <span style="color: #b0b1a3;">{</span><span style="color: #d08770;">:subscription-reminder</span> timestamp<span style="color: #b0b1a3;">}</span>
+           <span style="color: #b0b1a3;">{</span><span style="color: #d08770;">:subscription-reminder</span> timestamp<span style="color: #b0b1a3;">}</span>
+           <span style="color: #b0b1a3;">{</span><span style="color: #d08770;">:newsletter</span> timestamp<span style="color: #b0b1a3;">}</span>
+           <span style="color: #b0b1a3;">{</span><span style="color: #d08770;">:newsletter</span> timestamp<span style="color: #b0b1a3;">}</span>
+           <span style="color: #b0b1a3;">{</span><span style="color: #d08770;">:newsletter</span> timestamp<span style="color: #b0b1a3;">}</span><span style="color: #93a8c6;">]</span><span style="color: #8c8c8c;">}</span>
 </pre>
 </div>
 
@@ -75,13 +85,20 @@ We can tell at first glance that we have sent our user a welcome email, two subs
 </p>
 
 <p>
-How shall we achieve idempotency for our communication operations? In other words, we want to run the <code>send-newsletter</code> multiple times, and still be sure that the newsletter gets sent only if it needs to be. 
+This is all the information we need to ensure idempotency when sending email to the user. We will see how in a moment, but the net outcome is that we can run <code>send-newsletter</code> multiple times, and still be sure that the newsletter gets sent only if it needs to be. 
 </p>
 
+<blockquote>
+<p>
+In computing, an idempotent operation is one that has no additional effect if it is called more than once with the same input parameters. 
+In mathematics, an idempotent operation is one where <i>f</i> (<i>f</i> (x)) = <i>f</i> (x).
+</p>
+</blockquote>
+
 <div class="org-src-container">
-<pre class="src src-clojure"><span style="color: #707183;">(</span><span style="color: #a020f0;">doseq</span> <span style="color: #7388d6;">[</span>user users
-        <span style="color: #008b8b;">:when</span> <span style="color: #909183;">(</span>some <span style="color: #709870;">(</span><span style="color: #a020f0;">fn</span> <span style="color: #907373;">[</span>entry<span style="color: #907373;">]</span> <span style="color: #907373;">(</span>is-timestamp-within-range <span style="color: #a0522d;">%</span><span style="color: #907373;">)</span><span style="color: #709870;">)</span> <span style="color: #709870;">(</span>filter <span style="color: #008b8b;">:newsletter</span> <span style="color: #907373;">(</span><span style="color: #008b8b;">:logbook</span> user<span style="color: #907373;">)</span><span style="color: #709870;">)</span><span style="color: #909183;">)</span><span style="color: #7388d6;">]</span>
-  <span style="color: #7388d6;">(</span>send-newsletter user<span style="color: #7388d6;">)</span><span style="color: #707183;">)</span>
+<pre class="src src-clojure"><span style="color: #8c8c8c;">(</span><span style="color: #b48ead;">doseq</span> <span style="color: #93a8c6;">[</span>user users
+        <span style="color: #d08770;">:when</span> <span style="color: #b0b1a3;">(</span>some <span style="color: #97b098;">(</span><span style="color: #b48ead;">fn</span> <span style="color: #aebed8;">[</span>entry<span style="color: #aebed8;">]</span> <span style="color: #aebed8;">(</span>is-timestamp-within-range <span style="color: #bf616a;">%</span><span style="color: #aebed8;">)</span><span style="color: #97b098;">)</span> <span style="color: #97b098;">(</span>filter <span style="color: #d08770;">:newsletter</span> <span style="color: #aebed8;">(</span><span style="color: #d08770;">:logbook</span> user<span style="color: #aebed8;">)</span><span style="color: #97b098;">)</span><span style="color: #b0b1a3;">)</span><span style="color: #93a8c6;">]</span>
+  <span style="color: #93a8c6;">(</span>send-newsletter user<span style="color: #93a8c6;">)</span><span style="color: #8c8c8c;">)</span>
 </pre>
 </div>
 
@@ -91,9 +108,9 @@ Our welcome email gets sent only once, so an idempotent <code>send-welcome-email
 </p>
 
 <div class="org-src-container">
-<pre class="src src-clojure"><span style="color: #707183;">(</span><span style="color: #a020f0;">doseq</span> <span style="color: #7388d6;">[</span>user users
-        <span style="color: #008b8b;">:when</span> <span style="color: #909183;">(</span>empty? <span style="color: #709870;">(</span>filter <span style="color: #008b8b;">:welcome-email</span> <span style="color: #907373;">(</span><span style="color: #008b8b;">:logbook</span> user<span style="color: #907373;">)</span><span style="color: #709870;">)</span><span style="color: #909183;">)</span><span style="color: #7388d6;">]</span>
-  <span style="color: #7388d6;">(</span>send-welcome-email user<span style="color: #7388d6;">)</span><span style="color: #707183;">)</span>
+<pre class="src src-clojure"><span style="color: #8c8c8c;">(</span><span style="color: #b48ead;">doseq</span> <span style="color: #93a8c6;">[</span>user users
+        <span style="color: #d08770;">:when</span> <span style="color: #b0b1a3;">(</span>empty? <span style="color: #97b098;">(</span>filter <span style="color: #d08770;">:welcome-email</span> <span style="color: #aebed8;">(</span><span style="color: #d08770;">:logbook</span> user<span style="color: #aebed8;">)</span><span style="color: #97b098;">)</span><span style="color: #b0b1a3;">)</span><span style="color: #93a8c6;">]</span>
+  <span style="color: #93a8c6;">(</span>send-welcome-email user<span style="color: #93a8c6;">)</span><span style="color: #8c8c8c;">)</span>
 </pre>
 </div>
 
@@ -104,10 +121,10 @@ We can standardize our predicates and decide that they will operate on a logbook
 </p>
 
 <div class="org-src-container">
-<pre class="src src-clojure"><span style="color: #707183;">(</span><span style="color: #a020f0;">defn</span> <span style="color: #0000ff;">unique?</span> #<span style="color: #7388d6;">(</span>some? <span style="color: #a0522d;">%</span><span style="color: #7388d6;">)</span>
-<span style="color: #7388d6;">(</span><span style="color: #a020f0;">defn</span> <span style="color: #0000ff;">last-month?</span> #<span style="color: #909183;">(</span><span style="color: #a020f0;">if-let</span> <span style="color: #709870;">[</span>date <span style="color: #907373;">(</span>first <span style="color: #6276ba;">(</span>vals <span style="color: #a0522d;">%</span><span style="color: #6276ba;">)</span><span style="color: #907373;">)</span><span style="color: #709870;">]</span>
-                     <span style="color: #709870;">(</span><span style="color: #228b22;">time</span><span style="color: #000000; background-color: #ffffff;">/</span>last-month? date<span style="color: #709870;">)</span>
-                     <span style="color: #008b8b;">false</span><span style="color: #909183;">)</span>
+<pre class="src src-clojure"><span style="color: #8c8c8c;">(</span><span style="color: #b48ead;">defn</span> <span style="color: #8fa1b3;">unique?</span> #<span style="color: #93a8c6;">(</span>some? <span style="color: #bf616a;">%</span><span style="color: #93a8c6;">)</span>
+<span style="color: #93a8c6;">(</span><span style="color: #b48ead;">defn</span> <span style="color: #8fa1b3;">last-month?</span> #<span style="color: #b0b1a3;">(</span><span style="color: #b48ead;">if-let</span> <span style="color: #97b098;">[</span>date <span style="color: #aebed8;">(</span>first <span style="color: #b0b0b3;">(</span>vals <span style="color: #bf616a;">%</span><span style="color: #b0b0b3;">)</span><span style="color: #aebed8;">)</span><span style="color: #97b098;">]</span>
+                     <span style="color: #97b098;">(</span><span style="color: #c0c5ce;">time</span><span style="color: #c0c5ce; background-color: #2b303b;">/</span>last-month? date<span style="color: #97b098;">)</span>
+                     <span style="color: #d08770;">false</span><span style="color: #b0b1a3;">)</span>
 </pre>
 </div>
 
@@ -128,9 +145,9 @@ Now let’s look back at our newsletter sending operation.
 </p>
 
 <div class="org-src-container">
-<pre class="src src-clojure"><span style="color: #707183;">(</span><span style="color: #a020f0;">doseq</span> <span style="color: #7388d6;">[</span>user users
-        <span style="color: #008b8b;">:when</span> <span style="color: #909183;">(</span>some last-month? <span style="color: #709870;">(</span>filter <span style="color: #008b8b;">:newsletter</span> <span style="color: #907373;">(</span><span style="color: #008b8b;">:logbook</span> user<span style="color: #907373;">)</span><span style="color: #709870;">)</span><span style="color: #909183;">)</span><span style="color: #7388d6;">]</span>
-  <span style="color: #7388d6;">(</span>send-newsletter user<span style="color: #7388d6;">)</span><span style="color: #707183;">)</span>
+<pre class="src src-clojure"><span style="color: #8c8c8c;">(</span><span style="color: #b48ead;">doseq</span> <span style="color: #93a8c6;">[</span>user users
+        <span style="color: #d08770;">:when</span> <span style="color: #b0b1a3;">(</span>some last-month? <span style="color: #97b098;">(</span>filter <span style="color: #d08770;">:newsletter</span> <span style="color: #aebed8;">(</span><span style="color: #d08770;">:logbook</span> user<span style="color: #aebed8;">)</span><span style="color: #97b098;">)</span><span style="color: #b0b1a3;">)</span><span style="color: #93a8c6;">]</span>
+  <span style="color: #93a8c6;">(</span>send-newsletter user<span style="color: #93a8c6;">)</span><span style="color: #8c8c8c;">)</span>
 </pre>
 </div>
 
@@ -140,18 +157,18 @@ If the newsletter is sent successfully, we need to write an entry in the logbook
 </p>
 
 <div class="org-src-container">
-<pre class="src src-clojure"><span style="color: #707183;">(</span><span style="color: #a020f0;">doseq</span> <span style="color: #7388d6;">[</span>user users
-        <span style="color: #008b8b;">:when</span> <span style="color: #909183;">(</span>some last-month? <span style="color: #709870;">(</span>filter <span style="color: #008b8b;">:newsletter</span> <span style="color: #907373;">(</span><span style="color: #008b8b;">:logbook</span> user<span style="color: #907373;">)</span><span style="color: #709870;">)</span><span style="color: #909183;">)</span><span style="color: #7388d6;">]</span>
-  <span style="color: #7388d6;">(</span><span style="color: #a020f0;">let</span> <span style="color: #909183;">[</span>response <span style="color: #709870;">(</span>send-newsletter user<span style="color: #709870;">)</span><span style="color: #909183;">]</span>
-    <span style="color: #909183;">(</span><span style="color: #a020f0;">when</span> <span style="color: #709870;">(</span>success? response<span style="color: #709870;">)</span>
-      <span style="color: #709870;">(</span>write-to-logbook user<span style="color: #709870;">)</span><span style="color: #909183;">)</span><span style="color: #7388d6;">)</span><span style="color: #707183;">)</span>
+<pre class="src src-clojure"><span style="color: #8c8c8c;">(</span><span style="color: #b48ead;">doseq</span> <span style="color: #93a8c6;">[</span>user users
+        <span style="color: #d08770;">:when</span> <span style="color: #b0b1a3;">(</span>some last-month? <span style="color: #97b098;">(</span>filter <span style="color: #d08770;">:newsletter</span> <span style="color: #aebed8;">(</span><span style="color: #d08770;">:logbook</span> user<span style="color: #aebed8;">)</span><span style="color: #97b098;">)</span><span style="color: #b0b1a3;">)</span><span style="color: #93a8c6;">]</span>
+  <span style="color: #93a8c6;">(</span><span style="color: #b48ead;">let</span> <span style="color: #b0b1a3;">[</span>response <span style="color: #97b098;">(</span>send-newsletter user<span style="color: #97b098;">)</span><span style="color: #b0b1a3;">]</span>
+    <span style="color: #b0b1a3;">(</span><span style="color: #b48ead;">when</span> <span style="color: #97b098;">(</span>success? response<span style="color: #97b098;">)</span>
+      <span style="color: #97b098;">(</span>write-to-logbook user<span style="color: #97b098;">)</span><span style="color: #b0b1a3;">)</span><span style="color: #93a8c6;">)</span><span style="color: #8c8c8c;">)</span>
 </pre>
 </div>
 
 <p>
 If you have some experience writing web applications, you probably
 recognize this pattern. In REST APIS, <code>put</code> and <code>delete</code> operations
-have similar semantics.
+have similar requirements revolv” around idempotency.
 </p>
 
 <p>
@@ -161,27 +178,21 @@ coined the term “idempotency”.
 
 <blockquote>
 <p>
-In computing, an idempotent operation is one that has no additional effect if it is called more than once with the same input parameters. 
-In mathematics, an idempotent operation is one where <i>f</i> (<i>f</i> (x)) = <i>f</i> (x).
-</p>
-</blockquote>
-
-<blockquote>
-<p>
 Idempotent operations are often used in the design of network protocols, where a request to perform an operation is guaranteed to happen at least once, but might also happen more than once. If the operation is idempotent, then there is no harm in performing the operation two or more times.
 </p>
 </blockquote>
+
 
 <p>
 If you have read SICP, you may remember how we muster means of abstraction to generalize a problem. This allows us in turn to devise a solution for a whole class of related problems. What our solution lacks is generality. 
 </p>
 
 <div class="org-src-container">
-<pre class="src src-clojure"><span style="color: #707183;">(</span><span style="color: #a020f0;">doseq</span> <span style="color: #7388d6;">[</span>user users
-        <span style="color: #008b8b;">:when</span> <span style="color: #909183;">(</span>some last-month? <span style="color: #709870;">(</span>filter <span style="color: #008b8b;">:newsletter</span> <span style="color: #907373;">(</span><span style="color: #008b8b;">:logbook</span> user<span style="color: #907373;">)</span><span style="color: #709870;">)</span><span style="color: #909183;">)</span><span style="color: #7388d6;">]</span>
-  <span style="color: #7388d6;">(</span><span style="color: #a020f0;">let</span> <span style="color: #909183;">[</span>response <span style="color: #709870;">(</span>send-newsletter user<span style="color: #709870;">)</span><span style="color: #909183;">]</span>
-    <span style="color: #909183;">(</span><span style="color: #a020f0;">when</span> <span style="color: #709870;">(</span>success? response<span style="color: #709870;">)</span>
-      <span style="color: #709870;">(</span>write-to-logbook user<span style="color: #709870;">)</span><span style="color: #909183;">)</span><span style="color: #7388d6;">)</span><span style="color: #707183;">)</span>
+<pre class="src src-clojure"><span style="color: #8c8c8c;">(</span><span style="color: #b48ead;">doseq</span> <span style="color: #93a8c6;">[</span>user users
+        <span style="color: #d08770;">:when</span> <span style="color: #b0b1a3;">(</span>some last-month? <span style="color: #97b098;">(</span>filter <span style="color: #d08770;">:newsletter</span> <span style="color: #aebed8;">(</span><span style="color: #d08770;">:logbook</span> user<span style="color: #aebed8;">)</span><span style="color: #97b098;">)</span><span style="color: #b0b1a3;">)</span><span style="color: #93a8c6;">]</span>
+  <span style="color: #93a8c6;">(</span><span style="color: #b48ead;">let</span> <span style="color: #b0b1a3;">[</span>response <span style="color: #97b098;">(</span>send-newsletter user<span style="color: #97b098;">)</span><span style="color: #b0b1a3;">]</span>
+    <span style="color: #b0b1a3;">(</span><span style="color: #b48ead;">when</span> <span style="color: #97b098;">(</span>success? response<span style="color: #97b098;">)</span>
+      <span style="color: #97b098;">(</span>write-to-logbook user<span style="color: #97b098;">)</span><span style="color: #b0b1a3;">)</span><span style="color: #93a8c6;">)</span><span style="color: #8c8c8c;">)</span>
 </pre>
 </div>
 
@@ -190,11 +201,11 @@ This ad-hoc snippet really boils down to:
 </p>
 
 <div class="org-src-container">
-<pre class="src src-clojure"><span style="color: #707183;">(</span><span style="color: #a020f0;">doseq</span> <span style="color: #7388d6;">[</span>entity entities
-        <span style="color: #008b8b;">:when</span> <span style="color: #909183;">(</span>some pred logbook<span style="color: #909183;">)</span><span style="color: #7388d6;">]</span>
-  <span style="color: #7388d6;">(</span><span style="color: #a020f0;">let</span> <span style="color: #909183;">[</span>response <span style="color: #709870;">(</span>operation entity<span style="color: #709870;">)</span><span style="color: #909183;">]</span>
-    <span style="color: #909183;">(</span><span style="color: #a020f0;">when</span> <span style="color: #709870;">(</span>success? response<span style="color: #709870;">)</span>
-      <span style="color: #709870;">(</span>persist entity<span style="color: #709870;">)</span><span style="color: #909183;">)</span><span style="color: #7388d6;">)</span><span style="color: #707183;">)</span>
+<pre class="src src-clojure"><span style="color: #8c8c8c;">(</span><span style="color: #b48ead;">doseq</span> <span style="color: #93a8c6;">[</span>entity entities
+        <span style="color: #d08770;">:when</span> <span style="color: #b0b1a3;">(</span>some pred logbook<span style="color: #b0b1a3;">)</span><span style="color: #93a8c6;">]</span>
+  <span style="color: #93a8c6;">(</span><span style="color: #b48ead;">let</span> <span style="color: #b0b1a3;">[</span>response <span style="color: #97b098;">(</span>operation entity<span style="color: #97b098;">)</span><span style="color: #b0b1a3;">](</span>pn-get-property <span style="color: #d08770;">:base-directory</span><span style="color: #b0b1a3;">)</span>
+    <span style="color: #b0b1a3;">(</span><span style="color: #b48ead;">when</span> <span style="color: #97b098;">(</span>success? response<span style="color: #97b098;">)</span>
+      <span style="color: #97b098;">(</span>persist entity<span style="color: #97b098;">)</span><span style="color: #b0b1a3;">)</span><span style="color: #93a8c6;">)</span><span style="color: #8c8c8c;">)</span>
 </pre>
 </div>
 
@@ -203,9 +214,9 @@ With proper design and the magic of macros, we can actually write the following:
 </p>
 
 <div class="org-src-container">
-<pre class="src src-clojure"><span style="color: #707183;">(</span><span style="color: #a020f0;">doseq</span> <span style="color: #7388d6;">[</span>entity entities<span style="color: #7388d6;">]</span>
-  <span style="color: #7388d6;">(</span>with-logbook entity event
-    <span style="color: #909183;">(</span>operation entity<span style="color: #909183;">)</span><span style="color: #7388d6;">)</span><span style="color: #707183;">)</span>
+<pre class="src src-clojure"><span style="color: #8c8c8c;">(</span><span style="color: #b48ead;">doseq</span> <span style="color: #93a8c6;">[</span>entity entities<span style="color: #93a8c6;">]</span>
+  <span style="color: #93a8c6;">(</span>with-logbook entity event
+    <span style="color: #b0b1a3;">(</span>operation entity<span style="color: #b0b1a3;">)</span><span style="color: #93a8c6;">)</span><span style="color: #8c8c8c;">)</span>
 </pre>
 </div>
 
@@ -216,17 +227,27 @@ The entity (<code>user</code>), the operation (<code>send-newsletter</code>) and
 
 <p>
 All the rest has been made implicit: how we retrieve the logbook for an entity, how we determine if the operation was successful, how we
-append events to the logbook. Instead of cluttering the calling site, the user makes those assumptions explicit via a configuration mechanism.
+append events to the logbook. Instead of cluttering the calling site, the user makes those assumptions explicit via a configuration mechanism. From then on, the <code>with-logbook</code> macro will do the reshuffle and the wiring behind the scenes. 
 </p>
 
 <p>
-This is the value proposal of Benjamin. It relies on traditional Lisp features such as macros and dynamic scope. It is not guaranteed to fit all use cases, but chances are it will some.
+This is the value proposal of Benjamin, which I’m open sourcing today. Actual production code looks like this: 
+</p>
+
+<div class="org-src-container">
+<pre class="src src-clojure"><span style="color: #8c8c8c;">(</span><span style="color: #b48ead;">defn</span> <span style="color: #8fa1b3;">send-subscribed</span> <span style="color: #93a8c6;">[</span>user<span style="color: #93a8c6;">]</span>
+  <span style="color: #93a8c6;">(</span><span style="color: #b48ead;">let</span> <span style="color: #b0b1a3;">[</span>to <span style="color: #97b098;">(</span><span style="color: #d08770;">:email</span> user<span style="color: #97b098;">)</span>
+        subject <span style="color: #a3be8c;">"You have been successfully subscribed"</span>
+        body template<span style="color: #b0b1a3;">]</span>
+    <span style="color: #b0b1a3;">(</span>with-logbook user <span style="color: #d08770;">:subscribed</span>
+      <span style="color: #97b098;">(</span>email to subject body<span style="color: #97b098;">)</span><span style="color: #b0b1a3;">)</span><span style="color: #93a8c6;">)</span><span style="color: #8c8c8c;">)</span>
+</pre>
+</div>
+
+<p>
+This syntactic goodness comes at the cost of dynamic scoping, but the present use case doesn’t lay out the perils typical of resource management, for example. Sure, the configuration is implicit, but it is set once for the lifetime of the application and needn’t change. Still, it is a hack, and rather Lispy at that, relying on features Clojurians would normally eschew, macros and dynamic scope. It not guaranteed to fit all use cases, but chances are it will some. I see it as a tiny library that packs a punch, and I for one am embracing it.  
 </p>
 
 <p>
 Check it out on github.
-</p>
-
-<p>
-Benjamin: an open-source library that formalizes a Lispy way to implement idempotency with side-effects.  
 </p>
