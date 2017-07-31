@@ -14,7 +14,7 @@ categories: clojure idempotency side_effects patterns
 </div>
 
 <p>
-TL:DR; Benjamin: an open-source library that formalizes a Lispy way to implement idempotency with side-effects.  
+tl;dr Benjamin, an open-source library that proposes a Lispy way to implement idempotency with side-effects.
 </p>
 
 <p>
@@ -85,7 +85,7 @@ We can tell at first glance that we have sent our user a welcome email, two subs
 </p>
 
 <p>
-This is all the information we need to ensure idempotency when sending email to the user. We will see how in a moment, but the net outcome is that we can run <code>send-newsletter</code> multiple times, and still be sure that the newsletter gets sent only if it needs to be. 
+This is all the information we need to ensure idempotency when sending email to the user. We will expand on the how in a moment, but the net outcome is that we can run <code>send-newsletter</code> multiple times, and still be sure that the newsletter gets sent only if it needs to be. 
 </p>
 
 <blockquote>
@@ -104,7 +104,7 @@ In mathematics, an idempotent operation is one where <i>f</i> (<i>f</i> (x)) = <
 
 <p>
 We send our newsletters once a month, so the <code>is-timestamp-within-range</code> predicate checks if the recorded timestamp falls in that interval.
-Our welcome email gets sent only once, so an idempotent <code>send-welcome-email</code> would look a little bit different:
+On the other hand, our welcome email gets sent only once, so an idempotent <code>send-welcome-email</code> would look a little bit different:
 </p>
 
 <div class="org-src-container">
@@ -115,9 +115,7 @@ Our welcome email gets sent only once, so an idempotent <code>send-welcome-email
 </div>
 
 <p>
-In other words, we architecture our operations around events and predicates. 
-In our example, the events are <code>:welcome-email</code>, <code>:subscription-reminder</code> and <code>:newsletter</code>. 
-We can standardize our predicates and decide that they will operate on a logbook entry (if found):
+We architecture our operations around events and predicates. In our example, the events are <code>:welcome-email</code>, <code>:subscription-reminder</code> and <code>:newsletter</code>. We can standardize our predicates and decide that they will operate on a logbook entry (if found):
 </p>
 
 <div class="org-src-container">
@@ -168,12 +166,7 @@ If the newsletter is sent successfully, we need to write an entry in the logbook
 <p>
 If you have some experience writing web applications, you probably
 recognize this pattern. In REST APIS, <code>put</code> and <code>delete</code> operations
-have similar requirements revolv” around idempotency.
-</p>
-
-<p>
-I call it the “Peirce pattern”, after the American mathematician who
-coined the term “idempotency”. 
+have similar requirements revolving around idempotency.
 </p>
 
 <blockquote>
@@ -182,6 +175,10 @@ Idempotent operations are often used in the design of network protocols, where a
 </p>
 </blockquote>
 
+<p>
+I call it the “Peirce pattern”, after the American mathematician who
+coined the term “idempotency”. 
+</p>
 
 <p>
 If you have read SICP, you may remember how we muster means of abstraction to generalize a problem. This allows us in turn to devise a solution for a whole class of related problems. What our solution lacks is generality. 
@@ -245,9 +242,9 @@ This is the value proposal of Benjamin, which I’m open sourcing today. Actual 
 </div>
 
 <p>
-This syntactic goodness comes at the cost of dynamic scoping, but the present use case doesn’t lay out the perils typical of resource management, for example. Sure, the configuration is implicit, but it is set once for the lifetime of the application and needn’t change. Still, it is a hack, and rather Lispy at that, relying on features Clojurians would normally eschew, macros and dynamic scope. It not guaranteed to fit all use cases, but chances are it will some. I see it as a tiny library that packs a punch, and I for one am embracing it.  
+This syntactic goodness comes at the cost of dynamic scoping, but the present use case doesn’t lay out the <a href="https://stuartsierra.com/2013/03/29/perils-of-dynamic-scope">perils</a> typical of resource management, for example. Sure, the configuration is implicit, but it only references code and ought to be set once for the lifetime of the application. Still, it is a hack, and rather Lispy at that, relying on features Clojurians would normally eschew, macros and dynamic scope. It not guaranteed to fit all use cases, but chances are it will some. I see it as a tiny library that packs a punch, and I for one am embracing it.  
 </p>
 
 <p>
-Check it out on github.
+Check out <a href="https://github.com/danielsz/benjamin">Benjamin</a> on Github.
 </p>
