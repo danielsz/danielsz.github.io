@@ -159,13 +159,15 @@ Let’s standardize our predicates and make them operate uniformly on one logboo
 This allows us to compose them neatly with logbook sequences.
 </p>
 
-<pre class="example">
-(some unique? (filter :welcome-email (:logbook user)))
+<div class="org-src-container">
+<pre class="src src-clojure"><span style="color: #707183;">(</span>some unique? <span style="color: #7388d6;">(</span>filter <span style="color: #008b8b;">:welcome-email</span> <span style="color: #909183;">(</span><span style="color: #008b8b;">:logbook</span> user<span style="color: #909183;">)</span><span style="color: #7388d6;">)</span><span style="color: #707183;">)</span>
 </pre>
+</div>
 
-<pre class="example">
-(some last-month? (filter :newsletter (:logbook user)))
+<div class="org-src-container">
+<pre class="src src-clojure"><span style="color: #707183;">(</span>some last-month? <span style="color: #7388d6;">(</span>filter <span style="color: #008b8b;">:newsletter</span> <span style="color: #909183;">(</span><span style="color: #008b8b;">:logbook</span> user<span style="color: #909183;">)</span><span style="color: #7388d6;">)</span><span style="color: #707183;">)</span>
 </pre>
+</div>
 
 <p>
 We architecture our operations around events and predicates. In our example, the events are <code>:welcome-email</code>, <code>:subscription-reminder</code> and <code>:newsletter</code>.  Now let’s look back at our newsletter sending operation. 
