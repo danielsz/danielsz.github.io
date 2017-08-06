@@ -9,7 +9,7 @@ categories: clojure idempotency side_effects patterns
 
 
 <div class="figure">
-<p><img src="file:///images/benjamin.jpg" alt="benjamin.jpg" />
+<p><img src="images/benjamin.jpg" alt="benjamin.jpg" />
 </p>
 </div>
 
@@ -72,11 +72,19 @@ What we want really is procedural idempotency for a period of time. For the span
 </p>
 
 <p>
-How do we achieve this?
+Another way to put it is that we want self-cancelling idempotency. 
 </p>
 
 <p>
-With a logbook. It looks like this:
+There are numerous examples of this mode of operation in the physical world. Take an elevator, for example. When you press the button to the sixth floor, you can press the button again without fear of being catapulted to the twelth floor. After the roundtrip, the button becomes enabled again.
+</p>
+
+<p>
+How do we emulate this type of functionality?
+</p>
+
+<p>
+One way to do it is with a logbook. It looks like this:
 </p>
 
 <div class="org-src-container">
