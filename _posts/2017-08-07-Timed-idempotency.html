@@ -18,7 +18,7 @@ tl;dr Benjamin, time-constrained idempotency with side-effects.
 </p>
 
 <p>
-A function with side-effects is idempotent if successive invocations don’t repeat the side-effects beyond its initial run.
+A procedure with side-effects is idempotent if successive invocations don’t repeat the side-effects beyond its initial run.
 </p>
 
 <p>
@@ -26,7 +26,7 @@ This is not the same as idempotency in the mathematical or functional programmin
 </p>
 
 <p>
-Idempotency is an overloaded term. In Mathematics, it is a function that satisfies  <i>f</i> (<i>f</i> (x)) = <i>f</i> (x). <code>abs()</code> is idempotent (<i>f</i> (x) = |x|), while <code>pow()</code> (<i>f</i> (x) = x\texttwosuperior{}) is not. 
+Idempotency is an overloaded term. In Mathematics, it is a function that satisfies  <i>f</i> (<i>f</i> (x)) = <i>f</i> (x). <code>abs()</code> is idempotent (<i>f</i> (x) = |x|), while <code>pow()</code> (<i>f</i> (x) = x&sup2;) is not. 
 </p>
 
 <p>
@@ -41,9 +41,9 @@ In computing, the focus shifts from functional composition to sequential composi
 <p>
 Pure functions are defined through this lens. Not all pure functions
 are idempotent in the mathematical sense, but all pure functions are
-idempotent with regards to their return value. And so are always
-eligible for memoization, an optimization technique. The value
-returned is computed once for a given input and cached henceforth.
+idempotent with regards to their return value. And so are eligible for
+memoization, an optimization technique. The return value is computed
+once for a given input and cached henceforth.
 </p>
 
 <p>
@@ -69,7 +69,7 @@ Those implementations are often ad-hoc. Moreover, we often need to <b>reconsider
 </p>
 
 <p>
-In the following sections of this article, we will see how we can derive an abstraction from a specific use case. And at the very end, we will introduce a library that provides that abstraction ready for use.
+In the following sections of this article, we will see how we can derive an abstraction from a specific use case. And at the very end, we will introduce a library that provides that abstraction ready for (re)use.
 </p>
 
 <p>
@@ -100,7 +100,11 @@ What we want really is procedural idempotency for a period of time. For the span
 </p>
 
 <p>
-Another way to put it is that we want self-cancelling idempotency. Or think of it as cyclical idempotency. Or something along the lines of conditional idempotency. It doesn’t really matter how you call it. To keep it simple, I call it timed idempotency.
+Another way to put it is that we want self-cancelling idempotency. Or
+think of it as cyclical idempotency. Or something along the lines of
+conditional idempotency, controlled idempotency or parametrisable
+idempotency. It doesn’t really matter what you call it. To keep it
+simple, I call it timed idempotency.
 </p>
 
 <p>
@@ -210,7 +214,7 @@ This allows us to compose them neatly with logbook sequences.
 </div>
 
 <p>
-We architecture our operations around events and predicates. In our example, the events are <code>:welcome-email</code>, <code>:subscription-reminder</code> and <code>:newsletter</code>.  Now let’s look back at our newsletter sending operation. 
+We architecture our solution around events and predicates. In our example, the events are <code>:welcome-email</code>, <code>:subscription-reminder</code> and <code>:newsletter</code>.  Now let’s look back at our newsletter sending operation. 
 </p>
 
 <div class="org-src-container">
@@ -236,14 +240,10 @@ If the newsletter is sent successfully, we need to write an entry in the logbook
 
 <p>
 If you have some experience writing applications, you probably
-recognize this pattern. 
-</p>
-
-<p>
-And if you have read SICP, you may remember how we muster means of
-abstraction to generalize a problem. This allows us in turn to devise
-a solution for a whole class of related problems. What our solution
-lacks is generality.
+recognize this pattern. And if you have read SICP, you may remember
+how we muster means of abstraction to generalize a problem. This
+allows us in turn to devise a solution for a whole class of related
+problems. What our solution lacks is generality.
 </p>
 
 <div class="org-src-container">
@@ -295,13 +295,14 @@ scenes.
 </p>
 
 <p>
-It is useful to have that kind of functionality decoupled from application code. 
-This is the value proposal of Benjamin, which I’m open sourcing
-today. It’s a small library, 9 lines of macro code and the same amount
-for a helper function, very Lispy in spirit.  
-I’ve been using it whenever I recognize the pattern. kind of idempotency
-I need to implement.
+It is useful to have that kind of functionality decoupled from
+application code.  This is the value proposal of Benjamin, which I’m
+open sourcing today. It’s a small library, 9 lines of macro code and
+the same amount for a helper function, very Lispy in spirit.  I’ve
+been using it every time I recognized the need for timed idempotency. 
 </p>
+
+
 
 <p>
 Check out <a href="https://github.com/danielsz/benjamin">Benjamin</a> on Github.
