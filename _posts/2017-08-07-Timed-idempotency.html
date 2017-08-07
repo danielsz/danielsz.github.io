@@ -42,7 +42,7 @@ In computing, the focus shifts from functional composition to sequential composi
 Pure functions are defined through this lens. Not all pure functions
 are idempotent in the mathematical sense, but all pure functions are
 idempotent with regards to their return value. And so are eligible for
-memoization, an optimization technique. The return value is computed
+memoization, an optimization technique in which the return value is computed
 once for a given input and cached henceforth.
 </p>
 
@@ -94,7 +94,9 @@ But one month later, with the latest newsletter hot off the press, nobody would 
 </p>
 
 <p>
-What we want really is procedural idempotency for a period of time. For the span of a month, the interval between newsletter issues, <code>send-newsletter</code> should be procedurally idempotent. But not beyond that.
+What we want really is procedural idempotency for a period of
+time. <code>send-newsletter</code> should be procedurally idempotent in the
+interval between newsletter issues, but not beyond.
 </p>
 
 <p>
@@ -223,8 +225,7 @@ We architecture our solution around events and predicates. In our example, the e
 </div>
 
 <p>
-Something is missing, isn’t it?
-If the newsletter is sent successfully, we need to write an entry in the logbook. 
+Something is missing, isn’t it? If the newsletter is sent successfully, we need to write an entry in the logbook. 
 </p>
 
 <div class="org-src-container">
@@ -294,13 +295,11 @@ scenes.
 
 <p>
 It is useful to have that kind of functionality decoupled from
-application code.  This is the value proposal of Benjamin, which I’m
-open sourcing today. It’s a small library, 9 lines of macro code and
-the same amount for a helper function, very Lispy in spirit.  I’ve
-been using it every time I recognized the need for timed idempotency. 
+application code because the need for timed idempotency pops up time
+and again.  This is the value proposal of Benjamin, which I’m open
+sourcing today. It’s a small library, 9 lines of macro code and the
+same amount for a helper function. Quite Lispy in style. 
 </p>
-
-
 
 <p>
 Check out <a href="https://github.com/danielsz/benjamin">Benjamin</a> on Github.
