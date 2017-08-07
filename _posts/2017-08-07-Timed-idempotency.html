@@ -1,3 +1,12 @@
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#orgb3f08ab">1. return the same value</a></li>
+<li><a href="#org17447c8">2. not repeat the side-effect</a></li>
+</ul>
+</div>
+</div>
 ---
 title: Timed idempotency
 layout: post
@@ -26,12 +35,38 @@ This is not the same as idempotency in the mathematical or functional programmin
 </p>
 
 <p>
-Thus, idempotency is an overloaded term. It can refer to the return value (being computed only once), or to side-effects (occuring only once). It would be useful then to distinguish the two forms by different names. We could settle on functional idempotency (a property applying to pure functions) versus procedural idempotency (a property applying to side-effects).
+Thus, idempotency is an overloaded term. 
+In Mathematics, it is a function that satisfies  <i>f</i> (<i>f</i> (x)) = <i>f</i> (x). <code>abs()</code> is idempotent (<i>f</i> (x) = |x|), while <code>pow()</code> (<i>f</i> (x) = x\texttwosuperior{}) is not. 
 </p>
 
 <p>
-A known optimization technique for functional idempotency is memoization. The value returned is computed once for a given input and cached henceforth.
-Procedural idempotency, on the other hand, is much less amenable to optimization. Procedures are referentally opaque. 
+In computing, the focus shifts from functional composition to sequential composition. This makes sense. Operations often need to be repeated. The question becomes: if I run function <i>f</i> twice with the same input, will it: 
+</p>
+
+<div id="outline-container-orgb3f08ab" class="outline-2">
+<h2 id="orgb3f08ab"><span class="section-number-2">1</span> return the same value</h2>
+</div>
+<div id="outline-container-org17447c8" class="outline-2">
+<h2 id="org17447c8"><span class="section-number-2">2</span> not repeat the side-effect</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+Pure functions are defined through this lens. Not all pure functions
+are idempotent in the mathematical sense, but all pure functions are
+idempotent with regards to their return value. And so are always
+eligible for memoization, an optimization technique. The value
+returned is computed once for a given input and cached henceforth.
+</p>
+
+<p>
+Procedures, on the other hand, are referentally opaque and much less
+amenable to optimization. It is up to the programmer to propose an
+implementation with idempotency guarantees. 
+</p>
+
+<p>
+When implementing idempotent HTTP verbs (PUT or DELETE, for example),
+we provide an implementation that executes a side-effect on the first
+invocation, while subsequent invocations are effect-free.
 </p>
 
 <blockquote>
@@ -41,7 +76,11 @@ Idempotent operations are often used in the design of network protocols, where a
 </blockquote>
 
 <p>
-When implementing idempotent HTTP verbs (PUT or DELETE, for example), we provide an implementation that executes a side-effect on the first invocation, while subsequent invocations are effect-free. In practice, however, we often need to <b>reconsider</b> the desirability of a side-effect, and act accordingly. 
+Those implementations are often ad-hoc. Moreover, we often need to <b>reconsider</b> the desirability of a side-effect, and act accordingly.
+</p>
+
+<p>
+In the following sections of this article, we will see how we can derive an abstraction from a specific use case.
 </p>
 
 <p>
@@ -72,7 +111,7 @@ What we want really is procedural idempotency for a period of time. For the span
 </p>
 
 <p>
-Another way to put it is that we want self-cancelling idempotency. 
+Another way to put it is that we want self-cancelling idempotency. Or cyclical idempotency. Conditional idempotency.
 </p>
 
 <p>
@@ -269,3 +308,5 @@ This is the value proposal of Benjamin, which I’m open sourcing today.
 <p>
 Check out <a href="https://github.com/danielsz/benjamin">Benjamin</a> on Github.
 </p>
+</div>
+</div>
