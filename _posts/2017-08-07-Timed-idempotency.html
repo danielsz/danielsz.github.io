@@ -26,7 +26,7 @@ This is not the same as idempotency in the mathematical or functional programmin
 </p>
 
 <p>
-Idempotency is an overloaded term. In Mathematics, it is a function that satisfies  <i>f</i> (<i>f</i> (x)) = <i>f</i> (x). <code>abs()</code> is idempotent (<i>f</i> (x) = |x|), while <code>pow()</code> (<i>f</i> (x) = x&sup2;) is not. 
+Idempotency is an overloaded term. In Mathematics, it is a function that satisfies  <i>f</i> (<i>f</i> (x)) = <i>f</i> (x). <code>abs()</code> or <i>f</i> (x) = |x| is idempotent , while <code>pow()</code> or <i>f</i> (x) = x&sup2; is not. 
 </p>
 
 <p>
@@ -52,12 +52,6 @@ amenable to optimization. It is up to the programmer to propose an
 implementation with idempotency guarantees. 
 </p>
 
-<p>
-When implementing idempotent HTTP verbs (PUT or DELETE, for example),
-we provide an implementation that executes a side-effect on the first
-invocation, while subsequent invocations are effect-free.
-</p>
-
 <blockquote>
 <p>
 Idempotent operations are often used in the design of network protocols, where a request to perform an operation is guaranteed to happen at least once, but might also happen more than once. If the operation is idempotent, then there is no harm in performing the operation two or more times.
@@ -65,7 +59,11 @@ Idempotent operations are often used in the design of network protocols, where a
 </blockquote>
 
 <p>
-Those implementations are often ad-hoc. Moreover, we often need to <b>reconsider</b> the desirability of a side-effect, and act accordingly.
+When implementing idempotent HTTP verbs (PUT or DELETE, for example),
+we provide an implementation that executes a side-effect on the first
+invocation but not on subsequent runs. Those implementations are often
+ad-hoc. Moreover, we often need to <b>reconsider</b> the desirability of a
+side-effect, and act accordingly.
 </p>
 
 <p>
