@@ -62,7 +62,7 @@
 (om/root 
  widget
  app-state
- {:target (sel1 :#content)})
+ {:target (sel1 :#testimonials)})
 
 
 

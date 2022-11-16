@@ -77,6 +77,6 @@ testimonials.core.__GT_t14091 = (function __GT_t14091(owner__$1,data__$1,widget_
 }
 return (new testimonials.core.t14091(owner,data,widget,null));
 });
-om.core.root.call(null,testimonials.core.widget,testimonials.core.app_state,new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"target","target",4427965699),document.getElementById("content")], null));
+om.core.root.call(null,testimonials.core.widget,testimonials.core.app_state,new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null,"target","target",4427965699),document.getElementById("testimonials")], null));
 
 //# sourceMappingURL=core.js.map

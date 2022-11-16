@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- 2021-03-19 Fri 01:08 -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lisp &ne; Lambda Calculus</title>
+<meta name="generator" content="Org mode">
+<meta name="author" content="Daniel Szmulewicz">
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: auto;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline; margin-top: 14px;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<link rel="stylesheet" type="text/css" href="css/grid.css">
+<link rel="stylesheet" type="text/css" href="css/post.css">
+<link rel="stylesheet" type="text/css" href="assets/fonts/charter/webfonts/stylesheet.css">
+<link rel="stylesheet" type="text/css" href="css/typography.css">
+<link href="https://fonts.googleapis.com/css?family=Merriweather+Sans|Roboto+Condensed|Source+Serif+Pro|Inconsolata" rel="stylesheet">
+<script src="js/grid.js"></script>
+<script src="js/fathom.js"></script>
+<script type="text/javascript">
+// @license magnet:?xt=urn:btih:e95b018ef3580986a04669f1b5879592219e2a7a&dn=public-domain.txt Public Domain
+<!--/*--><![CDATA[/*><!--*/
+     function CodeHighlightOn(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.add("code-highlighted");
+         target.classList.add("code-highlighted");
+       }
+     }
+     function CodeHighlightOff(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.remove("code-highlighted");
+         target.classList.remove("code-highlighted");
+       }
+     }
+    /*]]>*///-->
+// @license-end
+</script>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        displayAlign: "center",
+        displayIndent: "0em",
+
+        "HTML-CSS": { scale: 100,
+                        linebreaks: { automatic: "false" },
+                        webFont: "TeX"
+                       },
+        SVG: {scale: 100,
+              linebreaks: { automatic: "false" },
+              font: "TeX"},
+        NativeMML: {scale: 100},
+        TeX: { equationNumbers: {autoNumber: "AMS"},
+               MultLineWidth: "85%",
+               TagSide: "right",
+               TagIndent: ".8em"
+             }
+});
+</script>
+<script type="text/javascript"
+        src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS_HTML"></script>
+</head>
+<body>
+<div id="org-div-home-and-up">
+ <a accesskey="h" href="index.html"> UP </a>
+ |
+ <a accesskey="H" href="index.html"> HOME </a>
+</div><div id="content">
+<header>
+<h1 class="title">Lisp &ne; Lambda Calculus</h1>
+</header><p>
+How do you condense a 30 minute talk in 5 minutes? Should you even try? These are the questions I struggled with when someone nudged me to register for the lightning talks. My talk was 30 minute long because I was to jump in if a last-minute incident would prevent someone to get on stage. Call me the backup speaker, if you will. In organizing <i>Heart of Clojure</i>, Arne Brasseur and Martin Klepsch had prepared for every eventuality. Luckily, the event was incident free, and I was relieved of duty. But that someone was right: a lightning talk was the only redeeming option I had before calling it quits. 
+</p>
+
+<p>
+<b>TL;DR</b> Lisp is <b>not</b> a realization of the Lambda Calculus
+</p>
+
+<p>
+My topic was Lisp in the broader context of science. The recursive functions mentioned in McCarthy's seminal paper, <i>Recursive functions of Symbolic Expressions and Their Computation by Machine, Part I</i> refer to the class of functions studied in computability theory. They are interesting because with just three initial functions (successor, constant and projection functions) closed under composition and primitive recursion, one can produce most computable functions studied in number theory (addition, division, factorial, exponential, etc.). 
+</p>
+
+<p>
+<span class="underline">Note:</span> Recursion is the process that consists in defining the value of a function by using other values of the same function. 
+</p>
+
+<p>
+The primitive recursive functions originated with the proof Gödel provided for his incompleteness theorems. They evolved over time with contributions by Jacques Herbrand, Stephen Cole Kleene and Rózsa Péter, among others. With only minor additions, like a minimisation operator, a broader set of functions could be defined, equivalent to those computable by a Turing machine. They are known as the μ-recursive functions.
+</p>
+
+<p>
+One can envision the title of McCarthy's paper as a one-liner that stands in for his theory. It seems to tell us: here is how to mechanically compute a set of partial functions that operate on symbolic expressions. Remember that McCarthy's goal was AI research. The <i>Advice Taker</i> was going to operate on sentences, not numbers. In order to infer facts from them. John McCarthy needed a system that could process formal languages, hence <i>symbolic</i> expressions. And indeed, differentiation of algebraic expressions was among the first achievements of Lisp systems.
+</p>
+
+<p>
+McCarthy's innovation in recursive function theory is known as <i>McCarthy's formalism</i>. John McCarthy showed that writing recursive function definitions using conditional expressions allowed combining the base case and the inductive case into a single formula. In his seminal paper, McCarthy continued to prefer mathematical notation, which he called his publication notation. With the conditional expression defined as: 
+</p>
+
+\begin{equation}
+(p_{1} \rightarrow e_{1},\dotsc,p_{n} \rightarrow e_{n} )
+\end{equation}
+
+<p>
+The traditional brace notation for factorial: 
+</p>
+\begin{equation}
+\operatorname{fac} \left({n}\right) = \begin{cases}
+1 & : n = 0 \\
+\operatorname{mult} \left({n, \operatorname{fac} \left({n - 1}\right)}\right) & : n > 0
+\end{cases}
+\end{equation}
+
+<p>
+Takes this form:
+<img src="images/factorial-original-mccarthy.png" alt="factorial-original-mccarthy.png">
+</p>
+
+<p>
+McCarthy's formalism is regarded as <i>a precise and substantial refinement of the partial recursive functions</i> (Moschovakis, 2001, p. 919). On a real world Lisp 1.5 implementation: 
+</p>
+
+<pre class="example">
+DEFINE ((
+(FACTORIAL (LAMBDA (N) (COND
+((ZEROP N) 1)
+(T (TIMES N (FACTORIAL (SUB1 N)))) )))
+))
+</pre>
+
+<p>
+<span class="underline">Note:</span> DEFINE was called a <i>pseudo-function</i>, they were used for their side-effects. 
+</p>
+
+<p>
+Ignoring for a moment stack considerations, factorial can be expressed in modern Lisps like this:   
+</p>
+
+<div class="org-src-container">
+<pre class="src src-clojure"><span style="color: #707183;">(</span><span style="color: #a020f0;">defn</span> <span style="color: #0000ff;">factorial</span> <span style="color: #7388d6;">[</span>n<span style="color: #7388d6;">]</span>
+  <span style="color: #7388d6;">(</span><span style="color: #a020f0;">if</span> <span style="color: #909183;">(</span>&lt;= n 0<span style="color: #909183;">)</span>
+      1
+      <span style="color: #909183;">(</span>* n <span style="color: #709870;">(</span>factorial <span style="color: #907373;">(</span>dec n<span style="color: #907373;">)</span><span style="color: #709870;">)</span><span style="color: #909183;">)</span><span style="color: #7388d6;">)</span><span style="color: #707183;">)</span>
+</pre>
+</div>
+
+<p>
+Isn't that neat? Well, that is not a coincidence. 
+</p>
+
+<blockquote>
+<p>
+Then mathematical neatness became a goal and led to pruning some features from the core of the language. — John McCarthy, Lisp session, History of Programming Languages
+</p>
+</blockquote>
+
+<p>
+To understand Lisp's origin story is to understand that John McCarthy had a mathematician's perspective, approach and ambition. For example, the Lisp system presented in his paper was purely functional, while the real world implementation from his lab had side-effecting constructs. 
+</p>
+
+<blockquote>
+<p>
+Another way to show that LISP was neater than Turing machines was to write a universal LISP function and show that it is briefer and more comprehensible than the description of a universal Turing machine. — John McCarthy, History of Lisp
+</p>
+</blockquote>
+
+<p>
+It is also telling that while McCarthy envisioned the universal LISP function, he left the implementation as an exercise for the reader. Luckily for us, Steve Russell was that reader, and he did write an implementation. This is the famous metacircular evaluator <code>apply/eval</code> that Alan Kay dubbed the <i>Maxwell equations of computing</i>.
+</p>
+
+<p>
+McCarthy's ambition is made overly clear in <i>A Basis For a Mathematical Theory of Computation</i>, published soon after the seminal paper we mentioned, in which he explains the deficiencies of the current theories, and defines the goals of a new formalism for the science of computation.
+</p>
+
+
+
+<figure id="org8464063">
+<img src="images/HAL5_Leuven.jpg" alt="HAL5_Leuven.jpg">
+
+</figure>
+
+
+<p>
+Back at <i>Heart of Clojure</i>, I carried myself to the registration board, put my name on the list and the title of my lightning talk, <i>Contextualizing Lisp</i>. What on earth was I going to cram in 5 minutes? I had an idea which I discarded every time it popped in my head, yet it got the better of me. Betting on the widespread mischaracterization of Lisp as a derivative of the <i>Lambda Calculus</i>, I burst onto the stage asking for a show of hands: <i>Who thought Lisp was based on the Lambda Calculus? Who thought it wasn't? Who didn't know what to think?</i>
+</p>
+
+<blockquote>
+<p>
+&#x2026; one of the myths concerning LISP that people think up or invent for themselves becomes apparent, and that is that LISP is somehow a realization of the lambda calculus, or that was the intention. The truth is that I didn't understand the lambda calculus, really. — John McCarthy, Lisp session, History of Programming Languages
+</p>
+</blockquote>
+
+<p>
+<span class="underline">Note:</span> Yes, John McCarthy borrowed the lambda notation from Alonzo Church. He also understood it better than he wants you to believe. 
+</p>
+
+<p>
+Sure, it was a gimmick, but it seemed to work. There was some bemusement. People were listening. I wasn't going to go home on an anticlimax after all. How is it possible that we carry so many half-truths and approximations concerning the origins of our field? Is it a failure of our educational institutions that teach STEM without giving the historical and philosophical perspective? Or maybe it's our fault, another aspect of our infamous tendency toward cargo culting? Alfred North Whitehead said that <i>civilization advances by extending the number of important operations which we can perform without thinking of them</i>. If he is right, then the cost of civilization is all the thinking being retired from it.
+</p>
+
+<p>
+Thinking is not driven by answers but by questions. On the stage of <i>Heart of Clojure</i>, I wished I could dwell longer on some points pertaining to the philosophy of science. But in the front row someone was flashing cue cards. Two minutes left.
+</p>
+
+<p>
+Back in the days of McCarthy, computing was attracting scientists from different backgrounds. Mathematics, that we have already established, but also the cognitive sciences, linguistics, etc. The field was emerging, amorphous, malleable. The term <i>computer science</i> was coined in 1961 (a year after McCarthy's Lisp paper). McCarthy was paying close attention to the work done by Allen Newell, Herbert A. Simon and Cliff Shaw on <i>IPL</i>, where list processing originated. The three luminaries wrote an AI program before the term even existed: <i>Logic Theorist</i>, a program that proved theorems in Whitehead and Russell's <i>Principia Mathematica</i>. Yes, the same <i>Principia Mathematica</i> referenced by Gödel in his paper <i>Über formal unentscheidbare Sätze der Principia Mathematica und verwandter Systeme I</i> and where our famous recursive functions come from.
+</p>
+
+<p>
+Giving a sense of how revolutionary that paper was is crucial. Starting with David Hilbert and the axiomatic method, one needs to explain how mathematics tried and failed to establish its own consistency. This chapter in the early 20th century is known as the <i>Foundational crisis of Mathematics</i>. The initial setback was followed by groundbreaking insights in logic, metamathematics and decidability. The <i>Entscheidungsproblem</i>, in particular, set in motion the research that brought forth the computation models that lie at the heart of our programming languages. 
+</p>
+
+<p>
+The shift from philosophical inquiry to applied science is one that is difficult to track indeed. It doesn't help that computability theory was known as recursion theory until leading figures such as Robert I. Soare called for a rebranding of the field. The conflation of the notion of recursion, or mathematical induction, with the notion of computability, or calculability, was deemed detrimental. But this messiness is characteristic and essential to the way science is made. 
+</p>
+
+<p>
+Imagine that thinkers, scientists and inventors would systematically credit their influences: we could go up the chain and draw a chart of scientific innovation. Instead, we have to cross-reference by independent means, relying on educated guesswork, research and investigation. Back in the 17th century, Wilhelm Leibniz thought it would be desirable to mechanize thought. He envisioned the <i>spécieuse générale</i>, a formal language accompanied by the first attempts at arithmetization of syntax. Three centuries later, Kurt Gödel would use this technique with such resounding success that today it bears his name, <i>Gödel numbering</i>. 
+</p>
+
+<p>
+For Leibniz, the ideal language is one where logical relations are so transparent that they exclude any form of ambiguity, leaving room only for calculation. This might sound spurious to our contemporary ears, but three centuries later, David Hilbert asked if there was an algorithm capable of calculating the truth or falsity of mathematical statements. Questions get asked in new ways, redefining the domain of discourse, and sometimes progress is made. 
+</p>
+
+<p>
+Of course, I never got to touch any of that. The five minutes were over. I left the podium and headed to the back of the venue. How did I feel? Highly inadequate. Did I regret it? Not at all. I had a look at the audience from the last rows. The venue was packed. I marveled at the idea that a tenuous commonality such as an interest in a Lisp system is reason enough to grow a community around it. Surely, I would be back sometime, at a conference near you. 
+</p>
+</div>
+</body>
+</html>
