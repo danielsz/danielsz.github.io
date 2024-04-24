@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<!-- 2024-04-25 Thu 06:07 -->
+<!-- 2024-04-25 Thu 06:31 -->
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>The anatomy of a HTTP server</title>
@@ -228,23 +228,19 @@
 <header>
 <h1 class="title">The anatomy of a HTTP server</h1>
 </header><p>
-A Computerphile video made me do it. Computerphile is a Youtube channel about computer science. It features professors explaining technical concepts in an informal setting. The drabness of the backdrop, often a lab, an empty classroom or an office, is compensated by the enthusiasm of the presenter, a jolliness in his demeanor. It is quite British, indeed.
+A Computerphile video made me do it. Computerphile is a Youtube channel about computer science. It features professors explaining technical concepts in an informal setting. The drabness of the backdrop, often an empty classroom, a lab or an office, is counterpoised by the enthusiasm of the presenter, a jolliness in his demeanor. It&rsquo;s quite British, indeed.
 </p>
 
 <p>
-The video in question is titled &ldquo;Coding a Web Server in 25 Lines&rdquo;. It does what is says, or it says what it does. One might wonder what the point is, though. The  world is awash with widely available, highly performant web servers. Education, of course! It&rsquo;s a fun little exercise that upon completion yields a somewhat functional web server. Direct a web browser at it, and voilà! On the Internet, nobody knows you&rsquo;re a dog.
+The video in question is titled &ldquo;Coding a Web Server in 25 Lines&rdquo;. It does what is says, or it says what it does. One might wonder what the point is, though. The world is awash with widely available, highly performant web servers. Education, of course! It&rsquo;s a fun little exercise that upon completion yields a somewhat functional web server. Direct a web browser at it, and voilà! On the Internet, nobody knows you&rsquo;re a dog.
 </p>
 
 <p>
-That&rsquo;s all good and well, but if Computerphile just did it, why do it again? Glad you&rsquo;ve asked. Firstly, writing <a href="https://bruinsslot.jp/post/simple-http-webserver-in-c/">minimalist</a> web servers is a genre unto itself. No, <a href="https://github.com/nir9/fastws/blob/db265120800db324aaae6e6a883210eabce3d865/server.asm">seriously</a>. But there is something else, too. As a Lisper, I couldn&rsquo;t help but notice the workflow: an edit/compile/run affair. How I&rsquo;d prefer  to see the read/eval/print/loop route! Isn&rsquo;t REPL-based development the balm that will heal the world? That is, until a Smalltalker comes along and <a href="https://blog.bracha.org/primordialsoup.html?snapshot=AmpleforthViewer.vfuel&amp;docName=ReplacingREPLs">asks</a> why use a textual interface instead of a graphical one. Either way, interactive development environments à la Lisp, or Smalltalk for that matter, are far from commonplace, and there is plenty of room to make a statement. Sure, this could be an expression of smugness, delusion or loneliness.
+That&rsquo;s all good and well, but if Computerphile just did it, why do it again? Glad you&rsquo;ve asked. Firstly, writing <a href="https://bruinsslot.jp/post/simple-http-webserver-in-c/">minimalist</a> web servers is a genre unto itself. No, <a href="https://github.com/nir9/fastws/blob/db265120800db324aaae6e6a883210eabce3d865/server.asm">seriously</a>. But there is something else, too. As a Lisper, I couldn&rsquo;t help but notice the workflow: an edit/compile/run affair. How I wished it were a read/eval/print/loop instead! Isn&rsquo;t REPL-based development the balm that will heal the world? That is, until a Smalltalker comes along and <a href="https://blog.bracha.org/primordialsoup.html?snapshot=AmpleforthViewer.vfuel&amp;docName=ReplacingREPLs">asks</a> why use a textual interface instead of a graphical one. Either way, interactive development environments à la Lisp, or Smalltalk for that matter, are far from commonplace, and there is plenty of room to make a statement. Sure, this could be an expression of smugness, delusion or loneliness. We never want to be lonely again.
 </p>
 
 <p>
-We never want to be lonely again.
-</p>
-
-<p>
-The one thing that Computerphile teaches you without fail is breaking down problems into smaller chunks. Arguably, the most important lesson of them all. Therefore, the first version of the web server presented to the audience is a diminutive one. It prints out the request and does nothing about it. In Rust, this gives the following:
+The one thing that Computerphile teaches you without fail is breaking down problems into smaller chunks. Arguably, the most important lesson of them all. Therefore, the first version of the HTTP server presented to the audience is a diminutive one. It prints out the request and does nothing about it. In Rust, this gives the following:
 </p>
 
 <div class="org-src-container">
@@ -781,6 +777,17 @@ Even thought so far we&rsquo;ve only seen strings being sent in the bod, I chose
 <p>
 But from a user&rsquo;s perspective, the handler 
 </p>
+
+<div class="hiring" id="org71b7684">
+<p>
+<b>Are you hiring?</b>
+</p>
+
+<p>
+Good!
+</p>
+
+</div>
 </div>
 </body>
 </html>
