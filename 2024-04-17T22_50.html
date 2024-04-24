@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<!-- 2024-04-24 Wed 13:36 -->
+<!-- 2024-04-24 Wed 13:52 -->
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Writing a web server from scratch</title>
@@ -605,7 +605,7 @@ Our TCP listener requires a small modification. It receives an extra argument, t
 </div>
 
 <p>
-As to the underlying machinery, our ServerSocket that establishes TCP connections, well, TCP is a byte-stream protocol, and that is why our Ring adapter needs to transform the response&rsquo;s body to a byte-stream. Once the stream is passed down to the socket, TCP itself will ensure that the data is reliably  transferred over the network, relieving us from the worry. Do you see now why the spec defines a <i>StreamableResponseBody</i> protocol? It allows the user to pass different formats in the body of the response, as long as the adapter is ready to see them, in other words, as long as they satisfy the protocol. Out of the box, Ring comes with implementations for byte-arrays, strings, Clojure sequences, files and Java input streams. Since we are not relying on the Ring libraries but rather are referring to the spec (and building everything from scratch), we will re-implement some of them. 
+As to the underlying machinery, our ServerSocket that establishes TCP connections, well, TCP is a byte-stream protocol, and that is why our Ring adapter needs to transform the response&rsquo;s body to a byte-stream. Once the stream is passed down to the socket, TCP itself will ensure that the data is reliably  transferred over the network, relieving us from the worry. Do you see now why the spec defines a <i>StreamableResponseBody</i> protocol? It allows the user to pass different formats in the body of the response, as long as they satisfy the protocol. Out of the box, Ring comes with implementations for byte-arrays, strings, Clojure sequences, files and Java input streams. Since we are not relying on the Ring libraries but rather are referring to the spec (and building everything from scratch), we will re-implement some of them. 
 </p>
 
 <p>
