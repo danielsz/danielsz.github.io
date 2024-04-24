@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<!-- 2024-04-24 Wed 13:52 -->
+<!-- 2024-04-25 Thu 06:07 -->
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Writing a web server from scratch</title>
+<title>The anatomy of a HTTP server</title>
 <meta name="author" content="Daniel Szmulewicz" />
 <meta name="generator" content="Org Mode" />
 <style type="text/css">
@@ -226,7 +226,7 @@
  <a accesskey="H" href="index.html"> HOME </a>
 </div><div id="content" class="content">
 <header>
-<h1 class="title">Writing a web server from scratch</h1>
+<h1 class="title">The anatomy of a HTTP server</h1>
 </header><p>
 A Computerphile video made me do it. Computerphile is a Youtube channel about computer science. It features professors explaining technical concepts in an informal setting. The drabness of the backdrop, often a lab, an empty classroom or an office, is compensated by the enthusiasm of the presenter, a jolliness in his demeanor. It is quite British, indeed.
 </p>
@@ -583,9 +583,14 @@ We can thus write the following:
 <div class="org-src-container">
 <pre class="src src-clojure"><span style="color: #707183;">(</span><span style="color: #a020f0;">defn</span> <span style="color: #0000ff;">run-adapter</span> <span style="color: #7388d6;">[</span>handler options<span style="color: #7388d6;">]</span>
   <span style="color: #7388d6;">(</span><span style="color: #a020f0;">let</span> <span style="color: #909183;">[</span>server <span style="color: #709870;">(</span>ServerSocket. <span style="color: #907373;">(</span><span style="color: #008b8b;">:port</span> options<span style="color: #907373;">)</span><span style="color: #709870;">)</span><span style="color: #909183;">]</span>
-    <span style="color: #909183;">(</span>tcp-listener server handler<span style="color: #909183;">)</span><span style="color: #7388d6;">)</span><span style="color: #707183;">)</span>
+    <span style="color: #909183;">(</span>tcp-listener server handler<span style="color: #909183;">)</span>
+    <span style="color: #909183;">(</span><span style="color: #a020f0;">fn</span> <span style="color: #0000ff;">close</span> <span style="color: #709870;">[]</span> <span style="color: #709870;">(</span>.close server<span style="color: #709870;">)</span><span style="color: #909183;">)</span><span style="color: #7388d6;">)</span><span style="color: #707183;">)</span>
 </pre>
 </div>
+
+<p>
+The <code>run-adapter</code> function returns a ~close function that we can keep a handle on when we want to close the server gracefully.
+</p>
 
 <p>
 Our TCP listener requires a small modification. It receives an extra argument, the handler, which itself takes a request as argument and returns a response. This way, we are creating an abstraction external to the implementation details of our web server, its transport layer, etc. We are able to supply a Ring adapter to users who can now do webdev without giving a second thought to the underlying machinery. 
@@ -605,7 +610,7 @@ Our TCP listener requires a small modification. It receives an extra argument, t
 </div>
 
 <p>
-As to the underlying machinery, our ServerSocket that establishes TCP connections, well, TCP is a byte-stream protocol, and that is why our Ring adapter needs to transform the response&rsquo;s body to a byte-stream. Once the stream is passed down to the socket, TCP itself will ensure that the data is reliably  transferred over the network, relieving us from the worry. Do you see now why the spec defines a <i>StreamableResponseBody</i> protocol? It allows the user to pass different formats in the body of the response, as long as they satisfy the protocol. Out of the box, Ring comes with implementations for byte-arrays, strings, Clojure sequences, files and Java input streams. Since we are not relying on the Ring libraries but rather are referring to the spec (and building everything from scratch), we will re-implement some of them. 
+As to the underlying machinery, our ServerSocket that establishes TCP connections, well, TCP is a byte-stream protocol, and that is why our Ring adapter needs to transform the response&rsquo;s body to a byte-stream. Once the stream is passed down to the socket, TCP itself will chunk it and ensure that the data is reliably transferred over the network. The <i>StreamableResponseBody</i> protocol allows the user to pass different formats in the body of the response, as long as they satisfy the protocol. They all will be reduced to a stream of bytes. Out of the box, Ring comes with implementations for byte-arrays, strings, Clojure sequences, files and Java input streams. Since we are not relying on the Ring libraries but rather are referring to the spec (and building everything from scratch), we will re-implement some of them. 
 </p>
 
 <p>
@@ -640,15 +645,13 @@ Thus, a protocol method implementation for <i>java.io.File</i> seems highly usef
 </div>
 
 <p>
-Turning the body of the response into an output stream (of bytes) happens after we write the headers of the response to the output stream (as bytes). Therefore, the <code>send-response</code> function is broken in two parts, and accounts for the fact that a response may have no body at all.
+Turning the body of the response into an output stream (of bytes) happens after we write the headers of the response to the output stream (as bytes). Therefore, the <code>send-response</code> function accounts for the fact that a response may have no body at all.
 </p>
 
 <div class="org-src-container">
 <pre class="src src-clojure"><span style="color: #707183;">(</span><span style="color: #a020f0;">defn</span> <span style="color: #0000ff;">send-response</span> <span style="color: #7388d6;">[</span>conn response<span style="color: #7388d6;">]</span>
-  <span style="color: #7388d6;">(</span><span style="color: #a020f0;">if-let</span> <span style="color: #909183;">[</span>body <span style="color: #709870;">(</span><span style="color: #008b8b;">:body</span> response<span style="color: #709870;">)</span><span style="color: #909183;">]</span>
-    <span style="color: #909183;">(</span><span style="color: #a020f0;">-&gt;&gt;</span> <span style="color: #709870;">(</span>write-headers response <span style="color: #907373;">(</span>.getOutputStream conn<span style="color: #907373;">)</span><span style="color: #709870;">)</span>
-       <span style="color: #709870;">(</span>write-body-to-stream body response<span style="color: #709870;">)</span><span style="color: #909183;">)</span>
-    <span style="color: #909183;">(</span>write-headers response <span style="color: #709870;">(</span>.getOutputStream conn<span style="color: #709870;">)</span><span style="color: #909183;">)</span><span style="color: #7388d6;">)</span><span style="color: #707183;">)</span>
+  <span style="color: #7388d6;">(</span><span style="color: #a020f0;">cond-&gt;&gt;</span> <span style="color: #909183;">(</span>write-headers response <span style="color: #709870;">(</span>.getOutputStream conn<span style="color: #709870;">)</span><span style="color: #909183;">)</span>
+    <span style="color: #909183;">(</span><span style="color: #008b8b;">:body</span> response<span style="color: #909183;">)</span> <span style="color: #909183;">(</span>write-body-to-stream <span style="color: #709870;">(</span><span style="color: #008b8b;">:body</span> response<span style="color: #709870;">)</span> response<span style="color: #909183;">)</span><span style="color: #7388d6;">)</span><span style="color: #707183;">)</span>
 </pre>
 </div>
 
@@ -667,24 +670,35 @@ As for the write-headers function:
 </div>
 
 <p>
-The important point is that the function returns the output stream without closing it because it may be further processed. Indeed, if a body is present, we call the protocol method <code>write-body-to-stream</code>.
+The important point is that the <code>write-headers</code> function returns the output stream without closing it because it may be further processed. Indeed, if a body is present, we call the protocol method <code>write-body-to-stream</code>.
 </p>
 
 <p>
-Here&rsquo;s the <a href="https://gist.github.com/danielsz/75b9efe83fb9e420915c97641413acfb">gist</a> of it.
+We are now able to completely detach application logic from our web server. Indeed, what a web application does depends entirely on what the user wants to do. The web server is a mere conduit, the infrastructure that supports application logic. Serving static resources under a folder becomes application logic. In the context of the Ring framework, it is a user-provided unit, separate and independent. It follows the rules of accepting a request and returning a response map.
 </p>
 
-
 <div class="org-src-container">
-<pre class="src src-clojure"><span style="color: #707183;">(</span><span style="color: #a020f0;">defn</span> <span style="color: #0000ff;">stream-bytes</span> <span style="color: #7388d6;">[</span>is<span style="color: #7388d6;">]</span>
-  <span style="color: #7388d6;">(</span><span style="color: #a020f0;">let</span> <span style="color: #909183;">[</span>baos <span style="color: #709870;">(</span>java.io.ByteArrayOutputStream.<span style="color: #709870;">)</span><span style="color: #909183;">]</span>
-    <span style="color: #909183;">(</span><span style="color: #228b22;">io</span>/copy is baos<span style="color: #909183;">)</span>
-    <span style="color: #909183;">(</span>.toByteArray baos<span style="color: #909183;">)</span><span style="color: #7388d6;">)</span><span style="color: #707183;">)</span>
+<pre class="src src-clojure"><span style="color: #707183;">(</span><span style="color: #a020f0;">defn</span> <span style="color: #0000ff;">handler</span> <span style="color: #7388d6;">[</span>request<span style="color: #7388d6;">]</span>
+  <span style="color: #7388d6;">(</span><span style="color: #a020f0;">let</span> <span style="color: #909183;">[</span>redirects <span style="color: #709870;">{</span><span style="color: #8b2252;">"/"</span> <span style="color: #8b2252;">"index.html"</span>
+                   <span style="color: #8b2252;">"/index.htm"</span> <span style="color: #8b2252;">"index.html"</span><span style="color: #709870;">}</span>
+        base-path <span style="color: #8b2252;">"/tmp/resources"</span><span style="color: #909183;">]</span>
+    <span style="color: #909183;">(</span><span style="color: #a020f0;">cond</span>
+      <span style="color: #709870;">(</span>contains? redirects <span style="color: #907373;">(</span><span style="color: #008b8b;">:uri</span> request<span style="color: #907373;">)</span><span style="color: #709870;">)</span> <span style="color: #709870;">{</span><span style="color: #008b8b;">:status</span> 301
+                                            <span style="color: #008b8b;">:headers</span> <span style="color: #907373;">{</span><span style="color: #8b2252;">"Location:"</span> <span style="color: #6276ba;">(</span>get redirects <span style="color: #858580;">(</span><span style="color: #008b8b;">:uri</span> request<span style="color: #858580;">)</span><span style="color: #6276ba;">)</span><span style="color: #907373;">}</span><span style="color: #709870;">}</span>
+      <span style="color: #709870;">(</span>.exists <span style="color: #907373;">(</span><span style="color: #228b22;">io</span>/file <span style="color: #6276ba;">(</span>str base-path <span style="color: #858580;">(</span><span style="color: #008b8b;">:uri</span> request<span style="color: #858580;">)</span><span style="color: #6276ba;">)</span><span style="color: #907373;">)</span><span style="color: #709870;">)</span> <span style="color: #709870;">(</span><span style="color: #a020f0;">let</span> <span style="color: #907373;">[</span>file <span style="color: #6276ba;">(</span><span style="color: #228b22;">io</span>/file <span style="color: #858580;">(</span>str base-path <span style="color: #80a880;">(</span><span style="color: #008b8b;">:uri</span> request<span style="color: #80a880;">)</span><span style="color: #858580;">)</span><span style="color: #6276ba;">)</span>
+                                                               content-type <span style="color: #6276ba;">(</span><span style="color: #228b22;">Files</span>/probeContentType <span style="color: #858580;">(</span>.toPath file<span style="color: #858580;">)</span><span style="color: #6276ba;">)</span><span style="color: #907373;">]</span>
+                                                           <span style="color: #907373;">{</span><span style="color: #008b8b;">:status</span> 200
+                                                            <span style="color: #008b8b;">:headers</span> <span style="color: #6276ba;">{</span><span style="color: #8b2252;">"Content-Type:"</span> content-type<span style="color: #6276ba;">}</span>
+                                                            <span style="color: #008b8b;">:body</span> file<span style="color: #907373;">}</span><span style="color: #709870;">)</span>
+
+      <span style="color: #008b8b;">:else</span> <span style="color: #709870;">{</span><span style="color: #008b8b;">:status</span> 404
+             <span style="color: #008b8b;">:headers</span> <span style="color: #907373;">{</span><span style="color: #8b2252;">"Content-Type:"</span> <span style="color: #8b2252;">"text/html"</span><span style="color: #907373;">}</span>
+             <span style="color: #008b8b;">:body</span> <span style="color: #8b2252;">"&lt;html&gt;404&lt;/html&gt;"</span><span style="color: #709870;">}</span><span style="color: #909183;">)</span><span style="color: #7388d6;">)</span><span style="color: #707183;">)</span>
 </pre>
 </div>
 
 <p>
-But from a user&rsquo;s perspective, the handler 
+Here&rsquo;s the <a href="https://gist.github.com/danielsz/75b9efe83fb9e420915c97641413acfb">gist</a> of it.
 </p>
 
 <p>
@@ -692,9 +706,14 @@ What is often overlooked. It is little known. Note that there is nothing in the 
 </p>
 
 <p>
+Optimizations on top of our quick hack. 
+</p>
+
+<p>
 What we&rsquo;ll be leaving as an exercise for the reader:
 </p>
 <ul class="org-ul">
+<li>support for more HTTP verbs</li>
 <li>Explore concurrency primitives available on the JVM, as well as nio, nio2</li>
 <li>Different transport, write a http server on top of another transport than TCP, for example Unix domain sockets.</li>
 <li>Comparatively benchmark our hack for the heck of it</li>
@@ -749,6 +768,18 @@ By satisfying the protocol for input streams, we are enabling the sending of all
 <p>
 because the burden of transferring the data reliably is handled by TCP/IP, rather than by the application
 Even thought so far we&rsquo;ve only seen strings being sent in the bod, I chose an input stream because this 
+</p>
+
+<div class="org-src-container">
+<pre class="src src-clojure"><span style="color: #707183;">(</span><span style="color: #a020f0;">defn</span> <span style="color: #0000ff;">stream-bytes</span> <span style="color: #7388d6;">[</span>is<span style="color: #7388d6;">]</span>
+  <span style="color: #7388d6;">(</span><span style="color: #a020f0;">let</span> <span style="color: #909183;">[</span>baos <span style="color: #709870;">(</span>java.io.ByteArrayOutputStream.<span style="color: #709870;">)</span><span style="color: #909183;">]</span>
+    <span style="color: #909183;">(</span><span style="color: #228b22;">io</span>/copy is baos<span style="color: #909183;">)</span>
+    <span style="color: #909183;">(</span>.toByteArray baos<span style="color: #909183;">)</span><span style="color: #7388d6;">)</span><span style="color: #707183;">)</span>
+</pre>
+</div>
+
+<p>
+But from a user&rsquo;s perspective, the handler 
 </p>
 </div>
 </body>
