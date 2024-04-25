@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<!-- 2024-04-25 Thu 06:39 -->
+<!-- 2024-04-25 Thu 13:08 -->
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>The anatomy of a HTTP server</title>
@@ -749,42 +749,29 @@ To fully exploit the future:
 It is a cosmetic issue because upon closing the server we throw away that thread. Still.  
 </p>
 
-<p>
-So far we&rsquo;ve only seen strings.
-</p>
 
-<p>
-By satisfying the protocol for input streams, we are enabling the sending of all types of data. 
-</p>
 
-<p>
-. It is up to the user to pass files, images, fonts, anything really
-</p>
 
-<p>
-because the burden of transferring the data reliably is handled by TCP/IP, rather than by the application
-Even thought so far we&rsquo;ve only seen strings being sent in the bod, I chose an input stream because this 
-</p>
 
-<div class="org-src-container">
-<pre class="src src-clojure"><span style="color: #707183;">(</span><span style="color: #a020f0;">defn</span> <span style="color: #0000ff;">stream-bytes</span> <span style="color: #7388d6;">[</span>is<span style="color: #7388d6;">]</span>
-  <span style="color: #7388d6;">(</span><span style="color: #a020f0;">let</span> <span style="color: #909183;">[</span>baos <span style="color: #709870;">(</span>java.io.ByteArrayOutputStream.<span style="color: #709870;">)</span><span style="color: #909183;">]</span>
-    <span style="color: #909183;">(</span><span style="color: #228b22;">io</span>/copy is baos<span style="color: #909183;">)</span>
-    <span style="color: #909183;">(</span>.toByteArray baos<span style="color: #909183;">)</span><span style="color: #7388d6;">)</span><span style="color: #707183;">)</span>
-</pre>
-</div>
 
-<p>
-But from a user&rsquo;s perspective, the handler 
-</p>
 
-<div class="hiring" id="org1b5dbd9">
+<figure id="org220b07a">
+<img src="images/workforfood.gif" alt="workforfood.gif">
+
+</figure>
+
+
+<div class="hiring" id="orgde4b9fa">
 <p>
 <b>Are you hiring?</b>
 </p>
 
 <p>
-Good! Let&rsquo;s <a href="mailto:daniel.szmulewicz@gmail.com?subject=We%20are%20hiring">talk</a>.
+Looking for a collaborator? A team lead or team member? A consultant, maybe? Need a little boost or long-term commitment? 
+</p>
+
+<p>
+Let&rsquo;s <a href="mailto:daniel.szmulewicz@gmail.com?subject=We%20are%20hiring">talk</a>.
 </p>
 
 </div>
