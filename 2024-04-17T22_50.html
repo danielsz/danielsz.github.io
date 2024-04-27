@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<!-- 2024-04-25 Thu 13:08 -->
+<!-- 2024-04-27 Sat 16:03 -->
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>The anatomy of a HTTP server</title>
@@ -228,15 +228,15 @@
 <header>
 <h1 class="title">The anatomy of a HTTP server</h1>
 </header><p>
-A Computerphile video made me do it. Computerphile is a Youtube channel about computer science. It features professors explaining technical concepts in an informal setting. The drabness of the backdrop, often an empty classroom, a lab or an office, is counterpoised by the enthusiasm of the presenter, a jolliness in his demeanor. It&rsquo;s quite British, indeed.
+A Computerphile video made me do it. Computerphile is a Youtube channel about computer science, featuring professors explaining technical concepts in an informal setting. The drabness of the backdrop, often an empty classroom, a lab or an office, is counterpoised by the enthusiasm of the presenter, a jolliness in his demeanor. It&rsquo;s quite British, indeed.
 </p>
 
 <p>
-The video in question is titled &ldquo;Coding a Web Server in 25 Lines&rdquo;. It does what is says, or it says what it does. One might wonder what the point is, though. The world is awash with widely available, highly performant web servers. Education, of course! It&rsquo;s a fun little exercise that upon completion yields a somewhat functional web server. Direct a web browser at it, and voilà! On the Internet, nobody knows you&rsquo;re a dog.
+The video in question is titled <i>Coding a Web Server in 25 Lines</i>. It does what is says, or it says what it does. One might wonder what the point is, though. The world is awash with widely available, highly performant web servers. Education, of course! It&rsquo;s a fun little exercise that upon completion yields a somewhat functional web server. Direct a web browser at it, and voilà! On the Internet, nobody knows you&rsquo;re a dog.
 </p>
 
 <p>
-That&rsquo;s all good and well, but if Computerphile just did it, why do it again? Glad you&rsquo;ve asked. Firstly, writing <a href="https://bruinsslot.jp/post/simple-http-webserver-in-c/">minimalist</a> web servers is a genre unto itself. No, <a href="https://github.com/nir9/fastws/blob/db265120800db324aaae6e6a883210eabce3d865/server.asm">seriously</a>. But there is something else, too. As a Lisper, I couldn&rsquo;t help but notice the workflow: an edit/compile/run affair. How I wished it were a read/eval/print/loop instead! Isn&rsquo;t REPL-based development the balm that will heal the world? That is, until a Smalltalker comes along and <a href="https://blog.bracha.org/primordialsoup.html?snapshot=AmpleforthViewer.vfuel&amp;docName=ReplacingREPLs">asks</a> why use a textual interface instead of a graphical one. Either way, interactive development environments à la Lisp, or Smalltalk for that matter, are far from commonplace, and there is plenty of room to make a statement. Sure, this could be an expression of smugness, delusion or loneliness. We never want to be lonely again.
+That&rsquo;s all good and well, but if Computerphile just did it, why do it again? Firstly, writing <a href="https://bruinsslot.jp/post/simple-http-webserver-in-c/">minimalist</a> web servers is a genre unto itself. No, <a href="https://github.com/nir9/fastws/blob/db265120800db324aaae6e6a883210eabce3d865/server.asm">seriously</a>. But there is something else, too. As a Lisper, I couldn&rsquo;t help but notice the workflow: an <b>edit/compile/run</b> affair. How I wished it were a <b>read/eval/print/loop</b> instead! Interactive development environments à la Lisp, or Smalltalk for that matter, are far from commonplace, and there is plenty of room to make a statement. Sure, this could be an expression of smugness, delusion or loneliness. And I never want to be lonely again.
 </p>
 
 <p>
@@ -325,11 +325,15 @@ The problem now is that we&rsquo;re dealing with one request only. We ought to k
 </div>
 
 <p>
-Great. Now a word about our workflow. Executed in a REPL, the snippet above will block the top-level loop. In other words, we don&rsquo;t get our prompt back. This is a problem, because this would force us to restart the REPL. We never want to restart our REPL. Now, in an interruptible REPL such as Cider, we can press <code>C-c C-b</code> or <code>Alt+x cider-interrupt</code> to get back to the prompt. But if you try to rerun the code, you will get a <code>BindException</code>. The server wasn&rsquo;t closed properly and it is still bound to the address, port 8085 on the loopback interface. In brief, we need to keep a handle on the server so that we can gracefully close it.
+Great. Now a word about our workflow. Executed in a REPL, the snippet above will block the top-level loop. In other words, we don&rsquo;t get our prompt back. This is a problem, because this would force us to restart the REPL. We never want to restart our REPL.
 </p>
 
 <p>
-The lesson here is that at a REPL, thought must be given to state, its initialization and its tear down. There are many solutions available to us, and some of them are reified in libraries, but here we will opt for a straightforward solution, yet no less effective. Instead of writing code at the top-level, we will encapsulate it in a function. And that function will receive the server as argument.
+Now, in an interruptible REPL such as Cider, we can press <code>C-c C-b</code> or <code>Alt+x cider-interrupt</code> to get back to the prompt. But if you try to rerun the code, you will get a <code>BindException</code>. The server wasn&rsquo;t closed properly and it is still bound to the address, port 8085 on the loopback interface. In brief, we need to keep a handle on the server so that we can gracefully close it.
+</p>
+
+<p>
+The lesson here is that at a REPL, thought must be given to state, its initialization and its tear down. There are many solutions available to us, and some of them are reified in libraries, but here we will opt for a straightforward solution, yet no less effective. Instead of running that code at the top-level, we will encapsulate it in a function. And that function will receive the server as argument.
 </p>
 
 <div class="org-src-container">
@@ -351,7 +355,7 @@ Now we can write:
 </p>
 <div class="org-src-container">
 <pre class="src src-clojure"><span style="color: #707183;">(</span><span style="color: #a020f0;">def</span> <span style="color: #a0522d;">server</span> <span style="color: #7388d6;">(</span>ServerSocket. 8085<span style="color: #7388d6;">)</span><span style="color: #707183;">)</span>
-<span style="color: #707183;">(</span>tcp-listener server<span style="color: #707183;">)</span>
+<span style="color: #707183;">(</span>tcp-transport server<span style="color: #707183;">)</span>
 </pre>
 </div>
 
@@ -385,7 +389,7 @@ Close, but not there yet. We need to run the server in its own thread so that it
 </div>
 
 <p>
-This is shaping up nicely. There is a tiny annoyance, though. When we call the close method on the sever instance, the underlying socket (<code>conn</code>) is left hanging, and that generates an error which becomes apparent only if we dereference the future.
+Things are shaping up nicely. There is a tiny annoyance, though. When we call the close method on the server instance, the underlying socket (<code>conn</code>) is left hanging, and that generates an error which becomes apparent only if we dereference the future.
 </p>
 
 <div class="org-src-container">
@@ -395,7 +399,7 @@ Socket closed
 </div>
 
 <p>
-It has no consequences since the thread has ended, but we can do the following gentle adjustment which catches the exception. 
+It is of no consequence, since the thread has ended, but we can do the following gentle adjustment which catches the exception. 
 </p>
 
 <div class="org-src-container">
@@ -422,8 +426,24 @@ Now when you dereference the future, it will report:
 </pre>
 </div>
 
+<div class="hiring" id="orgef8b2bc">
 <p>
-If you have watched the video, you know that the web server, after being coaxed into saying OK to all requests, gets upgraded so that it can actually serve content. That second version is able deliver the presenter&rsquo;s personal static website to the browser. We are going to do the same moves now. First, we will teach our web server to parse the request and extract the URI, the resource being requested. The first line of a HTTP request contains the URI.
+<b>Are you hiring?</b>
+</p>
+
+<p>
+Looking for a collaborator? A team lead or member? A consultant, maybe? Need a little boost  or a long-term commitment? 
+I&rsquo;m open to work. Let&rsquo;s <a href="mailto:daniel.szmulewicz@gmail.com?subject=We%20are%20hiring">talk</a>.
+</p>
+
+</div>
+
+<p>
+If you have watched the video, you know that the web server, after being coaxed into saying OK to all requests, gets upgraded so that it can actually serve content. That second version is able deliver the presenter&rsquo;s personal static website to the browser. We are going to do the same move now.
+</p>
+
+<p>
+First, we will teach our web server to parse the request and extract the URI, the resource being requested. The first line of a HTTP request contains the URI.
 </p>
 
 <div class="org-src-container">
@@ -446,7 +466,7 @@ If we split the string at the space boundary, it is going to be the second eleme
 </div>
 
 <p>
-Where resource is an atom used for the assignment. However, we are functional programmers and we&rsquo;d like to avoid the assignment. We&rsquo;ll see how in a moment. For now, let&rsquo;s ignore the ickiness and move along. In an ideal world, we can write the following program:
+Where resource is an atom used for the assignment. However, we are functional programmers and we&rsquo;d like to avoid the assignment. We&rsquo;ll see how in a moment. For now, let&rsquo;s ignore the ickiness and move along. We can write the following program:
 </p>
 
 <div class="org-src-container">
@@ -474,7 +494,7 @@ Where resource is an atom used for the assignment. However, we are functional pr
 </div>
 
 <p>
-Except that ideal worlds are the realm of fairy tales. We can&rsquo;t just pretend that the requested resource always exists. We can see where this is going:
+This will do in an ideal world. But we can&rsquo;t just pretend that the requested resource always exists. We can see where this is going:
 </p>
 
 <div class="org-src-container">
@@ -489,7 +509,7 @@ Except that ideal worlds are the realm of fairy tales. We can&rsquo;t just prete
 </div>
 
 <p>
-More logic. But hey, our web server can now serve resources from a folder. We have caught up with the Computerphile video. The demonstration is over. We too have done the <i>Hello, World!</i> web server, and then an upgraded version serving static resources. But really, this is no way to say goodbye. Our web server is one mess of a function. It does way too much: listening on a <i>TCP port</i>, parsing the request, crafting the response. And on top of that we&rsquo;re doing a mutation. Can you believe that? It&rsquo;s high time for a refactoring. 
+More logic. But hey, our web server can now serve resources from a folder. We have caught up with the Computerphile video. The demonstration is over. We too have done the <i>Hello, World!</i> web server, and then an upgraded version serving static resources. But really, that&rsquo;s no way to say goodbye. Our web server is one mess of a function. It does way too much: listening on a <i>TCP port</i>, parsing the request, crafting the response. And on top of that we&rsquo;re doing a mutation. It&rsquo;s high time for a refactoring. 
 </p>
 
 <p>
@@ -512,7 +532,7 @@ We&rsquo;ve just mentioned how to better separate concerns, so let&rsquo;s do th
 </div>
 
 <p>
-Look, ma, no mutation! Instead, we&rsquo;re accumulating each header line in the request map, and that is what the function returns. It seems we&rsquo;ve been feeding a couple of birds with one scone. That request can now be passed on to our new response function: 
+Look, ma, no mutation! Instead, we&rsquo;re accumulating each header line in the request map, and that is what the function returns. It seems we&rsquo;ve been feeding a couple of birds with the same scone. That request can now be passed on to our new response function: 
 </p>
 
 <div class="org-src-container">
@@ -554,7 +574,7 @@ Ring is a Clojure web applications library inspired by Python&rsquo;s WSGI and R
 </blockquote>
 
 <p>
-Next to the handler, the Ring spec defines the request map, its required keys. Some of which we&rsquo;ve already seen, the URI, the method and the scheme that we extract from the first line of a HTTP request. The response map consists of a headers and a status key. If present, the body must satisfy a protocol:
+Next to the handler, the Ring <a href="https://github.com/ring-clojure/ring/blob/master/SPEC.md">spec</a> defines the request map, its required keys. Some we&rsquo;ve already seen: the URI, the method and the scheme. All the above extracted from the first line of a HTTP request. The response map consists of a headers and a status key. If present, the body must satisfy a protocol:
 </p>
 
 <div class="org-src-container">
@@ -579,21 +599,21 @@ We can thus write the following:
 <div class="org-src-container">
 <pre class="src src-clojure"><span style="color: #707183;">(</span><span style="color: #a020f0;">defn</span> <span style="color: #0000ff;">run-adapter</span> <span style="color: #7388d6;">[</span>handler options<span style="color: #7388d6;">]</span>
   <span style="color: #7388d6;">(</span><span style="color: #a020f0;">let</span> <span style="color: #909183;">[</span>server <span style="color: #709870;">(</span>ServerSocket. <span style="color: #907373;">(</span><span style="color: #008b8b;">:port</span> options<span style="color: #907373;">)</span><span style="color: #709870;">)</span><span style="color: #909183;">]</span>
-    <span style="color: #909183;">(</span>tcp-listener server handler<span style="color: #909183;">)</span>
+    <span style="color: #909183;">(</span>tcp-transport server handler<span style="color: #909183;">)</span>
     <span style="color: #909183;">(</span><span style="color: #a020f0;">fn</span> <span style="color: #0000ff;">close</span> <span style="color: #709870;">[]</span> <span style="color: #709870;">(</span>.close server<span style="color: #709870;">)</span><span style="color: #909183;">)</span><span style="color: #7388d6;">)</span><span style="color: #707183;">)</span>
 </pre>
 </div>
 
 <p>
-The <code>run-adapter</code> function returns a ~close function that we can keep a handle on when we want to close the server gracefully.
+The <code>run-adapter</code> function returns a <code>close</code> function that we can keep a handle on. We&rsquo;ll call it when we want to terminate the server gracefully.
 </p>
 
 <p>
-Our TCP listener requires a small modification. It receives an extra argument, the handler, which itself takes a request as argument and returns a response. This way, we are creating an abstraction external to the implementation details of our web server, its transport layer, etc. We are able to supply a Ring adapter to users who can now do webdev without giving a second thought to the underlying machinery. 
+Our TCP listener requires a small modification. It receives an extra argument, the handler. Herein lies the secret sauce. This is how we are creating an abstraction external to the implementation details of our web server, its transport layer, etc. 
 </p>
 
 <div class="org-src-container">
-<pre class="src src-clojure"><span style="color: #707183;">(</span><span style="color: #a020f0;">defn</span> <span style="color: #0000ff;">tcp-listener</span> <span style="color: #7388d6;">[</span>server f<span style="color: #7388d6;">]</span>
+<pre class="src src-clojure"><span style="color: #707183;">(</span><span style="color: #a020f0;">defn</span> <span style="color: #0000ff;">tcp-transport</span> <span style="color: #7388d6;">[</span>server f<span style="color: #7388d6;">]</span>
   <span style="color: #7388d6;">(</span><span style="color: #a020f0;">future</span>
     <span style="color: #909183;">(</span><span style="color: #a020f0;">try</span>
       <span style="color: #709870;">(</span><span style="color: #a020f0;">while</span> <span style="color: #907373;">(</span>not <span style="color: #6276ba;">(</span>.isClosed server<span style="color: #6276ba;">)</span><span style="color: #907373;">)</span>
@@ -606,11 +626,15 @@ Our TCP listener requires a small modification. It receives an extra argument, t
 </div>
 
 <p>
-As to the underlying machinery, our ServerSocket that establishes TCP connections, well, TCP is a byte-stream protocol, and that is why our Ring adapter needs to transform the response&rsquo;s body to a byte-stream. Once the stream is passed down to the socket, TCP itself will chunk it and ensure that the data is reliably transferred over the network. The <i>StreamableResponseBody</i> protocol allows the user to pass different formats in the body of the response, as long as they satisfy the protocol. They all will be reduced to a stream of bytes. Out of the box, Ring comes with implementations for byte-arrays, strings, Clojure sequences, files and Java input streams. Since we are not relying on the Ring libraries but rather are referring to the spec (and building everything from scratch), we will re-implement some of them. 
+We are able to supply a Ring adapter to users who in turn can focus on Web development without giving a second thought to the underlying machinery. As to the underlying machinery, our <code>ServerSocket</code> that establishes TCP connections, well, TCP is a byte-stream protocol, and that is why our Ring adapter needs to transform the response&rsquo;s body to a byte-stream. Once the stream is passed down to the socket, TCP itself will chunk it and ensure that the data is reliably transferred over the network. The <i>StreamableResponseBody</i> protocol allows the user to pass different formats in the body of the response, as long as they satisfy the protocol. They all will be reduced to a stream of bytes.
 </p>
 
 <p>
-It seems desirable that we always allow a string as body of a response. That will require an implementation for the <code>write-body-to-stream</code> protocol method for <i>String</i>.
+Out of the box, Ring comes with implementations for byte-arrays, strings, Clojure sequences, files and Java input streams. Since we are not relying on the Ring libraries but rather are referring to the spec (and building everything from scratch), we will re-implement some of them. 
+</p>
+
+<p>
+It seems desirable that we always allow a string as body of a response. 
 </p>
 
 <div class="org-src-container">
@@ -623,11 +647,11 @@ It seems desirable that we always allow a string as body of a response. That wil
 </div>
 
 <p>
-However, consider the case of a static website. An index.html itself is a text file. As we&rsquo;ve done before, we could <i>slurp</i> it and pass the string to the java Writer. The latter will convert the characters to bytes before writing them to the underlying socket. However, when the browser receives the <i>index.html</i>, it will follow up with more requests as it encounters embedded links asking for CSS, scripts, images, fonts, etc. Some files, like the images or the fonts, are binary. <i>Slurping</i> them won&rsquo;t do us good. While all strings are bytes, not all bytes are strings.
+However, consider the case of a static website. An index.html itself is a text file. We could <i>slurp</i> it and pass the string to the java Writer, as we&rsquo;ve done before. The latter will convert the characters to bytes before writing them to the underlying socket. However, when the browser receives the <i>index.html</i>, it will follow up with more requests as it encounters embedded links asking for CSS, scripts, images, fonts, etc. Some files, like the images or the fonts, are binary. <i>Slurping</i> them won&rsquo;t do us good. While all strings are bytes, not all bytes are strings.
 </p>
 
 <p>
-Thus, a protocol method implementation for <i>java.io.File</i> seems highly useful, since it will cover all types of files, allowing us to serve an entire directory of static resources.
+Thus, a protocol method implementation for <i>java.io.File</i> seems highly useful, since it will cover all types of files, allowing us to serve an entire directory of static resources, for example.
 </p>
 
 <div class="org-src-container">
@@ -641,36 +665,49 @@ Thus, a protocol method implementation for <i>java.io.File</i> seems highly usef
 </div>
 
 <p>
-Turning the body of the response into an output stream (of bytes) happens after we write the headers of the response to the output stream (as bytes). Therefore, the <code>send-response</code> function accounts for the fact that a response may have no body at all.
+Turning the body of the response into an output stream (of bytes) happens after we write the headers of the response to the output stream (as bytes). 
 </p>
 
 <div class="org-src-container">
 <pre class="src src-clojure"><span style="color: #707183;">(</span><span style="color: #a020f0;">defn</span> <span style="color: #0000ff;">send-response</span> <span style="color: #7388d6;">[</span>conn response<span style="color: #7388d6;">]</span>
-  <span style="color: #7388d6;">(</span><span style="color: #a020f0;">cond-&gt;&gt;</span> <span style="color: #909183;">(</span>write-headers response <span style="color: #709870;">(</span>.getOutputStream conn<span style="color: #709870;">)</span><span style="color: #909183;">)</span>
-    <span style="color: #909183;">(</span><span style="color: #008b8b;">:body</span> response<span style="color: #909183;">)</span> <span style="color: #909183;">(</span>write-body-to-stream <span style="color: #709870;">(</span><span style="color: #008b8b;">:body</span> response<span style="color: #709870;">)</span> response<span style="color: #909183;">)</span><span style="color: #7388d6;">)</span><span style="color: #707183;">)</span>
+  <span style="color: #7388d6;">(</span><span style="color: #a020f0;">-&gt;&gt;</span> <span style="color: #909183;">(</span>write-headers response <span style="color: #709870;">(</span>.getOutputStream conn<span style="color: #709870;">)</span><span style="color: #909183;">)</span>
+     <span style="color: #909183;">(</span>write-body-to-stream <span style="color: #709870;">(</span><span style="color: #008b8b;">:body</span> response<span style="color: #709870;">)</span> response<span style="color: #909183;">)</span><span style="color: #7388d6;">)</span><span style="color: #707183;">)</span>
 </pre>
 </div>
 
 <p>
-As for the write-headers function:
+As for the <code>write-headers</code> function:
 </p>
 
 <div class="org-src-container">
 <pre class="src src-clojure"><span style="color: #707183;">(</span><span style="color: #a020f0;">defn</span> <span style="color: #0000ff;">write-headers</span> <span style="color: #7388d6;">[</span>response output-stream<span style="color: #7388d6;">]</span>
-  <span style="color: #7388d6;">(</span>.write output-stream <span style="color: #909183;">(</span>into-array <span style="color: #228b22;">Byte</span>/TYPE <span style="color: #709870;">(</span>str
-                                               <span style="color: #907373;">(</span>get responses <span style="color: #6276ba;">(</span><span style="color: #008b8b;">:status</span> response<span style="color: #6276ba;">)</span><span style="color: #907373;">)</span>
-                                               <span style="color: #907373;">(</span>apply str <span style="color: #6276ba;">(</span><span style="color: #a020f0;">for</span> <span style="color: #858580;">[</span><span style="color: #80a880;">[</span>k v<span style="color: #80a880;">]</span> <span style="color: #80a880;">(</span><span style="color: #008b8b;">:headers</span> response<span style="color: #80a880;">)</span><span style="color: #858580;">]</span> <span style="color: #858580;">(</span>str k <span style="color: #8b2252;">" "</span> v <span style="color: #8b2252;">"</span><span style="color: #8b2252; font-weight: bold;">\r\n</span><span style="color: #8b2252;">"</span><span style="color: #858580;">)</span><span style="color: #6276ba;">)</span><span style="color: #907373;">)</span>
-                                               <span style="color: #8b2252;">"</span><span style="color: #8b2252; font-weight: bold;">\r\n</span><span style="color: #8b2252;">"</span><span style="color: #709870;">)</span><span style="color: #909183;">)</span><span style="color: #7388d6;">)</span>
+  <span style="color: #7388d6;">(</span>.write output-stream
+          <span style="color: #909183;">(</span>into-array <span style="color: #228b22;">Byte</span>/TYPE <span style="color: #709870;">(</span>str
+                                 <span style="color: #907373;">(</span>get responses <span style="color: #6276ba;">(</span><span style="color: #008b8b;">:status</span> response<span style="color: #6276ba;">)</span><span style="color: #907373;">)</span>
+                                 <span style="color: #907373;">(</span>apply str <span style="color: #6276ba;">(</span><span style="color: #a020f0;">for</span> <span style="color: #858580;">[</span><span style="color: #80a880;">[</span>k v<span style="color: #80a880;">]</span> <span style="color: #80a880;">(</span><span style="color: #008b8b;">:headers</span> response<span style="color: #80a880;">)</span><span style="color: #858580;">]</span> <span style="color: #858580;">(</span>str k <span style="color: #8b2252;">" "</span> v <span style="color: #8b2252;">"</span><span style="color: #8b2252; font-weight: bold;">\r\n</span><span style="color: #8b2252;">"</span><span style="color: #858580;">)</span><span style="color: #6276ba;">)</span><span style="color: #907373;">)</span>
+                                 <span style="color: #8b2252;">"</span><span style="color: #8b2252; font-weight: bold;">\r\n</span><span style="color: #8b2252;">"</span><span style="color: #709870;">)</span><span style="color: #909183;">)</span><span style="color: #7388d6;">)</span>
   output-stream<span style="color: #707183;">)</span>
 </pre>
 </div>
 
 <p>
-The important point is that the <code>write-headers</code> function returns the output stream without closing it because it may be further processed. Indeed, if a body is present, we call the protocol method <code>write-body-to-stream</code>.
+The important point is that the <code>write-headers</code> function returns the output stream without closing it because it may be further processed. Indeed, we call the protocol method <code>write-body-to-stream</code> on the body, and if it is nil, we close the stream. 
+</p>
+
+<div class="org-src-container">
+<pre class="src src-clojure"><span style="color: #707183;">(</span><span style="color: #a020f0;">extend-protocol</span> StreamableResponseBody
+  <span style="color: #008b8b;">nil</span>
+  <span style="color: #7388d6;">(</span>write-body-to-stream <span style="color: #909183;">[</span>_ _ output-stream<span style="color: #909183;">]</span>    
+    <span style="color: #909183;">(</span>.close output-stream<span style="color: #909183;">)</span><span style="color: #7388d6;">)</span><span style="color: #707183;">)</span>
+</pre>
+</div>
+
+<p>
+In the Computerphile version of our web server, or the pre-Ring one if you will, serving static resources under a folder was all our web server could do. And the logic was baked in. In the context of the Ring framework, it is a user-provided unit, separate and independent. Serving static resources under a folder becomes application logic.
 </p>
 
 <p>
-We are now able to completely detach application logic from our web server. Indeed, what a web application does depends entirely on what the user wants to do. The web server is a mere conduit, the infrastructure that supports application logic. Serving static resources under a folder becomes application logic. In the context of the Ring framework, it is a user-provided unit, separate and independent. It follows the rules of accepting a request and returning a response map.
+Here&rsquo;s how a handler that serves static pages might look like. 
 </p>
 
 <div class="org-src-container">
@@ -694,87 +731,22 @@ We are now able to completely detach application logic from our web server. Inde
 </div>
 
 <p>
-Here&rsquo;s the <a href="https://gist.github.com/danielsz/75b9efe83fb9e420915c97641413acfb">gist</a> of it.
+This concludes my exploration of minimalist web servers, and may herald the beginning of yours. Indeed, have a look at the final <a href="https://gist.github.com/danielsz/75b9efe83fb9e420915c97641413acfb">code</a>, study it, play with it, make it better. I am welcoming contributions that are close to the original spirit: single namespace, no dependencies, code brevity, etc. Here are some ideas to explore further:
 </p>
 
-<p>
-What is often overlooked. It is little known. Note that there is nothing in the HTTP protocol tying it to TCP. We could write a web server on top of Unix domain sockets, for example. 
-</p>
-
-<p>
-Optimizations on top of our quick hack. 
-</p>
-
-<p>
-What we&rsquo;ll be leaving as an exercise for the reader:
-</p>
 <ul class="org-ul">
-<li>support for more HTTP verbs</li>
-<li>Explore concurrency primitives available on the JVM, as well as nio, nio2</li>
-<li>Different transport, write a http server on top of another transport than TCP, for example Unix domain sockets.</li>
-<li>Comparatively benchmark our hack for the heck of it</li>
-<li>Zero copy transfers</li>
+<li>Support for other HTTP verbs than GET</li>
+<li>Write asynchronously to the socket with Java NIO <a href="https://docs.oracle.com/en%2Fjava%2Fjavase%2F21%2Fdocs%2Fapi%2F%2F/java.base/java/nio/channels/ServerSocketChannel.html">channel</a></li>
+<li>Workers in a thread pool</li>
+<li>Efficient data transfer through <a href="https://developer.ibm.com/articles/j-zerocopy/">zero copy</a></li>
+<li>HTTP server on top of a non-TCP transport, for example Unix domain sockets.</li>
+<li>Other optimizations</li>
+<li>Benchmark our naive implementation with production-grade software</li>
 </ul>
 
-
 <p>
-in their natural environment, academia. 
-For those who are not familiar with the informal education channel,  Youtube channel, it&rsquo;s an educational . British-based and the jolliness of it. The format is friendly. The presenters are filmed in their environment, and there is a conversation with someone behind the scenes, asking pertinent questions. Ideas are explained with the help of whiteboards, notebook papers, animation. Often in pseudo-code. But this one was different as it showed actual code. Writing a web server in 26 lines of code. One may ask, what is the point. Or what kind of web server. The answer is, a web server capable of serving static assets. A web server that you can direct a browser to, and display pages. A web server that responds to GET requests.
-Replicating the exercise would be even more pointless than the original. But one thing immediately triggers a Lisper. The workflow. The edit/compile cycle. One can only despair at the state of affairs, so there is nothing else to do but to show the world and repeat. How to develop at a REPL. How much nicer it is. The second thing I would say is the style. There is coding, and there is coding with style. I laud the jolliness and the didactic delivery. But the code is imperative. Good functional programming practice.
-The first step to demonstrate is the absolute minimal example. A web server that does nothing with the request (or logging it), and which responds OK to anything you say. A dumb web server. Responding to a request. Firing a browser and seeing the response. From our own server! In three lines of code. How awesome is that!
-The beauty of this is that this small core has everything. A TCP socket that listens on a port. An input stream on which we gather the request, an output stream on which we respond. And maybe more importantly, the control flow, the looping construct that prepares a connection 
+Before we go, it would be nice to reflect back on what we&rsquo;ve done here. Hopefully, I&rsquo;ve succeeded in my attempt to document the cognitive experience at a REPL. How it truly is a <i>bicycle for the mind</i>, fostering exploration, empowering the inquisitive mind. We saw a progression of ideas, a succession of layers, a feedback loop. Sure, we have focused on the anatomy of a HTTP server, but that is secondary. Any challenge would have fit the bill. REPL-based development is a methodology, ancient and well-known in the field of computer science pedagogy, but not nearly an established practice in the industry. Part of this has to do with the fact that not all REPLs are born <a href="https://blog.bracha.org/primordialsoup.html?snapshot=AmpleforthViewer.vfuel&amp;docName=ReplacingREPLs">equal</a>. The REPL experience alone is rarely a determining factor behind language choice among developers. Perhaps it should be.
 </p>
-
-
-
-<p>
-gobbledygook
-And it&rsquo;s back to preaching the gospel. 
-Ha! <i>La belle affaire</i>. Well, after all these years, , as the Computerphile video attests. And that is 
-</p>
-
-<p>
-Sadly, REPL-based development is still far from being commonplace. So I&rsquo;ve asked myself, should I just keep trudging along like Lispers have done since time immemorial, or is it maybe a good time to preach the gospel? Oyez! Hear ye!  
-</p>
-
-<p>
-know what it means to be lonely. We never want to be lonely again.
-We are smug, delusional or too lonely. 
-This works, but if you dereference the future. Although we are closing the server properly, we are not closing the underlying socket,  <code>(.accept server)</code>, so
-</p>
-
-<p>
-A future returns the value of its body after it finishes. If we want to catch errors, we can do this
-To fully exploit the future:
-It is a cosmetic issue because upon closing the server we throw away that thread. Still.  
-</p>
-
-
-
-
-
-
-
-<figure id="org220b07a">
-<img src="images/workforfood.gif" alt="workforfood.gif">
-
-</figure>
-
-
-<div class="hiring" id="orgde4b9fa">
-<p>
-<b>Are you hiring?</b>
-</p>
-
-<p>
-Looking for a collaborator? A team lead or team member? A consultant, maybe? Need a little boost or long-term commitment? 
-</p>
-
-<p>
-Let&rsquo;s <a href="mailto:daniel.szmulewicz@gmail.com?subject=We%20are%20hiring">talk</a>.
-</p>
-
-</div>
 </div>
 </body>
 </html>
