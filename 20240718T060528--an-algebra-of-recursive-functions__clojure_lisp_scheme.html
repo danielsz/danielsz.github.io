@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<!-- 2024-07-27 Sat 02:03 -->
+<!-- 2024-07-27 Sat 12:23 -->
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>An algebra of recursive functions</title>
@@ -321,11 +321,32 @@ recursive. (Brainerd, Walter S. and Landweber, Lawrence H., 1974)
 </blockquote>
 
 <p>
+It might be interesting to start with a quick glance at the
+traditional presentation of the topic. Wikipedia has a decent <a href="https://en.wikipedia.org/wiki/Primitive_recursive_function">entry</a>,
+or have a look at <a href="https://plato.stanford.edu/entries/recursive-functions/">Stanford Encyclopedia of Philosophy</a>. Look at the
+formulas describing primitive recursion, even if they are opaque. At
+the end of our exercise, we will have a basis of comparison. We might
+know the answer to the question whether or not a Lisp exposé improve
+on the learning experience?
+</p>
+
+<p>
+That being said, we are going to stick close to some conventions found
+in the traditional treatment the of topic, up to the capitalized
+one-letter naming scheme for functions. This will makes it easy for
+learners to switch back and forth between the code and the
+formalism. Please do not hesitate to replace the one-letter function
+names with something more palatable if that makes things easier for
+you. And remember that you can trace the execution of the functions in
+the REPL.
+</p>
+
+<p>
 Our first rule is the Zero rule.
 </p>
 
 <div class="org-src-container">
-<pre class="src src-clojure"><span style="color: #0031a9;">(</span><span style="color: #531ab6;">def</span> <span style="color: #005e8b;">Z</span> #<span style="color: #695500;">(</span><span style="color: #531ab6;">fn</span> <span style="color: #3548cf;">[</span>&amp; _<span style="color: #3548cf;">]</span> 0<span style="color: #695500;">)</span><span style="color: #0031a9;">)</span>
+<pre class="src src-clojure"><span style="color: #ffa00f;">(</span><span style="color: #b6a0ff;">def</span> <span style="color: #00d3d0;">Z</span> #<span style="color: #2fafff;">(</span><span style="color: #b6a0ff;">fn</span> <span style="color: #d8af7a;">[</span>&amp; _<span style="color: #d8af7a;">]</span> 0<span style="color: #2fafff;">)</span><span style="color: #ffa00f;">)</span>
 </pre>
 </div>
 
@@ -335,7 +356,7 @@ and always returns zero.
 </p>
 
 <div class="org-src-container">
-<pre class="src src-clojure"><span style="color: #0031a9;">[</span><span style="color: #695500;">(</span><span style="color: #3548cf;">(</span>Z<span style="color: #3548cf;">)</span><span style="color: #695500;">)</span> <span style="color: #695500;">(</span><span style="color: #3548cf;">(</span>Z<span style="color: #3548cf;">)</span> 5<span style="color: #695500;">)</span> <span style="color: #695500;">(</span><span style="color: #3548cf;">(</span>Z<span style="color: #3548cf;">)</span> 1 2 3<span style="color: #695500;">)</span><span style="color: #0031a9;">]</span>
+<pre class="src src-clojure"><span style="color: #ffa00f;">[</span><span style="color: #2fafff;">(</span><span style="color: #d8af7a;">(</span>Z<span style="color: #d8af7a;">)</span><span style="color: #2fafff;">)</span> <span style="color: #2fafff;">(</span><span style="color: #d8af7a;">(</span>Z<span style="color: #d8af7a;">)</span> 5<span style="color: #2fafff;">)</span> <span style="color: #2fafff;">(</span><span style="color: #d8af7a;">(</span>Z<span style="color: #d8af7a;">)</span> 1 2 3<span style="color: #2fafff;">)</span><span style="color: #ffa00f;">]</span>
 </pre>
 </div>
 
@@ -355,7 +376,7 @@ It is identical to <code>inc</code> in Clojure, so we will just alias it.
 </p>
 
 <div class="org-src-container">
-<pre class="src src-clojure"><span style="color: #0031a9;">(</span><span style="color: #531ab6;">def</span> <span style="color: #005e8b;">S</span> inc<span style="color: #0031a9;">)</span>
+<pre class="src src-clojure"><span style="color: #ffa00f;">(</span><span style="color: #b6a0ff;">def</span> <span style="color: #00d3d0;">S</span> inc<span style="color: #ffa00f;">)</span>
 </pre>
 </div>
 
@@ -368,8 +389,8 @@ rearranging function arguments. We will see it in action soon.
 </p>
 
 <div class="org-src-container">
-<pre class="src src-clojure"><span style="color: #0031a9;">(</span><span style="color: #531ab6;">defn</span> <span style="color: #721045;">P</span> <span style="color: #695500;">[</span>i<span style="color: #695500;">]</span>
-  <span style="color: #695500;">(</span><span style="color: #531ab6;">fn</span> <span style="color: #3548cf;">[</span>&amp; args<span style="color: #3548cf;">]</span> <span style="color: #3548cf;">(</span>nth args <span style="color: #77492f;">(</span>dec i<span style="color: #77492f;">)</span><span style="color: #3548cf;">)</span><span style="color: #695500;">)</span><span style="color: #0031a9;">)</span>
+<pre class="src src-clojure"><span style="color: #ffa00f;">(</span><span style="color: #b6a0ff;">defn</span> <span style="color: #feacd0;">P</span> <span style="color: #2fafff;">[</span>i<span style="color: #2fafff;">]</span>
+  <span style="color: #2fafff;">(</span><span style="color: #b6a0ff;">fn</span> <span style="color: #d8af7a;">[</span>&amp; args<span style="color: #d8af7a;">]</span> <span style="color: #d8af7a;">(</span>nth args <span style="color: #79a8ff;">(</span>dec i<span style="color: #79a8ff;">)</span><span style="color: #d8af7a;">)</span><span style="color: #2fafff;">)</span><span style="color: #ffa00f;">)</span>
 </pre>
 </div>
 
@@ -385,8 +406,8 @@ numbers, the operations act on those initial functions.
 </p>
 
 <div class="org-src-container">
-<pre class="src src-clojure"><span style="color: #0031a9;">(</span><span style="color: #531ab6;">defn</span> <span style="color: #721045;">C</span> <span style="color: #695500;">[</span>f &amp; gs<span style="color: #695500;">]</span>
-  <span style="color: #695500;">(</span><span style="color: #531ab6;">fn</span> <span style="color: #3548cf;">[</span>&amp; xs<span style="color: #3548cf;">]</span> <span style="color: #3548cf;">(</span>apply f <span style="color: #77492f;">(</span>map #<span style="color: #0000b0;">(</span>apply <span style="color: #005e8b;">%</span> xs<span style="color: #0000b0;">)</span> gs<span style="color: #77492f;">)</span><span style="color: #3548cf;">)</span><span style="color: #695500;">)</span><span style="color: #0031a9;">)</span>
+<pre class="src src-clojure"><span style="color: #ffa00f;">(</span><span style="color: #b6a0ff;">defn</span> <span style="color: #feacd0;">C</span> <span style="color: #2fafff;">[</span>f &amp; gs<span style="color: #2fafff;">]</span>
+  <span style="color: #2fafff;">(</span><span style="color: #b6a0ff;">fn</span> <span style="color: #d8af7a;">[</span>&amp; xs<span style="color: #d8af7a;">]</span> <span style="color: #d8af7a;">(</span>apply f <span style="color: #79a8ff;">(</span>map #<span style="color: #cabf00;">(</span>apply <span style="color: #00d3d0;">%</span> xs<span style="color: #cabf00;">)</span> gs<span style="color: #79a8ff;">)</span><span style="color: #d8af7a;">)</span><span style="color: #2fafff;">)</span><span style="color: #ffa00f;">)</span>
 </pre>
 </div>
 
@@ -406,7 +427,7 @@ The following usage example may help.
 </p>
 
 <div class="org-src-container">
-<pre class="src src-clojure"><span style="color: #0031a9;">(</span><span style="color: #695500;">(</span>C S <span style="color: #3548cf;">(</span>P 1<span style="color: #3548cf;">)</span><span style="color: #695500;">)</span> 5 11<span style="color: #0031a9;">)</span>
+<pre class="src src-clojure"><span style="color: #ffa00f;">(</span><span style="color: #2fafff;">(</span>C S <span style="color: #d8af7a;">(</span>P 1<span style="color: #d8af7a;">)</span><span style="color: #2fafff;">)</span> 5 11<span style="color: #ffa00f;">)</span>
 </pre>
 </div>
 
@@ -420,7 +441,7 @@ Contrast with:
 </p>
 
 <div class="org-src-container">
-<pre class="src src-clojure"><span style="color: #0031a9;">(</span><span style="color: #695500;">(</span>C S <span style="color: #3548cf;">(</span>P 2<span style="color: #3548cf;">)</span><span style="color: #695500;">)</span> 5 11<span style="color: #0031a9;">)</span>
+<pre class="src src-clojure"><span style="color: #ffa00f;">(</span><span style="color: #2fafff;">(</span>C S <span style="color: #d8af7a;">(</span>P 2<span style="color: #d8af7a;">)</span><span style="color: #2fafff;">)</span> 5 11<span style="color: #ffa00f;">)</span>
 </pre>
 </div>
 
@@ -434,14 +455,14 @@ Finally, the recursion operation.
 </p>
 
 <div class="org-src-container">
-<pre class="src src-clojure"><span style="color: #0031a9;">(</span><span style="color: #531ab6;">defn</span> <span style="color: #721045;">R</span> <span style="color: #695500;">[</span>n &amp; xs<span style="color: #695500;">]</span>
-  <span style="color: #695500;">(</span><span style="color: #531ab6;">fn</span> <span style="color: #3548cf;">[</span>f g<span style="color: #3548cf;">]</span>
-    <span style="color: #3548cf;">(</span><span style="color: #531ab6;">loop</span> <span style="color: #77492f;">[</span>i 1
+<pre class="src src-clojure"><span style="color: #ffa00f;">(</span><span style="color: #b6a0ff;">defn</span> <span style="color: #feacd0;">R</span> <span style="color: #2fafff;">[</span>n &amp; xs<span style="color: #2fafff;">]</span>
+  <span style="color: #2fafff;">(</span><span style="color: #b6a0ff;">fn</span> <span style="color: #d8af7a;">[</span>f g<span style="color: #d8af7a;">]</span>
+    <span style="color: #d8af7a;">(</span><span style="color: #b6a0ff;">loop</span> <span style="color: #79a8ff;">[</span>i 1
            j 0
-           acc <span style="color: #0000b0;">(</span>apply f xs<span style="color: #0000b0;">)</span><span style="color: #77492f;">]</span>
-      <span style="color: #77492f;">(</span><span style="color: #531ab6;">if</span> <span style="color: #0000b0;">(</span>&lt;= i n<span style="color: #0000b0;">)</span>
-        <span style="color: #0000b0;">(</span><span style="color: #531ab6;">recur</span> <span style="color: #973300;">(</span>inc i<span style="color: #973300;">)</span> <span style="color: #973300;">(</span>inc j<span style="color: #973300;">)</span> <span style="color: #973300;">(</span>apply <span style="color: #003497;">(</span>partial g j acc<span style="color: #003497;">)</span> xs<span style="color: #973300;">)</span><span style="color: #0000b0;">)</span>
-        acc<span style="color: #77492f;">)</span><span style="color: #3548cf;">)</span><span style="color: #695500;">)</span><span style="color: #0031a9;">)</span>
+           acc <span style="color: #cabf00;">(</span>apply f xs<span style="color: #cabf00;">)</span><span style="color: #79a8ff;">]</span>
+      <span style="color: #79a8ff;">(</span><span style="color: #b6a0ff;">if</span> <span style="color: #cabf00;">(</span>&lt;= i n<span style="color: #cabf00;">)</span>
+        <span style="color: #cabf00;">(</span><span style="color: #b6a0ff;">recur</span> <span style="color: #4ae2f0;">(</span>inc i<span style="color: #4ae2f0;">)</span> <span style="color: #4ae2f0;">(</span>inc j<span style="color: #4ae2f0;">)</span> <span style="color: #4ae2f0;">(</span>apply <span style="color: #d2b580;">(</span>partial g j acc<span style="color: #d2b580;">)</span> xs<span style="color: #4ae2f0;">)</span><span style="color: #cabf00;">)</span>
+        acc<span style="color: #79a8ff;">)</span><span style="color: #d8af7a;">)</span><span style="color: #2fafff;">)</span><span style="color: #ffa00f;">)</span>
 </pre>
 </div>
 
@@ -468,11 +489,11 @@ natural numbers with zero and the successor function.
 </p>
 
 <div class="org-src-container">
-<pre class="src src-clojure"><span style="color: #0031a9;">(</span><span style="color: #531ab6;">defn</span> <span style="color: #721045;">k</span> <span style="color: #695500;">[</span>n<span style="color: #695500;">]</span>
-  <span style="color: #695500;">(</span><span style="color: #531ab6;">fn</span> <span style="color: #3548cf;">[</span>&amp; _<span style="color: #3548cf;">]</span>
-    <span style="color: #3548cf;">(</span><span style="color: #531ab6;">let</span> <span style="color: #77492f;">[</span>f <span style="color: #0000b0;">(</span>Z<span style="color: #0000b0;">)</span>
-          g <span style="color: #0000b0;">(</span>C S <span style="color: #973300;">(</span>P 1<span style="color: #973300;">)</span><span style="color: #0000b0;">)</span><span style="color: #77492f;">]</span>
-      <span style="color: #77492f;">(</span><span style="color: #0000b0;">(</span>R n<span style="color: #0000b0;">)</span> f g<span style="color: #77492f;">)</span><span style="color: #3548cf;">)</span><span style="color: #695500;">)</span><span style="color: #0031a9;">)</span>
+<pre class="src src-clojure"><span style="color: #ffa00f;">(</span><span style="color: #b6a0ff;">defn</span> <span style="color: #feacd0;">k</span> <span style="color: #2fafff;">[</span>n<span style="color: #2fafff;">]</span>
+  <span style="color: #2fafff;">(</span><span style="color: #b6a0ff;">fn</span> <span style="color: #d8af7a;">[</span>&amp; _<span style="color: #d8af7a;">]</span>
+    <span style="color: #d8af7a;">(</span><span style="color: #b6a0ff;">let</span> <span style="color: #79a8ff;">[</span>f <span style="color: #cabf00;">(</span>Z<span style="color: #cabf00;">)</span>
+          g <span style="color: #cabf00;">(</span>C S <span style="color: #4ae2f0;">(</span>P 1<span style="color: #4ae2f0;">)</span><span style="color: #cabf00;">)</span><span style="color: #79a8ff;">]</span>
+      <span style="color: #79a8ff;">(</span><span style="color: #cabf00;">(</span>R n<span style="color: #cabf00;">)</span> f g<span style="color: #79a8ff;">)</span><span style="color: #d8af7a;">)</span><span style="color: #2fafff;">)</span><span style="color: #ffa00f;">)</span>
 </pre>
 </div>
 
@@ -481,7 +502,7 @@ Usage:
 </p>
 
 <div class="org-src-container">
-<pre class="src src-clojure"><span style="color: #0031a9;">[</span><span style="color: #695500;">(</span><span style="color: #3548cf;">(</span>k 5<span style="color: #3548cf;">)</span> 5<span style="color: #695500;">)</span> <span style="color: #695500;">(</span><span style="color: #3548cf;">(</span>k 5<span style="color: #3548cf;">)</span> 6<span style="color: #695500;">)</span> <span style="color: #695500;">(</span><span style="color: #3548cf;">(</span>k 5<span style="color: #3548cf;">)</span> 7<span style="color: #695500;">)</span><span style="color: #0031a9;">]</span>
+<pre class="src src-clojure"><span style="color: #ffa00f;">[</span><span style="color: #2fafff;">(</span><span style="color: #d8af7a;">(</span>k 5<span style="color: #d8af7a;">)</span> 5<span style="color: #2fafff;">)</span> <span style="color: #2fafff;">(</span><span style="color: #d8af7a;">(</span>k 5<span style="color: #d8af7a;">)</span> 6<span style="color: #2fafff;">)</span> <span style="color: #2fafff;">(</span><span style="color: #d8af7a;">(</span>k 5<span style="color: #d8af7a;">)</span> 7<span style="color: #2fafff;">)</span><span style="color: #ffa00f;">]</span>
 </pre>
 </div>
 
@@ -501,15 +522,15 @@ Addition is achieved by applying the successor function 𝐱 times on
 </p>
 
 <div class="org-src-container">
-<pre class="src src-clojure"><span style="color: #0031a9;">(</span><span style="color: #531ab6;">defn</span> <span style="color: #721045;">add</span> <span style="color: #695500;">[</span>x y<span style="color: #695500;">]</span>
-  <span style="color: #695500;">(</span><span style="color: #531ab6;">let</span> <span style="color: #3548cf;">[</span>f <span style="color: #77492f;">(</span>P 1<span style="color: #77492f;">)</span>
-        g <span style="color: #77492f;">(</span>C S <span style="color: #0000b0;">(</span>P 2<span style="color: #0000b0;">)</span><span style="color: #77492f;">)</span><span style="color: #3548cf;">]</span>
-    <span style="color: #3548cf;">(</span><span style="color: #77492f;">(</span>R x y<span style="color: #77492f;">)</span> f g<span style="color: #3548cf;">)</span><span style="color: #695500;">)</span><span style="color: #0031a9;">)</span>
+<pre class="src src-clojure"><span style="color: #ffa00f;">(</span><span style="color: #b6a0ff;">defn</span> <span style="color: #feacd0;">add</span> <span style="color: #2fafff;">[</span>x y<span style="color: #2fafff;">]</span>
+  <span style="color: #2fafff;">(</span><span style="color: #b6a0ff;">let</span> <span style="color: #d8af7a;">[</span>f <span style="color: #79a8ff;">(</span>P 1<span style="color: #79a8ff;">)</span>
+        g <span style="color: #79a8ff;">(</span>C S <span style="color: #cabf00;">(</span>P 2<span style="color: #cabf00;">)</span><span style="color: #79a8ff;">)</span><span style="color: #d8af7a;">]</span>
+    <span style="color: #d8af7a;">(</span><span style="color: #79a8ff;">(</span>R x y<span style="color: #79a8ff;">)</span> f g<span style="color: #d8af7a;">)</span><span style="color: #2fafff;">)</span><span style="color: #ffa00f;">)</span>
 </pre>
 </div>
 
 <div class="org-src-container">
-<pre class="src src-clojure"><span style="color: #0031a9;">(</span>add 4 5<span style="color: #0031a9;">)</span>
+<pre class="src src-clojure"><span style="color: #ffa00f;">(</span>add 4 5<span style="color: #ffa00f;">)</span>
 </pre>
 </div>
 
@@ -523,10 +544,10 @@ We can leverage addition to define multiplication.
 </p>
 
 <div class="org-src-container">
-<pre class="src src-clojure"><span style="color: #0031a9;">(</span><span style="color: #531ab6;">defn</span> <span style="color: #721045;">mul</span> <span style="color: #695500;">[</span>x y<span style="color: #695500;">]</span>
-  <span style="color: #695500;">(</span><span style="color: #531ab6;">let</span> <span style="color: #3548cf;">[</span>f <span style="color: #77492f;">(</span>Z<span style="color: #77492f;">)</span>
-        g <span style="color: #77492f;">(</span>C add <span style="color: #0000b0;">(</span>P 2<span style="color: #0000b0;">)</span> <span style="color: #0000b0;">(</span>P 3<span style="color: #0000b0;">)</span><span style="color: #77492f;">)</span><span style="color: #3548cf;">]</span>
-    <span style="color: #3548cf;">(</span><span style="color: #77492f;">(</span>R x y<span style="color: #77492f;">)</span> f g<span style="color: #3548cf;">)</span><span style="color: #695500;">)</span><span style="color: #0031a9;">)</span>
+<pre class="src src-clojure"><span style="color: #ffa00f;">(</span><span style="color: #b6a0ff;">defn</span> <span style="color: #feacd0;">mul</span> <span style="color: #2fafff;">[</span>x y<span style="color: #2fafff;">]</span>
+  <span style="color: #2fafff;">(</span><span style="color: #b6a0ff;">let</span> <span style="color: #d8af7a;">[</span>f <span style="color: #79a8ff;">(</span>Z<span style="color: #79a8ff;">)</span>
+        g <span style="color: #79a8ff;">(</span>C add <span style="color: #cabf00;">(</span>P 2<span style="color: #cabf00;">)</span> <span style="color: #cabf00;">(</span>P 3<span style="color: #cabf00;">)</span><span style="color: #79a8ff;">)</span><span style="color: #d8af7a;">]</span>
+    <span style="color: #d8af7a;">(</span><span style="color: #79a8ff;">(</span>R x y<span style="color: #79a8ff;">)</span> f g<span style="color: #d8af7a;">)</span><span style="color: #2fafff;">)</span><span style="color: #ffa00f;">)</span>
 </pre>
 </div>
 
@@ -535,7 +556,7 @@ Usage:
 </p>
 
 <div class="org-src-container">
-<pre class="src src-clojure"><span style="color: #0031a9;">(</span>mul 6 7<span style="color: #0031a9;">)</span>
+<pre class="src src-clojure"><span style="color: #ffa00f;">(</span>mul 6 7<span style="color: #ffa00f;">)</span>
 </pre>
 </div>
 
@@ -556,15 +577,15 @@ Factorial leverages multiplication, predictably. As does exponentiation.
 </p>
 
 <div class="org-src-container">
-<pre class="src src-clojure"><span style="color: #0031a9;">(</span><span style="color: #531ab6;">defn</span> <span style="color: #721045;">fac</span> <span style="color: #695500;">[</span>n<span style="color: #695500;">]</span>
-  <span style="color: #695500;">(</span><span style="color: #531ab6;">let</span> <span style="color: #3548cf;">[</span>f <span style="color: #77492f;">(</span>k 1<span style="color: #77492f;">)</span>
-        g <span style="color: #77492f;">(</span>C mul <span style="color: #0000b0;">(</span>P 2<span style="color: #0000b0;">)</span> <span style="color: #0000b0;">(</span>C S <span style="color: #973300;">(</span>P 1<span style="color: #973300;">)</span><span style="color: #0000b0;">)</span><span style="color: #77492f;">)</span><span style="color: #3548cf;">]</span>
-    <span style="color: #3548cf;">(</span><span style="color: #77492f;">(</span>R n<span style="color: #77492f;">)</span> f g<span style="color: #3548cf;">)</span><span style="color: #695500;">)</span><span style="color: #0031a9;">)</span>
+<pre class="src src-clojure"><span style="color: #ffa00f;">(</span><span style="color: #b6a0ff;">defn</span> <span style="color: #feacd0;">fac</span> <span style="color: #2fafff;">[</span>n<span style="color: #2fafff;">]</span>
+  <span style="color: #2fafff;">(</span><span style="color: #b6a0ff;">let</span> <span style="color: #d8af7a;">[</span>f <span style="color: #79a8ff;">(</span>k 1<span style="color: #79a8ff;">)</span>
+        g <span style="color: #79a8ff;">(</span>C mul <span style="color: #cabf00;">(</span>P 2<span style="color: #cabf00;">)</span> <span style="color: #cabf00;">(</span>C S <span style="color: #4ae2f0;">(</span>P 1<span style="color: #4ae2f0;">)</span><span style="color: #cabf00;">)</span><span style="color: #79a8ff;">)</span><span style="color: #d8af7a;">]</span>
+    <span style="color: #d8af7a;">(</span><span style="color: #79a8ff;">(</span>R n<span style="color: #79a8ff;">)</span> f g<span style="color: #d8af7a;">)</span><span style="color: #2fafff;">)</span><span style="color: #ffa00f;">)</span>
 </pre>
 </div>
 
 <div class="org-src-container">
-<pre class="src src-clojure"><span style="color: #0031a9;">[</span><span style="color: #695500;">(</span>fac 3<span style="color: #695500;">)</span> <span style="color: #695500;">(</span>fac 4<span style="color: #695500;">)</span> <span style="color: #695500;">(</span>fac 5<span style="color: #695500;">)</span><span style="color: #0031a9;">]</span>
+<pre class="src src-clojure"><span style="color: #ffa00f;">[</span><span style="color: #2fafff;">(</span>fac 3<span style="color: #2fafff;">)</span> <span style="color: #2fafff;">(</span>fac 4<span style="color: #2fafff;">)</span> <span style="color: #2fafff;">(</span>fac 5<span style="color: #2fafff;">)</span><span style="color: #ffa00f;">]</span>
 </pre>
 </div>
 
@@ -574,15 +595,15 @@ Factorial leverages multiplication, predictably. As does exponentiation.
 </div>
 
 <div class="org-src-container">
-<pre class="src src-clojure"><span style="color: #0031a9;">(</span><span style="color: #531ab6;">defn</span> <span style="color: #721045;">pow</span> <span style="color: #695500;">[</span>x y<span style="color: #695500;">]</span>
-  <span style="color: #695500;">(</span><span style="color: #531ab6;">let</span> <span style="color: #3548cf;">[</span>f <span style="color: #77492f;">(</span>k 1<span style="color: #77492f;">)</span>
-        g <span style="color: #77492f;">(</span>C mul <span style="color: #0000b0;">(</span>P 2<span style="color: #0000b0;">)</span> <span style="color: #0000b0;">(</span>P 3<span style="color: #0000b0;">)</span><span style="color: #77492f;">)</span><span style="color: #3548cf;">]</span>
-    <span style="color: #3548cf;">(</span><span style="color: #77492f;">(</span>R y x<span style="color: #77492f;">)</span> f g<span style="color: #3548cf;">)</span><span style="color: #695500;">)</span><span style="color: #0031a9;">)</span>
+<pre class="src src-clojure"><span style="color: #ffa00f;">(</span><span style="color: #b6a0ff;">defn</span> <span style="color: #feacd0;">pow</span> <span style="color: #2fafff;">[</span>x y<span style="color: #2fafff;">]</span>
+  <span style="color: #2fafff;">(</span><span style="color: #b6a0ff;">let</span> <span style="color: #d8af7a;">[</span>f <span style="color: #79a8ff;">(</span>k 1<span style="color: #79a8ff;">)</span>
+        g <span style="color: #79a8ff;">(</span>C mul <span style="color: #cabf00;">(</span>P 2<span style="color: #cabf00;">)</span> <span style="color: #cabf00;">(</span>P 3<span style="color: #cabf00;">)</span><span style="color: #79a8ff;">)</span><span style="color: #d8af7a;">]</span>
+    <span style="color: #d8af7a;">(</span><span style="color: #79a8ff;">(</span>R y x<span style="color: #79a8ff;">)</span> f g<span style="color: #d8af7a;">)</span><span style="color: #2fafff;">)</span><span style="color: #ffa00f;">)</span>
 </pre>
 </div>
 
 <div class="org-src-container">
-<pre class="src src-clojure"><span style="color: #0031a9;">[</span><span style="color: #695500;">(</span>pow 3 4<span style="color: #695500;">)</span> <span style="color: #695500;">(</span>pow 4 3<span style="color: #695500;">)</span> <span style="color: #695500;">(</span>pow 4 5<span style="color: #695500;">)</span> <span style="color: #695500;">(</span>pow 5 4<span style="color: #695500;">)</span><span style="color: #0031a9;">]</span>
+<pre class="src src-clojure"><span style="color: #ffa00f;">[</span><span style="color: #2fafff;">(</span>pow 3 4<span style="color: #2fafff;">)</span> <span style="color: #2fafff;">(</span>pow 4 3<span style="color: #2fafff;">)</span> <span style="color: #2fafff;">(</span>pow 4 5<span style="color: #2fafff;">)</span> <span style="color: #2fafff;">(</span>pow 5 4<span style="color: #2fafff;">)</span><span style="color: #ffa00f;">]</span>
 </pre>
 </div>
 
@@ -597,10 +618,10 @@ like <code>zero?</code>.
 </p>
 
 <div class="org-src-container">
-<pre class="src src-clojure"><span style="color: #0031a9;">(</span><span style="color: #531ab6;">defn</span> <span style="color: #721045;">z</span> <span style="color: #695500;">[</span>n<span style="color: #695500;">]</span>
-  <span style="color: #695500;">(</span><span style="color: #531ab6;">let</span> <span style="color: #3548cf;">[</span>f <span style="color: #77492f;">(</span>k 1<span style="color: #77492f;">)</span>
-        g <span style="color: #77492f;">(</span>Z<span style="color: #77492f;">)</span><span style="color: #3548cf;">]</span>
-    <span style="color: #3548cf;">(</span><span style="color: #77492f;">(</span>R n<span style="color: #77492f;">)</span> f g<span style="color: #3548cf;">)</span><span style="color: #695500;">)</span><span style="color: #0031a9;">)</span>
+<pre class="src src-clojure"><span style="color: #ffa00f;">(</span><span style="color: #b6a0ff;">defn</span> <span style="color: #feacd0;">z</span> <span style="color: #2fafff;">[</span>n<span style="color: #2fafff;">]</span>
+  <span style="color: #2fafff;">(</span><span style="color: #b6a0ff;">let</span> <span style="color: #d8af7a;">[</span>f <span style="color: #79a8ff;">(</span>k 1<span style="color: #79a8ff;">)</span>
+        g <span style="color: #79a8ff;">(</span>Z<span style="color: #79a8ff;">)</span><span style="color: #d8af7a;">]</span>
+    <span style="color: #d8af7a;">(</span><span style="color: #79a8ff;">(</span>R n<span style="color: #79a8ff;">)</span> f g<span style="color: #d8af7a;">)</span><span style="color: #2fafff;">)</span><span style="color: #ffa00f;">)</span>
 </pre>
 </div>
 
@@ -609,7 +630,7 @@ Usage:
 </p>
 
 <div class="org-src-container">
-<pre class="src src-clojure"><span style="color: #0031a9;">[</span><span style="color: #695500;">(</span>z 0<span style="color: #695500;">)</span> <span style="color: #695500;">(</span>z 1<span style="color: #695500;">)</span> <span style="color: #695500;">(</span>z 2<span style="color: #695500;">)</span><span style="color: #0031a9;">]</span>
+<pre class="src src-clojure"><span style="color: #ffa00f;">[</span><span style="color: #2fafff;">(</span>z 0<span style="color: #2fafff;">)</span> <span style="color: #2fafff;">(</span>z 1<span style="color: #2fafff;">)</span> <span style="color: #2fafff;">(</span>z 2<span style="color: #2fafff;">)</span><span style="color: #ffa00f;">]</span>
 </pre>
 </div>
 
@@ -623,10 +644,10 @@ And now we can define a IF-THEN-ELSE function.
 </p>
 
 <div class="org-src-container">
-<pre class="src src-clojure"><span style="color: #0031a9;">(</span><span style="color: #531ab6;">defn</span> <span style="color: #721045;">ite</span> <span style="color: #695500;">[</span>x y z<span style="color: #695500;">]</span>
-  <span style="color: #695500;">(</span><span style="color: #531ab6;">let</span> <span style="color: #3548cf;">[</span>f <span style="color: #77492f;">(</span>P 2<span style="color: #77492f;">)</span>
-        g <span style="color: #77492f;">(</span>P 3<span style="color: #77492f;">)</span><span style="color: #3548cf;">]</span>
-    <span style="color: #3548cf;">(</span><span style="color: #77492f;">(</span>R x y z<span style="color: #77492f;">)</span> f g<span style="color: #3548cf;">)</span><span style="color: #695500;">)</span><span style="color: #0031a9;">)</span>
+<pre class="src src-clojure"><span style="color: #ffa00f;">(</span><span style="color: #b6a0ff;">defn</span> <span style="color: #feacd0;">ite</span> <span style="color: #2fafff;">[</span>x y z<span style="color: #2fafff;">]</span>
+  <span style="color: #2fafff;">(</span><span style="color: #b6a0ff;">let</span> <span style="color: #d8af7a;">[</span>f <span style="color: #79a8ff;">(</span>P 2<span style="color: #79a8ff;">)</span>
+        g <span style="color: #79a8ff;">(</span>P 3<span style="color: #79a8ff;">)</span><span style="color: #d8af7a;">]</span>
+    <span style="color: #d8af7a;">(</span><span style="color: #79a8ff;">(</span>R x y z<span style="color: #79a8ff;">)</span> f g<span style="color: #d8af7a;">)</span><span style="color: #2fafff;">)</span><span style="color: #ffa00f;">)</span>
 </pre>
 </div>
 
@@ -635,7 +656,7 @@ Usage:
 </p>
 
 <div class="org-src-container">
-<pre class="src src-clojure"><span style="color: #0031a9;">[</span><span style="color: #695500;">(</span>ite 1 3 4<span style="color: #695500;">)</span> <span style="color: #695500;">(</span>ite 0 3 4<span style="color: #695500;">)</span><span style="color: #0031a9;">]</span>
+<pre class="src src-clojure"><span style="color: #ffa00f;">[</span><span style="color: #2fafff;">(</span>ite 1 3 4<span style="color: #2fafff;">)</span> <span style="color: #2fafff;">(</span>ite 0 3 4<span style="color: #2fafff;">)</span><span style="color: #ffa00f;">]</span>
 </pre>
 </div>
 
@@ -663,16 +684,16 @@ computable functions that were not primitive recursive.
 </p>
 
 <div class="org-src-container">
-<pre class="src src-clojure"><span style="color: #0031a9;">(</span><span style="color: #531ab6;">defn</span> <span style="color: #721045;">sudan</span> <span style="color: #695500;">[</span>n x y<span style="color: #695500;">]</span>
-  <span style="color: #695500;">(</span><span style="color: #531ab6;">cond</span>
-    <span style="color: #3548cf;">(</span>zero? n<span style="color: #3548cf;">)</span> <span style="color: #3548cf;">(</span>+ x y<span style="color: #3548cf;">)</span>
-    <span style="color: #3548cf;">(</span>zero? y<span style="color: #3548cf;">)</span> x
-    <span style="color: #8f0075;">:else</span> <span style="color: #3548cf;">(</span><span style="color: #531ab6;">recur</span> <span style="color: #77492f;">(</span>dec n<span style="color: #77492f;">)</span> <span style="color: #77492f;">(</span>sudan n x <span style="color: #0000b0;">(</span>dec y<span style="color: #0000b0;">)</span><span style="color: #77492f;">)</span> <span style="color: #77492f;">(</span>+ y <span style="color: #0000b0;">(</span>sudan n x <span style="color: #973300;">(</span>dec y<span style="color: #973300;">)</span><span style="color: #0000b0;">)</span><span style="color: #77492f;">)</span><span style="color: #3548cf;">)</span><span style="color: #695500;">)</span><span style="color: #0031a9;">)</span>
+<pre class="src src-clojure"><span style="color: #ffa00f;">(</span><span style="color: #b6a0ff;">defn</span> <span style="color: #feacd0;">sudan</span> <span style="color: #2fafff;">[</span>n x y<span style="color: #2fafff;">]</span>
+  <span style="color: #2fafff;">(</span><span style="color: #b6a0ff;">cond</span>
+    <span style="color: #d8af7a;">(</span>zero? n<span style="color: #d8af7a;">)</span> <span style="color: #d8af7a;">(</span>+ x y<span style="color: #d8af7a;">)</span>
+    <span style="color: #d8af7a;">(</span>zero? y<span style="color: #d8af7a;">)</span> x
+    <span style="color: #f78fe7;">:else</span> <span style="color: #d8af7a;">(</span><span style="color: #b6a0ff;">recur</span> <span style="color: #79a8ff;">(</span>dec n<span style="color: #79a8ff;">)</span> <span style="color: #79a8ff;">(</span>sudan n x <span style="color: #cabf00;">(</span>dec y<span style="color: #cabf00;">)</span><span style="color: #79a8ff;">)</span> <span style="color: #79a8ff;">(</span>+ y <span style="color: #cabf00;">(</span>sudan n x <span style="color: #4ae2f0;">(</span>dec y<span style="color: #4ae2f0;">)</span><span style="color: #cabf00;">)</span><span style="color: #79a8ff;">)</span><span style="color: #d8af7a;">)</span><span style="color: #2fafff;">)</span><span style="color: #ffa00f;">)</span>
 
-<span style="color: #0031a9;">(</span><span style="color: #531ab6;">defn</span> <span style="color: #721045;">ackermann</span> <span style="color: #695500;">[</span>m n<span style="color: #695500;">]</span> 
-  <span style="color: #695500;">(</span><span style="color: #531ab6;">cond</span> <span style="color: #3548cf;">(</span>zero? m<span style="color: #3548cf;">)</span> <span style="color: #3548cf;">(</span>inc n<span style="color: #3548cf;">)</span>
-        <span style="color: #3548cf;">(</span>zero? n<span style="color: #3548cf;">)</span> <span style="color: #3548cf;">(</span>ackermann <span style="color: #77492f;">(</span>dec m<span style="color: #77492f;">)</span> 1<span style="color: #3548cf;">)</span>
-        <span style="color: #8f0075;">:else</span> <span style="color: #3548cf;">(</span>ackermann <span style="color: #77492f;">(</span>dec m<span style="color: #77492f;">)</span> <span style="color: #77492f;">(</span>ackermann m <span style="color: #0000b0;">(</span>dec n<span style="color: #0000b0;">)</span><span style="color: #77492f;">)</span><span style="color: #3548cf;">)</span><span style="color: #695500;">)</span><span style="color: #0031a9;">)</span>
+<span style="color: #ffa00f;">(</span><span style="color: #b6a0ff;">defn</span> <span style="color: #feacd0;">ackermann</span> <span style="color: #2fafff;">[</span>m n<span style="color: #2fafff;">]</span> 
+  <span style="color: #2fafff;">(</span><span style="color: #b6a0ff;">cond</span> <span style="color: #d8af7a;">(</span>zero? m<span style="color: #d8af7a;">)</span> <span style="color: #d8af7a;">(</span>inc n<span style="color: #d8af7a;">)</span>
+        <span style="color: #d8af7a;">(</span>zero? n<span style="color: #d8af7a;">)</span> <span style="color: #d8af7a;">(</span>ackermann <span style="color: #79a8ff;">(</span>dec m<span style="color: #79a8ff;">)</span> 1<span style="color: #d8af7a;">)</span>
+        <span style="color: #f78fe7;">:else</span> <span style="color: #d8af7a;">(</span>ackermann <span style="color: #79a8ff;">(</span>dec m<span style="color: #79a8ff;">)</span> <span style="color: #79a8ff;">(</span>ackermann m <span style="color: #cabf00;">(</span>dec n<span style="color: #cabf00;">)</span><span style="color: #79a8ff;">)</span><span style="color: #d8af7a;">)</span><span style="color: #2fafff;">)</span><span style="color: #ffa00f;">)</span>
 </pre>
 </div>
 
@@ -726,12 +747,6 @@ functions, but in these systems, while mathematically definable, some
 functions are not computable. Concrete examples of such functions are
 Busy beaver, Kolmogorov complexity, or any function that outputs the
 digits of a noncomputable number, such as Chaitin's constant. 
-</p>
-
-<p>
-John McCarthy based his formalism on general recursion, devising it to
-operate on symbols instead of numbers. This is why recursion of
-symbolic expressions is the essence of Lisp.
 </p>
 <div id="outline-container-org96688c5" class="outline-2">
 <h2 id="org96688c5">Bibliography</h2>
