@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<!-- 2024-07-27 Sat 13:04 -->
+<!-- 2024-07-29 Mon 13:15 -->
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>The theory of recursion</title>
+<title>Lisp's grandfather paradox</title>
 <meta name="author" content="Daniel Szmulewicz" />
 <meta name="generator" content="Org Mode" />
-<style type="text/css">
+<style>
   #content { max-width: 60em; margin: auto; }
   .title  { text-align: center;
              margin-bottom: .2em; }
@@ -226,7 +226,7 @@
  <a accesskey="H" href="index.html"> HOME </a>
 </div><div id="content" class="content">
 <header>
-<h1 class="title">The theory of recursion</h1>
+<h1 class="title">Lisp's grandfather paradox</h1>
 </header><p>
 Recursion is an idea often associated with infinity, a process that
 repeats ad aeternam. It is perhaps surprising, then, that the origin
@@ -245,11 +245,10 @@ Ausdehnugsbereich<sup><a id="fnr.1" class="footref" href="#fn.1" role="doc-backl
 </blockquote>
 
 <p>
-Primitive recursion was actually originally introduced by Dedekind in
-1888, and proposed as a basis for arithmetic by Skolem in 1923. There
-is no lack of mathematical resources describing the recursive
-functions, but in this post we are going to try and build an
-<i>intuition</i> for the primitive recursive functions.
+Primitive recursion was originally introduced by Dedekind in 1888, and
+proposed as a basis for arithmetic by Skolem in 1923. There is no lack
+of mathematical resources describing primitive recursion, but in this
+post we are going to try and build an <i>intuition</i> for it. 
 </p>
 
 <blockquote>
@@ -264,50 +263,45 @@ experience the effect of these modifications. (Friedman, Daniel P. and Felleisen
 </blockquote>
 
 <p>
-Daniel Friedman and Matthias Felleisen wrote <i>The Little Schemer</i> and
-through a Socratic dialogue taught recursion in Scheme, arguing that
-the requirements to be a successful learner was not analytical
-reasoning but pattern recognition.
+In <i>The Little Schemer</i>, Daniel Friedman and Matthias Felleisen taught
+recursion in Scheme <span class="underline">through dialogue</span>, arguing that the requirements
+to be a successful learner was not analytical reasoning but pattern
+recognition. To understand the practicalities of recursion in Lisp,
+<i>The Little Schemer</i> is indeed a fantastic reference. In contrast, to
+understand the theoretical foundation of Lisp, the traditional
+treatment of the topic in cannot be avoided.
 </p>
 
 <p>
-To understand the practicalities of recursion in Lisp, <i>The Little
-Schemer</i> is indeed a fantastic reference. In contrast, to understand
-the theoretical foundation of Lisp, the traditional mathematical
-treatment of the topic cannot be avoided. Still, I believe the use of
-computer programs can be beneficial here as well.
+Still, our bet is that the use of computer programs can be beneficial
+here as well. By faithfully translating the rules of primitive
+recursion into a computer program, we hope to breathe life into the
+subject. This is the constructivist approach: learning means
+<i>constructing</i> an understanding through experience and interaction.
 </p>
 
 <p>
-By faithfully translating the rules of primitive recursion into a
-computer program, we breathe life into it (as it were). A computer
-program is something concrete: runnable, repl-able, inspectable,
-steppable, etc. This is the constructivist approach: learning means
-<i>constructing</i> an understanding through experiences and interaction.
-</p>
-
-<p>
-The goal of our exercise is to understand the framework of primitive
-recursion in the terms within which it appeared in the
-literature. This is purely an academic pursuit. The motivation for
-this endeavor lies in a quest to tackle the <i>big ideas</i> at the
-crossroads of Logic, Mathematics and Computer Science, such as:
+The goal of the exercise that follows is an understanding of the
+framework of primitive recursion in the terms within which it
+appeared. The motivation for this endeavor lies in a quest to tackle
+the <i>big ideas</i> at the crossroads of Logic, Mathematics and Computer
+Science, such as:
 </p>
 
 <ul class="org-ul">
 <li><a href="https://en.wikipedia.org/wiki/Foundations_of_mathematics#Foundational_crisis"><i>Grundlagenkrise der Mathematik</i></a></li>
 <li><a href="https://en.wikipedia.org/wiki/Finitism">Finitism</a></li>
-<li>Gödel's <a href="https://en.wikipedia.org/wiki/G%C3%B6del%27s_incompleteness_theorems">arithmetization of syntax</a></li>
+<li><a href="https://en.wikipedia.org/wiki/G%C3%B6del%27s_incompleteness_theorems">Gödel's arithmetization of syntax</a></li>
 <li><a href="https://en.wikipedia.org/wiki/Computability_theory">Recursion theory</a></li>
 <li><a href="https://en.wikipedia.org/wiki/McCarthy_Formalism">The origins of Lisp</a></li>
 </ul>
 
 <p>
-We would like to show how primitive recursion works, but also to
-convey its beauty: with how little we can build so much.  Primitive
-recursion is not complicated, but surprising. Indeed, it takes only
-three initial functions closed under two operations to produce all of
-the familiar functions on the natural numbers.
+Not only are we trying to explain how primitive recursion works, but
+we'd like also to convey its beauty: with how little we can build so
+much.  Primitive recursion is not complicated, but surprising. Indeed,
+it takes only three initial functions closed under two operations to
+produce all of the familiar functions on the natural numbers.
 </p>
 
 <blockquote>
@@ -323,22 +317,21 @@ recursive. (Brainerd, Walter S. and Landweber, Lawrence H., 1974)
 <p>
 It might be interesting to start with a quick glance at the
 traditional presentation of the topic. Wikipedia has a decent <a href="https://en.wikipedia.org/wiki/Primitive_recursive_function">entry</a>,
-<a href="https://plato.stanford.edu/entries/recursive-functions/">Stanford Encyclopedia of Philosophy too</a>. Take a look at the formulas
-describing primitive recursion, no matter how opaque in the eyes of a
-layman. At the end of our exercise, we will have a basis of
-comparison. We might answer the question whether or not a Lisp exposé
-improves on the learning experience.
+<a href="https://plato.stanford.edu/entries/recursive-functions/">Stanford Encyclopedia of Philosophy</a> too. Take a look at the formulas
+describing primitive recursion, no matter how opaque. At the end of
+our exercise, we will have a basis of comparison. We might answer the
+question whether or not a Lisp exposé improves on the learning
+experience.
 </p>
 
 <p>
-That being said, we are going to stick close to some conventions found
-in the traditional treatment the of topic, up to the capitalized
-one-letter naming scheme for functions. This will makes it easy for
-learners to switch back and forth between the code and the
-formalism. Please do not hesitate to replace the one-letter function
-names with something more palatable if that makes things easier for
-you. And remember that you can trace the execution of the functions in
-the REPL.
+We are going to stick close to some conventions found in the
+traditional treatment of the topic, up to the capitalized one-letter
+naming scheme for functions. This will makes it easy for learners to
+switch back and forth between the code and the formalism. Please do
+not hesitate to replace the one-letter function names with something
+more palatable if that makes things easier for you. And remember that
+you can trace the execution of the functions in the REPL.
 </p>
 
 <p>
@@ -383,7 +376,7 @@ It is identical to <code>inc</code> in Clojure, so we will just alias it.
 <p>
 Our last basic function is trickier to explain because its purpose may
 not be immediately apparent. It is called the projection function and
-it plucks an element from a sequence. Its role is auxiliary, but
+it picks an element from a sequence. Its role is auxiliary, but
 nonetheless crucial. It is used to configure primitive recursion by
 rearranging function arguments. We will see it in action soon.
 </p>
@@ -483,9 +476,9 @@ recursion is always bounded, it is guaranteed to halt.
 <p>
 Now that we have the pieces in place we can start build our algebra of
 primitive recursive functions.  Have you noticed that conspicuously
-absent from our framework so far are the natural numbers themselves?
-Following the principle of induction, we can generate the
-natural numbers with zero and the successor function. 
+absent from our framework are the natural numbers themselves?
+Following the principle of induction, we can generate the natural
+numbers with zero and the successor function.
 </p>
 
 <div class="org-src-container">
@@ -674,13 +667,25 @@ modulo, a predicate function that checks if a number is prime, etc.
 Both a <a href="https://gist.github.com/danielsz/c977ec15c4bb2804052d2493e04a8ed8">Clojure version</a> and a <a href="https://gist.github.com/danielsz/c7e6588c35e523295134133ca38d6943">Scheme version</a> are available.
 </p>
 
+<div class="hiring" id="orgb6581f0">
+<p>
+<b>Open for work</b>
+</p>
+
+<p>
+Are you hiring? Do you know someone that is? Looking for a
+collaborator? A team lead or member? A consultant, maybe? Need a
+little boost or a long-term commitment? Let's <a href="mailto:daniel.szmulewicz@gmail.com?subject=We%20are%20hiring">talk</a>.
+</p>
+
+</div>
+
 <p>
 Because it's possible to compose all the familiar arithmetic functions
 with this technique, David Hilbert, who instigated the efforts to
-rehabilitate the mathematics through finitistic means, conjectured
-that all computable functions were primitive recursive. In 1927, two of
-his students, Gabriel Sudan and Wilhelm Ackermann, discovered
-computable functions that were not primitive recursive.
+rehabilitate Mathematics through finitistic means, conjectured that
+all computable functions were primitive recursive. In 1927, two of his
+students, Gabriel Sudan and Wilhelm Ackermann, showed him wrong.
 </p>
 
 <div class="org-src-container">
@@ -699,8 +704,10 @@ computable functions that were not primitive recursive.
 
 <p>
 These functions increase super-exponentially, even for very small
-input values. Running the Ackermann function with low values such as m
-= 4 results in a <i>StackOverflowError</i>.
+input values. Running the Ackermann function with <code>m = 4</code> results in a
+<i>StackOverflowError</i> and no optimizations are straightforward to
+leverage, not tail recursion, not managing the call stack manually in
+heap memory.
 </p>
 
 <p>
@@ -710,25 +717,18 @@ computable. In some settings, this is a desirable property. Dennis
 Ritchie, author of the C programming language, designed the LOOP
 language, restricted to primitive recursion, in order to ask the
 question that otherwise would be a non-starter: can one look at a
-program and determine an upper bound on its running time? Ritchie
-formulated theorems concerning the hierarchy of primitive recursion by
-looking at the structure of the loop: its nesting and growth
-rate. (Meyer, Albert R. and Ritchie, Dennis M., 1967)
+program and determine an upper bound on its running time? Then he went
+on formulating theorems concerning the hierarchy of primitive
+recursion by looking at the structure of the loop, its nesting depth
+and the growth rate. (Meyer, Albert R. and Ritchie, Dennis M., 1967)
 </p>
 
 <p>
 Intuitively, primitive recursion corresponds to functions that can be
 computed with an understanding in advance about how far one must
 search for an answer. General computability includes functions in
-which you only need to search finitely far but you don’t know in
-advance how far that might be.
-</p>
-
-<p>
-The definition of primitive recursive functions implies that their
-computation halts on every input (after a finite number of steps). On
-the other hand, the halting problem is undecidable for general
-recursive functions.
+which one needs to search finitely far but without knowing how far
+that might be.
 </p>
 
 <p>
@@ -741,16 +741,64 @@ real-world computer programming languages. (Hofstadter, Douglas R., 1999)
 </p>
 
 <p>
+The definition of primitive recursive functions implies that their
+computation halts on every input (after a finite number of steps). On
+the other hand, the halting problem is undecidable for general
+recursive functions.
+</p>
+
+<p>
 Systems that are Turing complete, like the lambda calculus, the Turing
-machine or the 𝛍-recursive functions, capture the notion of computable
+machine or the 𝛍-recursive functions (aka general recursive functions,
+aka partial recursive functions), capture the notion of computable
 functions, but in these systems, while mathematically definable, some
 functions are not computable. Concrete examples of such functions are
 Busy beaver, Kolmogorov complexity, or any function that outputs the
-digits of a noncomputable number, such as Chaitin's constant. 
+digits of a noncomputable number, such as Chaitin's constant.
 </p>
-<div id="outline-container-org0078ba9" class="outline-2">
-<h2 id="org0078ba9">Bibliography</h2>
-<div class="outline-text-2" id="text-org0078ba9">
+
+<blockquote>
+<p>
+My desire for an algebraic list processing language for artificial
+intelligence work on the IBM 704 computer arose in the summer of 1956
+during the Dartmouth Summer Research Project on Artificial
+Intelligence which was the first organized study of AI&#x2026; While
+expressions could be handled easily in FLPL, and it was used
+successfully for the Geometry program, it had neither conditional
+expressions nor recursion, and erasing list structure was handled
+explicitly by the program. (McCarthy, John, 1978)
+</p>
+</blockquote>
+
+<p>
+John McCarthy based Lisp on general recursion, but devised it to
+operate on symbolic expressions rather than numbers. He was interested
+in AI, where concepts, the way humans manipulate them, occupy center
+stage. Symbolic expressions are better at modeling concepts than
+numbers. Just today we've seen how malleable they are, effortlessly
+encoding the formulas of primitive recursion. Somehow we have made
+Lisp revisit its conceptual ancestor. We've traveled in time like in
+the grandfather paradox.  Not with the intent to kill the progenitor,
+but rather to embrace him, bring him back to life, even if just for a
+moment.
+</p>
+
+<div class="contact" id="org9787bde">
+<p>
+Wow, you've made it! Right up to the end! So you're into this kind of
+stuff, aren't you?! Maybe we should be friends! What's more, I might
+be writing more on the topic. Would you like to be notified? Also, I'm
+gauging interest in long-form writing, maybe a book. If that's
+something you'd sign up for, please let me <a href="mailto:daniel.szmulewicz@gmail.com?subject=More%20of%20this%20stuff%20please">know</a>.
+</p>
+
+</div>
+
+<div class="bibliography" id="org39a0001">
+<p>
+Bibliography
+</p>
+
 <p>
 Brainerd, Walter S. and Landweber, Lawrence H. (1974). <i>Theory of Computation</i>, John Wiley \&amp; Sons, Inc..</p>
 
@@ -761,11 +809,14 @@ Friedman, Daniel P. and Felleisen, Matthias (1996). <i>The little Schemer (4th e
 Hofstadter, Douglas R. (1999). <i>Godel Escher Bach: An Eternal Golden Braid</i>, Basic Books, Inc..</p>
 
 <p>
+McCarthy, John (1978). <i>History of LISP</i>, Association for Computing Machinery (ACM).</p>
+
+<p>
 Meyer, Albert R. and Ritchie, Dennis M. (1967). <i>The complexity of loop programs</i>, ACM Press.</p>
 
 <p>
-Skolem, T. (1923). <i>Begr\"undung der Elementaren Arithmetik durch die rekurrierende Denkweise ohne Anwendung scheinbarer Ver\"anderlichen mit unendlichem Ausdehnungsbereich</i>.</p>
-</div>
+Skolem, T. (1923). <i>Begr{\"u}ndung der Elementaren Arithmetik durch die rekurrierende Denkweise ohne Anwendung scheinbarer Ver{\"a}nderlichen mit unendlichem Ausdehnungsbereich</i>.</p>
+
 </div>
 <div id="footnotes">
 <h2 class="footnotes">Footnotes: </h2>
