@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<!-- 2024-07-29 Mon 17:42 -->
+<!-- 2024-07-29 Mon 22:08 -->
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Lisp's grandfather paradox</title>
@@ -297,9 +297,26 @@ Science, such as:
 </ul>
 
 <p>
-Not only are we trying to explain how primitive recursion works, but
-we'd also like to convey its beauty: with how little we can build so
-much.  Primitive recursion is not complicated, but surprising. Indeed,
+It might be interesting to start with a quick glance at the
+traditional presentation of the topic. Wikipedia has a decent <a href="https://en.wikipedia.org/wiki/Primitive_recursive_function">entry</a>,
+<a href="https://plato.stanford.edu/entries/recursive-functions/">Stanford Encyclopedia of Philosophy</a> too. Take a look at the formulas
+describing primitive recursion, no matter how opaque. At the end of
+our exercise, we will have a basis of comparison. We might answer the
+question how Lisp improves our understanding.
+</p>
+
+<p>
+<i>Note:</i> We are going to stick close to some conventions found in the
+traditional treatment of the topic, up to the capitalized one-letter
+naming scheme for functions. This will make it easy for learners to
+switch back and forth between the code and the formalism. Please do
+not hesitate to replace the one-letter function names with something
+more palatable. And remember that you can trace the execution of the
+functions in the REPL.
+</p>
+
+<p>
+Primitive recursion is not complicated, but surprising. Indeed,
 it takes only three initial functions closed under two operations to
 produce all of the familiar functions on the natural numbers.
 </p>
@@ -313,26 +330,6 @@ function which returns the nth prime are all primitive
 recursive. (Brainerd, Walter S. and Landweber, Lawrence H., 1974)
 </p>
 </blockquote>
-
-<p>
-It might be interesting to start with a quick glance at the
-traditional presentation of the topic. Wikipedia has a decent <a href="https://en.wikipedia.org/wiki/Primitive_recursive_function">entry</a>,
-<a href="https://plato.stanford.edu/entries/recursive-functions/">Stanford Encyclopedia of Philosophy</a> too. Take a look at the formulas
-describing primitive recursion, no matter how opaque. At the end of
-our exercise, we will have a basis of comparison. We might answer the
-question whether or not a Lisp exposé improves on the learning
-experience.
-</p>
-
-<p>
-We are going to stick close to some conventions found in the
-traditional treatment of the topic, up to the capitalized one-letter
-naming scheme for functions. This will make it easy for learners to
-switch back and forth between the code and the formalism. Please do
-not hesitate to replace the one-letter function names with something
-more palatable. And remember that you can trace the execution of the
-functions in the REPL.
-</p>
 
 <p>
 Our first rule is the Zero rule.
@@ -388,8 +385,8 @@ rearranging function arguments. We will see it in action soon.
 </div>
 
 <p>
-<i>Note:</i> The projection function is not zero-based, but the ArraySeq containing
-the arguments is, so we make the decrement adjustment.
+<i>Note:</i> The projection function is not zero-based, but the ArraySeq
+containing the arguments is, so we make the decrement adjustment.
 </p>
 
 <p>
@@ -633,7 +630,7 @@ Usage:
 </div>
 
 <p>
-And now we can define an IF-THEN-ELSE function.
+And now we can define an if-then-else function.
 </p>
 
 <div class="org-src-container">
@@ -667,7 +664,7 @@ modulo, a predicate function that checks if a number is prime, etc.
 Both a <a href="https://gist.github.com/danielsz/c977ec15c4bb2804052d2493e04a8ed8">Clojure version</a> and a <a href="https://gist.github.com/danielsz/c7e6588c35e523295134133ca38d6943">Scheme version</a> are available.
 </p>
 
-<div class="hiring" id="orgca5e3e3">
+<div class="hiring" id="orged718c0">
 <p>
 <b>Open for work</b>
 </p>
@@ -685,7 +682,7 @@ Because it's possible to compose all the familiar arithmetic functions
 with this technique, David Hilbert, who instigated the efforts to
 rehabilitate mathematics through finitistic means, conjectured that
 all computable functions were primitive recursive. In 1927, two of his
-students, Gabriel Sudan and Wilhelm Ackermann, showed him wrong.
+students, Gabriel Sudan and Wilhelm Ackermann, proved him wrong.
 </p>
 
 <div class="org-src-container">
@@ -752,9 +749,7 @@ Systems that are Turing complete, like the lambda calculus, the Turing
 machine or the 𝛍-recursive functions (aka general recursive functions,
 aka partial recursive functions), capture the notion of computable
 functions, but in these systems, while mathematically definable, some
-functions are not computable. Concrete examples of such functions are
-Busy beaver, Kolmogorov complexity, or any function that outputs the
-digits of a noncomputable number, such as Chaitin's constant.
+functions are not computable. (Rado, T., 1962)
 </p>
 
 <blockquote>
@@ -772,18 +767,18 @@ explicitly by the program. (McCarthy, John, 1978)
 
 <p>
 John McCarthy based Lisp on general recursion, but devised it to
-operate on symbolic expressions rather than numbers. He was interested
-in AI, where concepts, the way humans manipulate them, occupy the
-center stage. Symbolic expressions are better at modeling concepts
-than numbers. Just today we've seen how malleable they are,
-effortlessly encoding the formulas of primitive recursion. Somehow we
-have made Lisp revisit its conceptual ancestor. We've traveled in time
-like in the grandfather paradox.  Not with the intent to kill the
-progenitor, but rather to embrace him, bring him back to life, even if
-for a moment.
+operate on symbols rather than numbers. He was interested in AI, where
+concepts, the way humans manipulate them, occupy the center stage. A
+symbol can stand in for any idea, whether code or data. Just today
+we've seen just how expressive symbolic expressions are, effortlessly
+encoding the formulas of primitive recursion. Somehow we have made
+Lisp revisit its conceptual ancestor. We've traveled in time like in
+the grandfather paradox.  Not with the intent to kill the progenitor,
+but rather to embrace him, bring him back to life, even if for a
+moment.
 </p>
 
-<div class="contact" id="orgc6c692a">
+<div class="contact" id="org8766b48">
 <p>
 Wow, you've made it! Right up to the end! So you're into this kind of
 stuff, aren't you?! Maybe we should be friends! What's more, I might
@@ -794,7 +789,7 @@ something you'd sign up for, please let me <a href="mailto:daniel.szmulewicz@gma
 
 </div>
 
-<div class="bibliography" id="orgead76e6">
+<div class="bibliography" id="org1977d82">
 <p>
 Bibliography
 </p>
@@ -813,6 +808,9 @@ McCarthy, John (1978). <i>History of LISP</i>, Association for Computing Machine
 
 <p>
 Meyer, Albert R. and Ritchie, Dennis M. (1967). <i>The complexity of loop programs</i>, ACM Press.</p>
+
+<p>
+Rado, T. (1962). <i>On Non-Computable Functions</i>, Institute of Electrical and Electronics Engineers (IEEE).</p>
 
 <p>
 Skolem, T. (1923). <i>Begr{\"u}ndung der Elementaren Arithmetik durch die rekurrierende Denkweise ohne Anwendung scheinbarer Ver{\"a}nderlichen mit unendlichem Ausdehnungsbereich</i>.</p>
