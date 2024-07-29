@@ -14,9 +14,9 @@
   <link>https://danielsz.github.io/</link>
   <description><![CDATA[]]></description>
   <language>en</language>
-  <pubDate>Sat, 27 Apr 2024 21:19:02 +0800</pubDate>
-  <lastBuildDate>Sat, 27 Apr 2024 21:19:02 +0800</lastBuildDate>
-  <generator>Emacs 29.3 Org-mode 9.6.26</generator>
+  <pubDate>Mon, 29 Jul 2024 17:20:56 +0300</pubDate>
+  <lastBuildDate>Mon, 29 Jul 2024 17:20:56 +0300</lastBuildDate>
+  <generator>Emacs 29.4 Org-mode 9.6.15</generator>
   <webMaster>daniel.szmulewicz@gmail.com (Daniel Szmulewicz)</webMaster>
   <image>
     <url>https://danielsz.github.io/blog/images/lain-animated2.gif</url>
@@ -30,7 +30,7 @@
     <link>https://danielsz.github.io/2017-12-04T11_17.html</link>
     <author>daniel.szmulewicz@gmail.com (Daniel Szmulewicz)</author>
     <guid isPermaLink="false">https://danielsz.github.io/2017-12-04T11_17.html</guid>
-    <pubDate>Mon, 04 Dec 2017 00:00:00 +0800</pubDate>
+    <pubDate>Mon, 04 Dec 2017 00:00:00 +0200</pubDate>
 
     <description><![CDATA[]]></description>
   </item>
@@ -39,7 +39,7 @@
     <link>https://danielsz.github.io/2017-12-04T23_53.html</link>
     <author>daniel.szmulewicz@gmail.com (Daniel Szmulewicz)</author>
     <guid isPermaLink="false">https://danielsz.github.io/2017-12-04T23_53.html</guid>
-    <pubDate>Tue, 05 Dec 2017 00:00:00 +0800</pubDate>
+    <pubDate>Tue, 05 Dec 2017 00:00:00 +0200</pubDate>
 
     <description><![CDATA[]]></description>
   </item>
@@ -48,7 +48,7 @@
     <link>https://danielsz.github.io/2017-12-05T20_22.html</link>
     <author>daniel.szmulewicz@gmail.com (Daniel Szmulewicz)</author>
     <guid isPermaLink="false">https://danielsz.github.io/2017-12-05T20_22.html</guid>
-    <pubDate>Wed, 06 Dec 2017 00:00:00 +0800</pubDate>
+    <pubDate>Tue, 05 Dec 2017 00:00:00 +0200</pubDate>
 
     <description><![CDATA[]]></description>
   </item>
@@ -57,7 +57,7 @@
     <link>https://danielsz.github.io/deft-49.html</link>
     <author>daniel.szmulewicz@gmail.com (Daniel Szmulewicz)</author>
     <guid isPermaLink="false">https://danielsz.github.io/deft-49.html</guid>
-    <pubDate>Wed, 25 Mar 2020 00:00:00 +0800</pubDate>
+    <pubDate>Wed, 25 Mar 2020 00:00:00 +0200</pubDate>
 
     <description><![CDATA[]]></description>
   </item>
@@ -66,7 +66,7 @@
     <link>https://danielsz.github.io/deft-4.html</link>
     <author>daniel.szmulewicz@gmail.com (Daniel Szmulewicz)</author>
     <guid isPermaLink="false">https://danielsz.github.io/deft-4.html</guid>
-    <pubDate>Mon, 04 Dec 2017 00:00:00 +0800</pubDate>
+    <pubDate>Sun, 03 Dec 2017 00:00:00 +0200</pubDate>
 
     <description><![CDATA[]]></description>
   </item>
@@ -75,7 +75,7 @@
     <link>https://danielsz.github.io/blog_on_lisp.html</link>
     <author>daniel.szmulewicz@gmail.com (Daniel Szmulewicz)</author>
     <guid isPermaLink="false">https://danielsz.github.io/blog_on_lisp.html</guid>
-    <pubDate>Fri, 28 May 2021 00:00:00 +0800</pubDate>
+    <pubDate>Fri, 28 May 2021 00:00:00 +0300</pubDate>
 
     <description><![CDATA[]]></description>
   </item>
@@ -84,7 +84,7 @@
     <link>https://danielsz.github.io/2020-12-04T15_08.html</link>
     <author>daniel.szmulewicz@gmail.com (Daniel Szmulewicz)</author>
     <guid isPermaLink="false">https://danielsz.github.io/2020-12-04T15_08.html</guid>
-    <pubDate>Sat, 05 Dec 2020 00:00:00 +0800</pubDate>
+    <pubDate>Fri, 04 Dec 2020 00:00:00 +0200</pubDate>
 
     <description><![CDATA[]]></description>
   </item>
@@ -93,7 +93,16 @@
     <link>https://danielsz.github.io/2019-08-05T21_14.html</link>
     <author>daniel.szmulewicz@gmail.com (Daniel Szmulewicz)</author>
     <guid isPermaLink="false">https://danielsz.github.io/2019-08-05T21_14.html</guid>
-    <pubDate>Fri, 03 Jul 2020 00:00:00 +0800</pubDate>
+    <pubDate>Fri, 03 Jul 2020 00:00:00 +0300</pubDate>
+
+    <description><![CDATA[]]></description>
+  </item>
+  <item>
+    <title>Lisp's grandfather paradox</title>
+    <link>https://danielsz.github.io/20240718T060528--lisps-grandfather-paradox__clojure_lisp_scheme.html</link>
+    <author>daniel.szmulewicz@gmail.com (Daniel Szmulewicz)</author>
+    <guid isPermaLink="false">https://danielsz.github.io/20240718T060528--lisps-grandfather-paradox__clojure_lisp_scheme.html</guid>
+    <pubDate>Thu, 18 Jul 2024 00:00:00 +0300</pubDate>
 
     <description><![CDATA[]]></description>
   </item>
@@ -102,7 +111,7 @@
     <link>https://danielsz.github.io/deft-20.html</link>
     <author>daniel.szmulewicz@gmail.com (Daniel Szmulewicz)</author>
     <guid isPermaLink="false">https://danielsz.github.io/deft-20.html</guid>
-    <pubDate>Mon, 04 Dec 2017 00:00:00 +0800</pubDate>
+    <pubDate>Sun, 03 Dec 2017 00:00:00 +0200</pubDate>
 
     <description><![CDATA[]]></description>
   </item>
@@ -111,7 +120,7 @@
     <link>https://danielsz.github.io/deft-21.html</link>
     <author>daniel.szmulewicz@gmail.com (Daniel Szmulewicz)</author>
     <guid isPermaLink="false">https://danielsz.github.io/deft-21.html</guid>
-    <pubDate>Sun, 03 Dec 2017 00:00:00 +0800</pubDate>
+    <pubDate>Sun, 03 Dec 2017 00:00:00 +0200</pubDate>
 
     <description><![CDATA[]]></description>
   </item>
@@ -120,7 +129,7 @@
     <link>https://danielsz.github.io/2017-12-04T12_20.html</link>
     <author>daniel.szmulewicz@gmail.com (Daniel Szmulewicz)</author>
     <guid isPermaLink="false">https://danielsz.github.io/2017-12-04T12_20.html</guid>
-    <pubDate>Mon, 04 Dec 2017 00:00:00 +0800</pubDate>
+    <pubDate>Mon, 04 Dec 2017 00:00:00 +0200</pubDate>
 
     <description><![CDATA[]]></description>
   </item>
@@ -129,7 +138,7 @@
     <link>https://danielsz.github.io/deft-37.html</link>
     <author>daniel.szmulewicz@gmail.com (Daniel Szmulewicz)</author>
     <guid isPermaLink="false">https://danielsz.github.io/deft-37.html</guid>
-    <pubDate>Sun, 03 Dec 2017 00:00:00 +0800</pubDate>
+    <pubDate>Sun, 03 Dec 2017 00:00:00 +0200</pubDate>
 
     <description><![CDATA[]]></description>
   </item>
@@ -138,7 +147,7 @@
     <link>https://danielsz.github.io/2021-05-12T13_24.html</link>
     <author>daniel.szmulewicz@gmail.com (Daniel Szmulewicz)</author>
     <guid isPermaLink="false">https://danielsz.github.io/2021-05-12T13_24.html</guid>
-    <pubDate>Tue, 08 Jun 2021 00:00:00 +0800</pubDate>
+    <pubDate>Tue, 08 Jun 2021 00:00:00 +0300</pubDate>
 
     <description><![CDATA[<p>
     Every time you press ENTER at the REPL, a new class is born. In addition, it comes with a new class loader instance exclusively dedicated to loading it. That’s Clojure behind the scenes doing its runtime magic. On the other hand, in a nREPL client like Cider, not one but two class loader instances are produced, and that is a quirk that carries over since its earliest days. I bring you that story as an excuse for dwelling on the subject of class loading. Arcane, maybe, but essential.
@@ -150,7 +159,7 @@
     <link>https://danielsz.github.io/2019-05-08T18_40.html</link>
     <author>daniel.szmulewicz@gmail.com (Daniel Szmulewicz)</author>
     <guid isPermaLink="false">https://danielsz.github.io/2019-05-08T18_40.html</guid>
-    <pubDate>Fri, 19 Mar 2021 00:00:00 +0800</pubDate>
+    <pubDate>Fri, 19 Mar 2021 00:00:00 +0200</pubDate>
 
     <description><![CDATA[]]></description>
   </item>
@@ -159,7 +168,7 @@
     <link>https://danielsz.github.io/2024-04-17T22_50.html</link>
     <author>daniel.szmulewicz@gmail.com (Daniel Szmulewicz)</author>
     <guid isPermaLink="false">https://danielsz.github.io/2024-04-17T22_50.html</guid>
-    <pubDate>Sat, 27 Apr 2024 00:00:00 +0800</pubDate>
+    <pubDate>Sat, 27 Apr 2024 00:00:00 +0300</pubDate>
 
     <description><![CDATA[]]></description>
   </item>
@@ -168,7 +177,7 @@
     <link>https://danielsz.github.io/2017-07-31T16_31.html</link>
     <author>daniel.szmulewicz@gmail.com (Daniel Szmulewicz)</author>
     <guid isPermaLink="false">https://danielsz.github.io/2017-07-31T16_31.html</guid>
-    <pubDate>Mon, 04 Dec 2017 00:00:00 +0800</pubDate>
+    <pubDate>Mon, 04 Dec 2017 00:00:00 +0200</pubDate>
 
     <description><![CDATA[]]></description>
   </item>
@@ -177,7 +186,7 @@
     <link>https://danielsz.github.io/2020-09-01T1556.html</link>
     <author>daniel.szmulewicz@gmail.com (Daniel Szmulewicz)</author>
     <guid isPermaLink="false">https://danielsz.github.io/2020-09-01T1556.html</guid>
-    <pubDate>Sat, 12 Nov 2022 00:00:00 +0800</pubDate>
+    <pubDate>Sat, 12 Nov 2022 00:00:00 +0200</pubDate>
 
     <description><![CDATA[]]></description>
   </item>
