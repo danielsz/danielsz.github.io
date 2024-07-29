@@ -13,6 +13,17 @@ h6 {
   font-family: 'Merriweather Sans', sans-serif;
 }
 
+.footnotes {
+  font-size: 1.2em;
+}
+
+.bibliography p:first-of-type {
+  font-size: 1.2em;
+  text-transform: uppercase;
+  font-family: 'Merriweather Sans', sans-serif;
+  font-weight: bold;
+}
+
 blockquote {
   box-shadow: 2px 2px 15px #ccc;
   padding: 1em;
