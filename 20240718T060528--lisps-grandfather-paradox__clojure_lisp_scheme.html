@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<!-- 2024-07-29 Mon 23:27 -->
+<!-- 2024-07-30 Tue 10:53 -->
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Lisp's grandfather paradox</title>
@@ -357,12 +357,11 @@ and always returns zero.
 
 <p>
 Our second basic function is the <a href="https://en.wikipedia.org/wiki/Successor_function">successor function</a>. Yes, <a href="https://en.wikipedia.org/wiki/Successor_function">that one</a>
-from <a href="https://en.wikipedia.org/wiki/Peano_axioms">number theory</a>. It isn't more complicated as our zero function: it
-increments a number by one.
+from <a href="https://en.wikipedia.org/wiki/Peano_axioms">number theory</a>. It increments a number by one.
 </p>
 
 <p>
-It is identical to <code>inc</code> in Clojure, so we will just alias it.
+Being identical to <code>inc</code> in Clojure, we will just alias it.
 </p>
 
 <div class="org-src-container">
@@ -472,10 +471,9 @@ recursion is always bounded, it is guaranteed to halt.
 
 <p>
 Now that we have the pieces in place we can start to build our algebra
-of primitive recursive functions.  Have you noticed that conspicuously
-absent from our framework are the natural numbers themselves?
-Following the principle of induction, we can generate the natural
-numbers with zero and the successor function.
+of primitive recursive functions. First, note that we can generate any
+number with zero and the successor function. We call this the constant
+function 𝐤.
 </p>
 
 <div class="org-src-container">
@@ -664,7 +662,7 @@ modulo, a predicate function that checks if a number is prime, etc.
 Both a <a href="https://gist.github.com/danielsz/c977ec15c4bb2804052d2493e04a8ed8">Clojure version</a> and a <a href="https://gist.github.com/danielsz/c7e6588c35e523295134133ca38d6943">Scheme version</a> are available.
 </p>
 
-<div class="hiring" id="org229832b">
+<div class="hiring" id="org5490b98">
 <p>
 <b>Open for work</b>
 </p>
@@ -730,12 +728,13 @@ that might be.
 </p>
 
 <p>
-In <i>Gödel, Escher and Bäch</i>, Douglas Hofstadter devised the BlooP and
-the FlooP languages to illustrate the difference between bounded loops
-(FOR) and unbounded loops (WHILE, GOTO), corresponding to primitive
-recursion and general recursion respectively. Adding unbounded loops
-makes the language general recursive and Turing-complete, as are all
-real-world computer programming languages. (Hofstadter, Douglas R., 1999)
+In <i>Gödel, Escher, Bach: an Eternal Golden Braid</i>, Douglas Hofstadter
+devised the BlooP and the FlooP languages to illustrate the difference
+between bounded loops (FOR) and unbounded loops (WHILE, GOTO),
+corresponding to primitive recursion and general recursion
+respectively. Adding unbounded loops makes the language general
+recursive and Turing-complete, as are all real-world computer
+programming languages. (Hofstadter, Douglas R., 1999)
 </p>
 
 <p>
@@ -772,7 +771,7 @@ but rather to embrace him, bring him back to life, even if for a
 moment.
 </p>
 
-<div class="contact" id="org410c385">
+<div class="contact" id="org847286e">
 <p>
 Wow, you've made it! Right up to the end! So you're into this kind of
 stuff, aren't you?! Maybe we should be friends! What's more, I might
@@ -783,19 +782,19 @@ something you'd sign up for, please let me <a href="mailto:daniel.szmulewicz@gma
 
 </div>
 
-<div class="bibliography" id="orgda28636">
+<div class="bibliography" id="org5babae6">
 <p>
 Bibliography
 </p>
 
 <p>
-Brainerd, Walter S. and Landweber, Lawrence H. (1974). <i>Theory of Computation</i>, John Wiley \&amp; Sons, Inc..</p>
+Brainerd, Walter S. and Landweber, Lawrence H. (1974). <i>Theory of Computation</i>, John Wiley &amp; Sons, Inc.</p>
 
 <p>
 Friedman, Daniel P. and Felleisen, Matthias (1996). <i>The little Schemer (4th ed.)</i>, MIT Press.</p>
 
 <p>
-Hofstadter, Douglas R. (1999). <i>Godel Escher Bach: An Eternal Golden Braid</i>, Basic Books, Inc..</p>
+Hofstadter, Douglas R. (1999). <i>Gödel, Escher, Bach: An Eternal Golden Braid</i>, Basic Books, Inc.</p>
 
 <p>
 McCarthy, John (1978). <i>History of LISP</i>, Association for Computing Machinery (ACM).</p>
@@ -807,7 +806,7 @@ Meyer, Albert R. and Ritchie, Dennis M. (1967). <i>The complexity of loop progra
 Rado, T. (1962). <i>On Non-Computable Functions</i>, Institute of Electrical and Electronics Engineers (IEEE).</p>
 
 <p>
-Skolem, T. (1923). <i>Begr{\"u}ndung der Elementaren Arithmetik durch die rekurrierende Denkweise ohne Anwendung scheinbarer Ver{\"a}nderlichen mit unendlichem Ausdehnungsbereich</i>.</p>
+Skolem, T. (1923). <i>Begründung der Elementaren Arithmetik durch die rekurrierende Denkweise ohne Anwendung scheinbarer Veränderlichen mit unendlichem Ausdehnungsbereich</i>.</p>
 
 </div>
 <div id="footnotes">
