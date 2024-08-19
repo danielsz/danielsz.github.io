@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<!-- 2024-07-30 Tue 10:53 -->
+<!-- 2024-08-20 Tue 02:17 -->
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Lisp's grandfather paradox</title>
@@ -245,10 +245,14 @@ Ausdehnugsbereich<sup><a id="fnr.1" class="footref" href="#fn.1" role="doc-backl
 </blockquote>
 
 <p>
-Primitive recursion was originally introduced by Dedekind in 1888, and
-proposed as a basis for arithmetic by Skolem in 1923. There is no lack
-of mathematical resources describing primitive recursion, but in this
-post we are going to try and build an <i>intuition</i> for it. 
+Primitive recursion was originally introduced by Dedekind in 1888
+(Dedekind, Richard, 1965), and proposed as a basis for arithmetic by Skolem
+in 1923. It is perhaps Gödel's contribution to the concept of
+recursion that had the biggest impact, because it gave a precise
+meaning to the notion of computability. (Gödel, Kurt, 1931) Finally,
+Rózsa Péter is the mathematician responsible for coining the term
+<i>primitive recursion</i> and for writing the first monograph dedicated to
+recursive functions. (Lambek, J., 1968)
 </p>
 
 <blockquote>
@@ -267,17 +271,16 @@ In <i>The Little Schemer</i>, Daniel Friedman and Matthias Felleisen taught
 recursion in Scheme <span class="underline">through dialogue</span>, arguing that the requirements
 to be a successful learner was not analytical reasoning but pattern
 recognition. To understand the practicalities of recursion in Lisp,
-<i>The Little Schemer</i> is indeed a fantastic reference. In contrast, to
-understand the theoretical foundation of Lisp, the traditional
-treatment of the topic cannot be avoided.
+<i>The Little Schemer</i> is indeed a great reference.
 </p>
 
 <p>
-Still, our bet is that the use of computer programs can be beneficial
-here as well. By faithfully translating the rules of primitive
-recursion into a computer program, we hope to breathe life into the
-subject. This is the constructivist approach: learning means
-<i>constructing</i> an understanding through experience and interaction.
+Contrary to recursion in Scheme, which is defined on symbolic
+expressions, primitive recursion is defined on the natural
+numbers. There is no lack of mathematical resources describing
+primitive recursion, but we are going to try and build an
+<i>intuition</i> for it by faithfully translating the rules of
+primitive recursion into a computer program.
 </p>
 
 <p>
@@ -301,8 +304,7 @@ It might be interesting to start with a quick glance at the
 traditional presentation of the topic. Wikipedia has a decent <a href="https://en.wikipedia.org/wiki/Primitive_recursive_function">entry</a>,
 <a href="https://plato.stanford.edu/entries/recursive-functions/">Stanford Encyclopedia of Philosophy</a> too. Take a look at the formulas
 describing primitive recursion, no matter how opaque. At the end of
-our exercise, we will have a basis of comparison. We might answer the
-question how Lisp improves our understanding.
+our exercise, we will have a basis of comparison.
 </p>
 
 <p>
@@ -316,9 +318,9 @@ functions in the REPL.
 </p>
 
 <p>
-Primitive recursion is not complicated, but surprising. Indeed,
-it takes only three initial functions closed under two operations to
-produce all of the familiar functions on the natural numbers.
+Primitive recursion takes only three initial functions closed under
+two operations to produce all of the familiar functions on the natural
+numbers.
 </p>
 
 <blockquote>
@@ -369,6 +371,7 @@ Being identical to <code>inc</code> in Clojure, we will just alias it.
 </pre>
 </div>
 
+
 <p>
 Our last basic function is trickier to explain because its purpose may
 not be immediately apparent. It is called the projection function, and
@@ -399,6 +402,7 @@ numbers, the operations act on those initial functions.
   <span style="color: #695500;">(</span><span style="color: #531ab6;">fn</span> <span style="color: #3548cf;">[</span>&amp; xs<span style="color: #3548cf;">]</span> <span style="color: #3548cf;">(</span>apply f <span style="color: #77492f;">(</span>map #<span style="color: #0000b0;">(</span>apply <span style="color: #005e8b;">%</span> xs<span style="color: #0000b0;">)</span> gs<span style="color: #77492f;">)</span><span style="color: #3548cf;">)</span><span style="color: #695500;">)</span><span style="color: #0031a9;">)</span>
 </pre>
 </div>
+
 
 <p>
 Composition takes a function 𝑓 and any number of functions 𝑔, and
@@ -455,6 +459,7 @@ Finally, the recursion operation.
 </pre>
 </div>
 
+
 <p>
 Function 𝑓 is used for the initial computation only. After such
 initialization, function 𝑔 is proceeding by applying its rules,
@@ -471,42 +476,8 @@ recursion is always bounded, it is guaranteed to halt.
 
 <p>
 Now that we have the pieces in place we can start to build our algebra
-of primitive recursive functions. First, note that we can generate any
-number with zero and the successor function. We call this the constant
-function 𝐤.
-</p>
-
-<div class="org-src-container">
-<pre class="src src-clojure"><span style="color: #0031a9;">(</span><span style="color: #531ab6;">defn</span> <span style="color: #721045;">k</span> <span style="color: #695500;">[</span>n<span style="color: #695500;">]</span>
-  <span style="color: #695500;">(</span><span style="color: #531ab6;">fn</span> <span style="color: #3548cf;">[</span>&amp; _<span style="color: #3548cf;">]</span>
-    <span style="color: #3548cf;">(</span><span style="color: #531ab6;">let</span> <span style="color: #77492f;">[</span>f <span style="color: #0000b0;">(</span>Z<span style="color: #0000b0;">)</span>
-          g <span style="color: #0000b0;">(</span>C S <span style="color: #973300;">(</span>P 1<span style="color: #973300;">)</span><span style="color: #0000b0;">)</span><span style="color: #77492f;">]</span>
-      <span style="color: #77492f;">(</span><span style="color: #0000b0;">(</span>R n<span style="color: #0000b0;">)</span> f g<span style="color: #77492f;">)</span><span style="color: #3548cf;">)</span><span style="color: #695500;">)</span><span style="color: #0031a9;">)</span>
-</pre>
-</div>
-
-<p>
-Usage:
-</p>
-
-<div class="org-src-container">
-<pre class="src src-clojure"><span style="color: #0031a9;">[</span><span style="color: #695500;">(</span><span style="color: #3548cf;">(</span>k 5<span style="color: #3548cf;">)</span> 5<span style="color: #695500;">)</span> <span style="color: #695500;">(</span><span style="color: #3548cf;">(</span>k 5<span style="color: #3548cf;">)</span> 6<span style="color: #695500;">)</span> <span style="color: #695500;">(</span><span style="color: #3548cf;">(</span>k 5<span style="color: #3548cf;">)</span> 7<span style="color: #695500;">)</span><span style="color: #0031a9;">]</span>
-</pre>
-</div>
-
-<div class="org-src-container">
-<pre class="src src-org">[5 5 5]
-</pre>
-</div>
-
-<p>
-No matter what the input is, the function returns the number of times
-we applied the successor function starting from zero. 
-</p>
-
-<p>
-Addition is achieved by applying the successor function 𝐱 times on
-𝐲 + 1.  
+of primitive recursive functions. Addition is achieved by applying the
+successor function 𝐱 times on 𝐲 + 1.
 </p>
 
 <div class="org-src-container">
@@ -516,6 +487,7 @@ Addition is achieved by applying the successor function 𝐱 times on
     <span style="color: #3548cf;">(</span><span style="color: #77492f;">(</span>R x y<span style="color: #77492f;">)</span> f g<span style="color: #3548cf;">)</span><span style="color: #695500;">)</span><span style="color: #0031a9;">)</span>
 </pre>
 </div>
+
 
 <div class="org-src-container">
 <pre class="src src-clojure"><span style="color: #0031a9;">(</span>add 4 5<span style="color: #0031a9;">)</span>
@@ -561,6 +533,39 @@ we develop the algebra of primitive recursive functions.
 </p>
 
 <p>
+Note that we can generate any number with zero and the successor
+function. We call this the constant function 𝐤.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-clojure"><span style="color: #0031a9;">(</span><span style="color: #531ab6;">defn</span> <span style="color: #721045;">k</span> <span style="color: #695500;">[</span>n<span style="color: #695500;">]</span>
+  <span style="color: #695500;">(</span><span style="color: #531ab6;">fn</span> <span style="color: #3548cf;">[</span>&amp; _<span style="color: #3548cf;">]</span>
+    <span style="color: #3548cf;">(</span><span style="color: #531ab6;">let</span> <span style="color: #77492f;">[</span>f <span style="color: #0000b0;">(</span>Z<span style="color: #0000b0;">)</span>
+          g <span style="color: #0000b0;">(</span>C S <span style="color: #973300;">(</span>P 1<span style="color: #973300;">)</span><span style="color: #0000b0;">)</span><span style="color: #77492f;">]</span>
+      <span style="color: #77492f;">(</span><span style="color: #0000b0;">(</span>R n<span style="color: #0000b0;">)</span> f g<span style="color: #77492f;">)</span><span style="color: #3548cf;">)</span><span style="color: #695500;">)</span><span style="color: #0031a9;">)</span>
+</pre>
+</div>
+
+<p>
+Usage:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-clojure"><span style="color: #0031a9;">[</span><span style="color: #695500;">(</span><span style="color: #3548cf;">(</span>k 5<span style="color: #3548cf;">)</span> 5<span style="color: #695500;">)</span> <span style="color: #695500;">(</span><span style="color: #3548cf;">(</span>k 5<span style="color: #3548cf;">)</span> 6<span style="color: #695500;">)</span> <span style="color: #695500;">(</span><span style="color: #3548cf;">(</span>k 5<span style="color: #3548cf;">)</span> 7<span style="color: #695500;">)</span><span style="color: #0031a9;">]</span>
+</pre>
+</div>
+
+<div class="org-src-container">
+<pre class="src src-org">[5 5 5]
+</pre>
+</div>
+
+<p>
+No matter what the input is, the function returns the number of times
+we applied the successor function starting from zero.
+</p>
+
+<p>
 Factorial leverages multiplication, predictably. As does exponentiation.
 </p>
 
@@ -571,6 +576,7 @@ Factorial leverages multiplication, predictably. As does exponentiation.
     <span style="color: #3548cf;">(</span><span style="color: #77492f;">(</span>R n<span style="color: #77492f;">)</span> f g<span style="color: #3548cf;">)</span><span style="color: #695500;">)</span><span style="color: #0031a9;">)</span>
 </pre>
 </div>
+
 
 <div class="org-src-container">
 <pre class="src src-clojure"><span style="color: #0031a9;">[</span><span style="color: #695500;">(</span>fac 3<span style="color: #695500;">)</span> <span style="color: #695500;">(</span>fac 4<span style="color: #695500;">)</span> <span style="color: #695500;">(</span>fac 5<span style="color: #695500;">)</span><span style="color: #0031a9;">]</span>
@@ -601,8 +607,36 @@ Factorial leverages multiplication, predictably. As does exponentiation.
 </div>
 
 <p>
-By interpreting 1 and 0 as boolean values, we can define predicates,
-like <code>zero?</code>.
+Gödel showed that a logical calculus is embedded in the primitive
+recursive functions. If we adopt a mathematical understanding of how
+logic works, we will say that zero represents false and the positive
+numbers represent true. Conjunction, the AND operator, is just
+multiplication. If you multiply two numbers the only way to get a
+positive number is if both of them are positive. Likewise,
+disjunction, the OR operator, is addition. Again, this is a basic
+feature of addition. The sum of two natural numbers is positive if one
+or the other is positive, or both.
+</p>
+
+<p>
+Sometimes it is not convenient to have all the positive numbers signifying
+true, and we might want to normalize them to 1. We can define bool, a
+recursive definition of a normalizing function such that true means 1
+and false means 0.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-clojure"><span style="color: #0031a9;">(</span><span style="color: #531ab6;">defn</span> <span style="color: #721045;">bool</span> <span style="color: #695500;">[</span>x<span style="color: #695500;">]</span>
+  <span style="color: #695500;">(</span><span style="color: #531ab6;">let</span> <span style="color: #3548cf;">[</span>f <span style="color: #77492f;">(</span>Z<span style="color: #77492f;">)</span>
+        g <span style="color: #77492f;">(</span>k 1<span style="color: #77492f;">)</span><span style="color: #3548cf;">]</span>
+    <span style="color: #3548cf;">(</span><span style="color: #77492f;">(</span>R x<span style="color: #77492f;">)</span> f g<span style="color: #3548cf;">)</span><span style="color: #695500;">)</span><span style="color: #0031a9;">)</span>
+</pre>
+</div>
+
+<p>
+Notice that if we invert the initialization function with the
+recursive function, we get the predicate function <code>zero?</code> which
+doubles as negation, or <code>not</code>.
 </p>
 
 <div class="org-src-container">
@@ -628,41 +662,34 @@ Usage:
 </div>
 
 <p>
-And now we can define an if-then-else function.
+Putting all of the above together, we can define <code>and</code>:
 </p>
 
 <div class="org-src-container">
-<pre class="src src-clojure"><span style="color: #0031a9;">(</span><span style="color: #531ab6;">defn</span> <span style="color: #721045;">ite</span> <span style="color: #695500;">[</span>x y z<span style="color: #695500;">]</span>
-  <span style="color: #695500;">(</span><span style="color: #531ab6;">let</span> <span style="color: #3548cf;">[</span>f <span style="color: #77492f;">(</span>P 2<span style="color: #77492f;">)</span>
-        g <span style="color: #77492f;">(</span>P 3<span style="color: #77492f;">)</span><span style="color: #3548cf;">]</span>
-    <span style="color: #3548cf;">(</span><span style="color: #77492f;">(</span>R x y z<span style="color: #77492f;">)</span> f g<span style="color: #3548cf;">)</span><span style="color: #695500;">)</span><span style="color: #0031a9;">)</span>
+<pre class="src src-clojure"><span style="color: #0031a9;">(</span><span style="color: #531ab6;">def</span> <span style="color: #005e8b;">and</span> <span style="color: #695500;">(</span>C bool mul<span style="color: #695500;">)</span><span style="color: #0031a9;">)</span>
 </pre>
 </div>
 
 <p>
-Usage:
+And <code>or</code>:
 </p>
 
 <div class="org-src-container">
-<pre class="src src-clojure"><span style="color: #0031a9;">[</span><span style="color: #695500;">(</span>ite 1 3 4<span style="color: #695500;">)</span> <span style="color: #695500;">(</span>ite 0 3 4<span style="color: #695500;">)</span><span style="color: #0031a9;">]</span>
-</pre>
-</div>
-
-<div class="org-src-container">
-<pre class="src src-org">[3 4]
+<pre class="src src-clojure"><span style="color: #0031a9;">(</span><span style="color: #531ab6;">def</span> <span style="color: #005e8b;">or</span> <span style="color: #695500;">(</span>C bool add<span style="color: #695500;">)</span><span style="color: #0031a9;">)</span>
 </pre>
 </div>
 
 <p>
-Head over to the gists to check how we can further define junctors,
-modulo, a predicate function that checks if a number is prime, etc.
+Please head over to the gists to check how we can further define
+if-then-else, more junctors, modulo, a predicate function that checks
+if a number is prime, etc.
 </p>
 
 <p>
 Both a <a href="https://gist.github.com/danielsz/c977ec15c4bb2804052d2493e04a8ed8">Clojure version</a> and a <a href="https://gist.github.com/danielsz/c7e6588c35e523295134133ca38d6943">Scheme version</a> are available.
 </p>
 
-<div class="hiring" id="org5490b98">
+<div class="hiring" id="orge5b5924">
 <p>
 <b>Open for work</b>
 </p>
@@ -771,7 +798,7 @@ but rather to embrace him, bring him back to life, even if for a
 moment.
 </p>
 
-<div class="contact" id="org847286e">
+<div class="contact" id="org9e4ac22">
 <p>
 Wow, you've made it! Right up to the end! So you're into this kind of
 stuff, aren't you?! Maybe we should be friends! What's more, I might
@@ -782,7 +809,7 @@ something you'd sign up for, please let me <a href="mailto:daniel.szmulewicz@gma
 
 </div>
 
-<div class="bibliography" id="org5babae6">
+<div class="bibliography" id="orga7f4bca">
 <p>
 Bibliography
 </p>
@@ -791,10 +818,19 @@ Bibliography
 Brainerd, Walter S. and Landweber, Lawrence H. (1974). <i>Theory of Computation</i>, John Wiley &amp; Sons, Inc.</p>
 
 <p>
+Dedekind, Richard (1965). <i>Was sind und was sollen die Zahlen?. Stetigkeit und Irrationale Zahlen</i>, Vieweg+Teubner Verlag.</p>
+
+<p>
 Friedman, Daniel P. and Felleisen, Matthias (1996). <i>The little Schemer (4th ed.)</i>, MIT Press.</p>
 
 <p>
+Gödel, Kurt (1931). <i>Über formal unentscheidbare Sätze der Principia Mathematica und verwandter Systeme I</i>, Springer Science and Business Media LLC.</p>
+
+<p>
 Hofstadter, Douglas R. (1999). <i>Gödel, Escher, Bach: An Eternal Golden Braid</i>, Basic Books, Inc.</p>
+
+<p>
+Lambek, J. (1968). <i>Recursive functions, by Rozsa Peter. Academic Press Inc., New York, 1967. 300 pages. $13.50.</i>, Canadian Mathematical Bulletin.</p>
 
 <p>
 McCarthy, John (1978). <i>History of LISP</i>, Association for Computing Machinery (ACM).</p>
